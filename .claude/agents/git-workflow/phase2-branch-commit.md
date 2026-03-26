@@ -5,6 +5,25 @@ Phase 1의 분석 결과를 바탕으로 브랜치명과 커밋 메시지를 자
 
 ## 수행 절차
 
+### 0단계: Phase 1 출력 검증
+
+Phase 2 시작 전에 Phase 1에서 전달받은 데이터의 필수 필드가 모두 존재하는지 확인한다.
+
+**필수 필드:**
+- 프로젝트명 (PROJECT_NAME)
+- commit type (feat/fix/improve/refactor/docs/chore 중 하나)
+- 변경 파일 목록 (최소 1개)
+- 현재 브랜치
+- 브랜치 전략 (새 브랜치 생성 / 현재 브랜치 유지)
+
+누락된 필드가 있으면 워크플로우를 중단하고 Phase 1부터 재실행을 안내한다:
+```
+⚠️ Phase 1 분석 데이터가 불완전합니다.
+누락된 항목: {누락 필드 목록}
+
+워크플로우를 처음부터 다시 실행해주세요.
+```
+
 ### 1단계: 브랜치명 자동 생성
 
 Phase 1에서 "새 브랜치 생성"으로 결정된 경우에만 수행한다.
@@ -76,3 +95,62 @@ git commit -m "{커밋 메시지}"
 
 develop 머지를 진행합니다.
 ```
+
+## 체크포인트 저장 (자동)
+
+커밋 완료 출력 후, 아래 명령을 Bash로 실행하여 진행 상태를 저장한다.
+실패해도 워크플로우를 중단하지 않는다 (best-effort).
+
+```bash
+node -e "
+  const cp = require(process.env.USERPROFILE + '/.claude/hooks/checkpoint.js');
+  const log = require(process.env.USERPROFILE + '/.claude/hooks/log-workflow.js');
+  cp.saveCheckpoint('git-workflow', 'phase2', {
+    project: '{PROJECT_NAME}',
+    commitType: '{COMMIT_TYPE}',
+    itsm: '{ITSM_NUMBER}',
+    branch: '{브랜치명}',
+    commitHash: '{커밋 해시 앞 7자리}',
+    commitMsg: '{커밋 메시지}'
+  });
+  log.logWorkflow({
+    workflow: 'git-workflow', phase: 2, event: 'phase2_complete',
+    project: '{PROJECT_NAME}', branch: '{브랜치명}', commitHash: '{커밋 해시 앞 7자리}'
+  });
+"
+```
+
+`{...}` 부분은 이 phase에서 결정된 실제 값으로 치환한다.
+
+## 실패 처리
+
+### 재시도 규칙
+
+| 명령 | 최대 재시도 | 재시도 조건 | 재시도 불가 시 |
+|------|-----------|-----------|-------------|
+| `git checkout -b` | 1회 | branch already exists → 브랜치명에 `-2` 접미사 추가 | 사용자에게 브랜치명 확인 |
+| `git add` | 1회 | file not found → `git status` 재확인 후 파일 목록 갱신 | 누락 파일 목록을 사용자에게 보고 |
+| `git commit` (nothing to commit) | 0회 | 재시도 불가 — Phase 1 분석이 잘못됨 | 워크플로우 종료, Phase 1 재실행 안내 |
+| `git commit` (pre-commit hook 실패) | 1회 | 훅 출력 확인 후 문제 수정하고 재시도 | 훅 에러 내용을 사용자에게 보고 |
+
+### 실패 기록
+
+모든 실패 (재시도 성공 포함)를 아래 명령으로 기록한다:
+
+```bash
+node -e "
+  const fl = require(process.env.USERPROFILE+'/.claude/hooks/failure-logger.js');
+  fl.logFailure({
+    workflow: 'git-workflow', phase: 2,
+    failureType: '{TYPE}', subType: '{SUBTYPE}',
+    severity: '{SEVERITY}',
+    cause: '{에러 메시지}',
+    context: { branch: '{브랜치명}', command: '{실행한 명령}' },
+    recoveryAction: '{수행한 복구 조치}',
+    resolved: {true/false},
+    retryCount: {재시도 횟수}
+  });
+"
+```
+
+`{...}` 부분은 실제 값으로 치환한다.

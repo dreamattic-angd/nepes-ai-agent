@@ -70,6 +70,26 @@ Fork 사용 시:
 ────────────────────────────────────────
 ```
 
+## 체크포인트 클리어 + 워크플로우 로그 (자동)
+
+완료 보고 출력 후, 아래 명령을 Bash로 실행한다.
+실패해도 워크플로우를 중단하지 않는다 (best-effort).
+
+```bash
+node -e "
+  const cp = require(process.env.USERPROFILE + '/.claude/hooks/checkpoint.js');
+  const log = require(process.env.USERPROFILE + '/.claude/hooks/log-workflow.js');
+  log.logWorkflow({
+    workflow: 'git-workflow', phase: 4, event: 'workflow_complete',
+    project: '{PROJECT_NAME}', oldVersion: '{이전버전}', newVersion: '{새버전}',
+    tag: 'v{새버전}', itsm: '{ITSM_NUMBER}', commitType: '{COMMIT_TYPE}'
+  });
+  cp.clearCheckpoint('git-workflow');
+"
+```
+
+`{...}` 부분은 워크플로우에서 결정된 실제 값으로 치환한다.
+
 ## 3단계 (선택): Draft PR 생성
 
 **프로젝트 설정 테이블의 `Draft PR`이 Y이고, 사용자가 "PR도 만들어줘", "PR 생성", "Draft PR" 등을 요청한 경우에만 실행.**
@@ -126,3 +146,45 @@ Fork:
 
 ⚠️ 태그 없이 Push하면 버전 이력이 유실됩니다.
 ```
+
+## 실패 처리
+
+### 재시도 규칙
+
+| 명령 | 최대 재시도 | 재시도 조건 | 재시도 불가 시 |
+|------|-----------|-----------|-------------|
+| `git branch -d` | 1회 | not fully merged → 사용자에게 `-D` 사용 확인 후 재시도 | 브랜치를 수동으로 관리하도록 안내 |
+| `gh pr create` | 2회 | 네트워크 에러 → 2초 간격 재시도 | PR 생성 건너뜀, 수동 생성 안내 |
+
+### `git branch -d` 실패 처리
+
+```
+⚠️ feature 브랜치 삭제 실패: {에러 메시지}
+
+브랜치가 완전히 머지되지 않았을 수 있습니다.
+강제 삭제(-D)를 진행할까요? (Y/N)
+```
+- Y → `git branch -D {브랜치명}` 실행
+- N → 브랜치 유지, 완료 보고에서 안내
+
+### 실패 기록
+
+모든 실패를 아래 명령으로 기록한다:
+
+```bash
+node -e "
+  const fl = require(process.env.USERPROFILE+'/.claude/hooks/failure-logger.js');
+  fl.logFailure({
+    workflow: 'git-workflow', phase: 4,
+    failureType: '{TYPE}', subType: '{SUBTYPE}',
+    severity: '{SEVERITY}',
+    cause: '{에러 메시지}',
+    context: { branch: '{브랜치명}' },
+    recoveryAction: '{수행한 복구 조치}',
+    resolved: {true/false},
+    retryCount: {재시도 횟수}
+  });
+"
+```
+
+`{...}` 부분은 실제 값으로 치환한다.

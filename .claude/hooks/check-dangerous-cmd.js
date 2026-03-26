@@ -13,9 +13,12 @@ process.stdin.on('end', () => {
 
     // 차단 패턴 목록
     const dangerousPatterns = [
-      // Linux/Unix 파괴적 명령
-      { pattern: /\brm\s+(-[a-z]*f[a-z]*\s+)?(-[a-z]*r[a-z]*\s+)?\/(\s|$)/i, desc: 'rm -rf / (루트 삭제)' },
-      { pattern: /\brm\s+(-[a-z]*r[a-z]*\s+)(-[a-z]*f[a-z]*\s+)?\/(\s|$)/i, desc: 'rm -rf / (루트 삭제)' },
+      // Linux/Unix 파괴적 명령 — rm -rf 광범위 삭제 차단
+      { pattern: /\brm\s+(-[a-z]*[rf][a-z]*\s+){1,2}\/(\s|$)/i, desc: 'rm -rf / (루트 삭제)' },
+      { pattern: /\brm\s+(-[a-z]*[rf][a-z]*\s+){1,2}\.\.?(\/|\s|$)/i, desc: 'rm -rf ./ 또는 ../ (현재/상위 디렉토리 삭제)' },
+      { pattern: /\brm\s+(-[a-z]*[rf][a-z]*\s+){1,2}~(\/|\s|$)/i, desc: 'rm -rf ~ (홈 디렉토리 삭제)' },
+      { pattern: /\brm\s+(-[a-z]*[rf][a-z]*\s+){1,2}\$HOME(\/|\s|$)/i, desc: 'rm -rf $HOME (홈 디렉토리 삭제)' },
+      { pattern: /\brm\s+(-[a-z]*[rf][a-z]*\s+){1,2}\*(\s|$)/i, desc: 'rm -rf * (전체 삭제)' },
       { pattern: /\bmkfs\b/i, desc: 'mkfs (파일시스템 포맷)' },
       { pattern: /\bdd\s+.*of=\/dev\//i, desc: 'dd of=/dev/ (디스크 덮어쓰기)' },
       { pattern: /\b:(){ :\|:& };:/i, desc: 'Fork bomb' },
@@ -49,10 +52,14 @@ process.stdin.on('end', () => {
         console.error(`[DANGEROUS CMD WARNING] 위험한 명령어가 감지되었습니다: ${desc}`);
         console.error(`[DANGEROUS CMD WARNING] 명령어: ${cmd.substring(0, 200)}`);
         console.error('[DANGEROUS CMD WARNING] 이 명령은 시스템에 치명적인 영향을 줄 수 있습니다. 실행이 차단되었습니다.');
+        try {
+          const fl = require(process.env.USERPROFILE + '/.claude/hooks/failure-logger.js');
+          fl.logFailure({ workflow: 'unknown', phase: 0, failureType: 'hook_block', subType: desc, severity: 'critical', cause: cmd.substring(0, 200), context: { hook: 'check-dangerous-cmd' }, recoveryAction: 'user_must_change_approach', resolved: false });
+        } catch (_) {}
         process.exit(2);
       }
     }
   } catch (e) {
-    // 파싱 실패 시 조용히 통과 (기존 패턴 유지)
+    console.error('[check-dangerous-cmd] 입력 파싱 실패 — 검증을 건너뜁니다:', e.message);
   }
 });

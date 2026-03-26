@@ -1,0 +1,33 @@
+# SECS/GEM 장비 문서 (기밀) - .gitkeep 제외하고 모두 무시
+.claude/agents/secsgem-analysis/secsgem-specs/*
+!.claude/agents/secsgem-analysis/secsgem-specs/.gitkeep
+
+# 분석 결과 보고서 및 중간 산출물 (.gitkeep만 추적)
+.claude/agents/secsgem-analysis/analysis-reports/*
+!.claude/agents/secsgem-analysis/analysis-reports/.gitkeep
+!.claude/agents/secsgem-analysis/analysis-reports/extract/
+.claude/agents/secsgem-analysis/analysis-reports/extract/*
+!.claude/agents/secsgem-analysis/analysis-reports/extract/.gitkeep
+
+# issue-analysis 로그 및 리포트 (.gitkeep만 추적)
+.claude/agents/issue-analysis/logs/*
+!.claude/agents/issue-analysis/logs/.gitkeep
+.claude/agents/issue-analysis/reports/*
+!.claude/agents/issue-analysis/reports/.gitkeep
+
+# code-review 리뷰 로그 (.gitkeep만 추적)
+.claude/agents/code-review/reviews/*
+!.claude/agents/code-review/reviews/.gitkeep
+
+# Claude Code 로컬 설정
+.claude/settings.local.json
+CLAUDE.local.md
+
+# workflow-automate 임시 산출물 (설계/리뷰/테스트)
+specs/
+
+# 작업 인수인계 문서 (개인 임시 파일, 루트만)
+/HANDOFF.md
+
+# Windows NUL device artifact (bash에서 > NUL 사용 시 생성되는 파일)
+nul
