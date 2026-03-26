@@ -1,5 +1,5 @@
 <!-- nepes-ai-agents:start -->
-# nepes-ai-agents v1.32.0
+# nepes-ai-agents v1.32.1
 Claude Code AI 에이전트 관리 저장소. `.claude/` 디렉토리가 `~/.claude/`로 배포된다.
 - 프로젝트 커맨드: `/project:{command}`
 - 전역 커맨드 (install.bat 설치 후): `/{command}`

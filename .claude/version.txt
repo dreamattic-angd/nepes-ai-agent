@@ -21,7 +21,7 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ---
 
-## 현재 버전: 1.32.0
+## 현재 버전: 1.32.1
 
 ## 에이전트 현황
 
@@ -66,6 +66,7 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ## 변경 이력
 
+1.32.1 improve: git-workflow 에이전트 개선, failure logging/integrity check 추가, hooks 개선
 1.32.0 feat: 실패 처리 체계 구축 — 실패 분류·복구 경로·재발 방지 (#ITSM-3581)
 1.31.4 improve: check-dangerous-cmd.js rm -rf 차단 범위 확장
 1.31.3 improve: integrity-check 상세 정보 요청 시 --verbose 실행 지침 추가
