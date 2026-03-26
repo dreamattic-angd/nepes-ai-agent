@@ -1,0 +1,7 @@
+{
+  "id": "feat-minor-bump",
+  "description": "feat commit type은 MINOR +1, PATCH = 0",
+  "target": "version-calc",
+  "input": { "currentVersion": "1.32.0", "commitType": "feat" },
+  "expected": { "newVersion": "1.33.0" }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "improve-patch-bump",
+  "description": "improve commit type은 PATCH +1",
+  "target": "version-calc",
+  "input": { "currentVersion": "2.5.3", "commitType": "improve" },
+  "expected": { "newVersion": "2.5.4" }
+}

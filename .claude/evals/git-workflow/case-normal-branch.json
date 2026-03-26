@@ -1,0 +1,10 @@
+{
+  "id": "normal-branch",
+  "description": "차단 목록에 없는 브랜치에서는 워크플로우 정상 진행",
+  "target": "branch-validation",
+  "input": {
+    "branch": "develop",
+    "blockedBranches": ["12'_2025_NEW_EQPs"]
+  },
+  "expected": { "shouldBlock": false }
+}

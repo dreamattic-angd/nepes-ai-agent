@@ -1,0 +1,7 @@
+{
+  "id": "feat-resets-patch",
+  "description": "feat은 PATCH가 0이 아닌 상태에서도 MINOR +1, PATCH = 0으로 리셋",
+  "target": "version-calc",
+  "input": { "currentVersion": "1.31.4", "commitType": "feat" },
+  "expected": { "newVersion": "1.32.0" }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "fix-patch-bump",
+  "description": "fix commit type은 PATCH +1",
+  "target": "version-calc",
+  "input": { "currentVersion": "1.32.0", "commitType": "fix" },
+  "expected": { "newVersion": "1.32.1" }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "blocked-branch",
+  "description": "차단 브랜치 목록에 있는 브랜치에서는 워크플로우 즉시 종료",
+  "target": "branch-validation",
+  "input": {
+    "branch": "12'_2025_NEW_EQPs",
+    "blockedBranches": ["12'_2025_NEW_EQPs"]
+  },
+  "expected": { "shouldBlock": true }
+}

@@ -79,11 +79,15 @@ Fork 사용 시:
 node -e "
   const cp = require(process.env.USERPROFILE + '/.claude/hooks/checkpoint.js');
   const log = require(process.env.USERPROFILE + '/.claude/hooks/log-workflow.js');
+  const durationMs = log.getElapsedMs('git-workflow');
   log.logWorkflow({
     workflow: 'git-workflow', phase: 4, event: 'workflow_complete',
+    result: 'success',
+    durationMs: durationMs,
     project: '{PROJECT_NAME}', oldVersion: '{이전버전}', newVersion: '{새버전}',
     tag: 'v{새버전}', itsm: '{ITSM_NUMBER}', commitType: '{COMMIT_TYPE}'
   });
+  log.clearTimer('git-workflow');
   cp.clearCheckpoint('git-workflow');
 "
 ```

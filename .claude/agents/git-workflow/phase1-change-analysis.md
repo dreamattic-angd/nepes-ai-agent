@@ -247,8 +247,10 @@ node -e "
     branchStrategy: '{새 브랜치 생성 / 현재 브랜치 유지}',
     summary: '{변경 요약}'
   });
+  log.startTimer('git-workflow');
   log.logWorkflow({
     workflow: 'git-workflow', phase: 1, event: 'phase1_complete',
+    result: 'success',
     project: '{PROJECT_NAME}', commitType: '{COMMIT_TYPE}', itsm: '{ITSM_NUMBER}'
   });
 "
@@ -285,3 +287,22 @@ node -e "
 - 사용자가 변경사항 확인에서 N 선택 (failureType: `validation_fail`, subType: `user_rejected`)
 
 `{...}` 부분은 실제 값으로 치환한다.
+
+### 워크플로우 로그에 실패/중단 기록
+
+Phase 1에서 워크플로우가 종료되는 경우, failure-logger 외에 워크플로우 로그에도 결과를 기록한다:
+
+```bash
+node -e "
+  const log = require(process.env.USERPROFILE + '/.claude/hooks/log-workflow.js');
+  log.logWorkflow({
+    workflow: 'git-workflow', phase: 1, event: 'phase1_failed',
+    result: '{failure 또는 aborted}',
+    error: '{종료 사유 요약}',
+    project: '{PROJECT_NAME}'
+  });
+"
+```
+
+- 차단 브랜치, 검증 실패 등으로 **워크플로우 자체가 종료**되는 경우: `result: 'failure'`
+- 사용자가 N 선택으로 **자발적 중단**한 경우: `result: 'aborted'`

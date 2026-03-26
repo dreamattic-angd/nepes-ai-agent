@@ -115,6 +115,7 @@ node -e "
   });
   log.logWorkflow({
     workflow: 'git-workflow', phase: 2, event: 'phase2_complete',
+    result: 'success',
     project: '{PROJECT_NAME}', branch: '{브랜치명}', commitHash: '{커밋 해시 앞 7자리}'
   });
 "

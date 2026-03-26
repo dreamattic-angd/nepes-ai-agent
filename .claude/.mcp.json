@@ -2,31 +2,11 @@
   "mcpServers": {
     "sequential-thinking": {
       "command": "cmd",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "context7": {
       "command": "cmd",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "@upstash/context7-mcp@latest"
-      ]
-    },
-    "obsidian": {
-      "command": "cmd",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "@bitbonsai/mcpvault@latest",
-        "D:\\lgw\\00_Doc\\09_obsidian"
-      ]
+      "args": ["/c", "npx", "-y", "@upstash/context7-mcp@latest"]
     }
   }
 }

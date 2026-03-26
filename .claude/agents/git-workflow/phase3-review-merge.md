@@ -431,6 +431,7 @@ node -e "
   });
   log.logWorkflow({
     workflow: 'git-workflow', phase: 3, event: 'phase3_complete',
+    result: 'success',
     project: '{PROJECT_NAME}', oldVersion: '{이전버전}', newVersion: '{새버전}', tag: 'v{새버전}'
   });
 "
