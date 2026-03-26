@@ -1,0 +1,1411 @@
+{
+  "equipments": {
+    "BAK06": {
+      "ip": "192.168.101.188",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "HESTIA",
+      "active": true
+    },
+    "BAK07": {
+      "ip": "192.168.101.40",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "HESTIA",
+      "active": true
+    },
+    "BAK08": {
+      "ip": "192.168.101.39",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "HESTIA",
+      "active": true
+    },
+    "BAK09": {
+      "ip": "192.168.101.50",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "HESTIA",
+      "active": true
+    },
+    "BAK10": {
+      "ip": "192.168.101.44",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "HESTIA",
+      "active": true
+    },
+    "BAK11": {
+      "ip": "192.168.101.133",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "HESTIA",
+      "active": true
+    },
+    "BAK12": {
+      "ip": "192.168.101.91",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "HESTIA",
+      "active": true
+    },
+    "BAK03": {
+      "ip": "192.168.101.190",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "PF_D82",
+      "active": true
+    },
+    "BAK04": {
+      "ip": "192.168.101.26",
+      "source": "nc8",
+      "area": "Bake",
+      "model": "PF_D83",
+      "active": true
+    },
+    "COA05": {
+      "ip": "192.168.101.147",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA07": {
+      "ip": "192.168.102.11",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA08": {
+      "ip": "192.168.101.208",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA11": {
+      "ip": "192.168.102.30",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA13": {
+      "ip": "192.168.101.12",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA13-1": {
+      "ip": "192.168.101.45",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA16": {
+      "ip": "192.168.101.197",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA16-1": {
+      "ip": "192.168.101.43",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA17": {
+      "ip": "192.168.101.198",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA18": {
+      "ip": "192.168.101.203",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA21": {
+      "ip": "192.168.101.235",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "COA22": {
+      "ip": "192.168.101.209",
+      "source": "nc8",
+      "area": "Coating",
+      "model": "MARK8",
+      "active": true
+    },
+    "DES12": {
+      "ip": "192.168.101.199",
+      "source": "nc8",
+      "area": "Descum",
+      "model": "DSC200",
+      "active": true
+    },
+    "DES09": {
+      "ip": "192.168.101.211",
+      "source": "nc8",
+      "area": "Descum",
+      "model": "ECOLITE2000",
+      "active": true
+    },
+    "DES10": {
+      "ip": "192.168.102.34",
+      "source": "nc8",
+      "area": "Descum",
+      "model": "ECOLITE2000",
+      "active": true
+    },
+    "DES11": {
+      "ip": "192.168.101.153",
+      "source": "nc8",
+      "area": "Descum",
+      "model": "ECOLITE2000",
+      "active": true
+    },
+    "DES14": {
+      "ip": "192.168.101.72",
+      "source": "nc8",
+      "area": "Descum",
+      "model": "ECOLITE2000",
+      "active": true
+    },
+    "DES15": {
+      "ip": "192.168.102.63",
+      "source": "nc8",
+      "area": "Descum",
+      "model": "ECOLITE2000",
+      "active": true
+    },
+    "DES13": {
+      "ip": "192.168.101.130",
+      "source": "nc8",
+      "area": "Descum",
+      "model": "VSP888SH2",
+      "active": true
+    },
+    "DEV04": {
+      "ip": "192.168.102.49",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV07": {
+      "ip": "192.168.101.173",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV08": {
+      "ip": "192.168.101.92",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV09": {
+      "ip": "192.168.102.43",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV10": {
+      "ip": "192.168.101.x",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": false
+    },
+    "DEV12": {
+      "ip": "192.168.101.59",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV12-1": {
+      "ip": "192.168.101.53",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV14": {
+      "ip": "192.168.101.75",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV15": {
+      "ip": "192.168.101.185",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV15-1": {
+      "ip": "192.168.101.114",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV17": {
+      "ip": "192.168.101.227",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV18": {
+      "ip": "192.168.101.144",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV19": {
+      "ip": "192.168.101.181",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV19-1": {
+      "ip": "192.168.101.60",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV20": {
+      "ip": "192.168.101.58",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV21": {
+      "ip": "192.168.101.236",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV22": {
+      "ip": "192.168.101.210",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "DEV23": {
+      "ip": "192.168.102.11",
+      "source": "nc8",
+      "area": "Develop",
+      "model": "MARK8",
+      "active": true
+    },
+    "3DI01": {
+      "ip": "192.168.101.123",
+      "source": "nc8",
+      "area": "Inspection",
+      "model": "NSIS-7000EX",
+      "active": true
+    },
+    "3DI02": {
+      "ip": "192.168.101.145",
+      "source": "nc8",
+      "area": "Inspection",
+      "model": "NSIS-7000EX",
+      "active": true
+    },
+    "3DI03": {
+      "ip": "192.168.101.146",
+      "source": "nc8",
+      "area": "Inspection",
+      "model": "NSIS-7000EX",
+      "active": true
+    },
+    "ETH25": {
+      "ip": "192.168.101.179",
+      "source": "nc8",
+      "area": "Metal Etch",
+      "model": "HW190502",
+      "active": true
+    },
+    "ETH26": {
+      "ip": "192.168.101.168",
+      "source": "nc8",
+      "area": "Metal Etch",
+      "model": "TRAUM220LSAW",
+      "active": true
+    },
+    "ETH07": {
+      "ip": "192.168.101.178",
+      "source": "nc8",
+      "area": "PR Strip",
+      "model": "HW190501",
+      "active": true
+    },
+    "ETH06": {
+      "ip": "192.168.101.215",
+      "source": "nc8",
+      "area": "PR Strip",
+      "model": "TRAUM210SPR",
+      "active": true
+    },
+    "ETH08": {
+      "ip": "192.168.101.150",
+      "source": "nc8",
+      "area": "PR Strip",
+      "model": "TRAUM220LSAW",
+      "active": true
+    },
+    "ETH03": {
+      "ip": "192.168.102.7",
+      "source": "nc8",
+      "area": "PR Strip",
+      "model": "auto",
+      "active": true
+    },
+    "ETH05": {
+      "ip": "192.168.101.187",
+      "source": "nc8",
+      "area": "PR Strip",
+      "model": "auto",
+      "active": true
+    },
+    "EXP17": {
+      "ip": "192.168.102.9",
+      "source": "nc8",
+      "area": "Photo",
+      "model": "PPS-8300",
+      "active": true
+    },
+    "PLA33": {
+      "ip": "192.168.102.100",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "ABPE-0808KC",
+      "active": true
+    },
+    "PLA40": {
+      "ip": "192.168.102.90",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "ABPE-0808KC",
+      "active": true
+    },
+    "PLA41": {
+      "ip": "192.168.102.15",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "ABPE-0808KC",
+      "active": true
+    },
+    "PLA42": {
+      "ip": "192.168.102.89",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "ABPE-0808KC",
+      "active": true
+    },
+    "PLA43": {
+      "ip": "192.168.101.90",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "ABPE-0808KC",
+      "active": true
+    },
+    "PLA34": {
+      "ip": "192.168.101.118",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "ABPE-0808KG",
+      "active": true
+    },
+    "PLA28A": {
+      "ip": "192.168.101.170",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP-1238K-NPS",
+      "active": true
+    },
+    "PLA28B": {
+      "ip": "192.168.101.94",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP-1238K-NPS",
+      "active": true
+    },
+    "PLA29A": {
+      "ip": "192.168.101.171",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP-1448K",
+      "active": true
+    },
+    "PLA29B": {
+      "ip": "192.168.101.167",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP-1448K",
+      "active": true
+    },
+    "PLA32": {
+      "ip": "192.168.101.8",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP5M8KNPS",
+      "active": true
+    },
+    "PLA21": {
+      "ip": "192.168.102.12",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP_0638_Cc",
+      "active": true
+    },
+    "PLA22": {
+      "ip": "192.168.101.79",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP_0648_Cc",
+      "active": true
+    },
+    "PLA23": {
+      "ip": "192.168.101.76",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP_12M8K_Ne",
+      "active": true
+    },
+    "PLA27A": {
+      "ip": "192.168.101.23",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP_1438_Nps",
+      "active": true
+    },
+    "PLA27B": {
+      "ip": "192.168.101.24",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP_1438_Nps",
+      "active": true
+    },
+    "PLA25": {
+      "ip": "192.168.101.13",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "MP_14M8K_Nps",
+      "active": true
+    },
+    "PLA35": {
+      "ip": "192.168.101.182",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "PLA36": {
+      "ip": "192.168.101.25",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "PLA38": {
+      "ip": "192.168.102.66",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "PLA39": {
+      "ip": "192.168.101.38",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "PLA37": {
+      "ip": "192.168.102.65",
+      "source": "nc8",
+      "area": "Plating",
+      "model": "TRAUM220LS",
+      "active": true
+    },
+    "REF05": {
+      "ip": "192.168.101.91",
+      "source": "nc8",
+      "area": "Reflow",
+      "model": "Geneva",
+      "active": true
+    },
+    "SCR07": {
+      "ip": "192.168.101.212",
+      "source": "nc8",
+      "area": "Scrubber",
+      "model": "MARK8",
+      "active": true
+    },
+    "SCR08": {
+      "ip": "192.168.102.10",
+      "source": "nc8",
+      "area": "Scrubber",
+      "model": "MARK8",
+      "active": true
+    },
+    "SOR03": {
+      "ip": "192.168.102.5",
+      "source": "nc8",
+      "area": "Sorter",
+      "model": "CUWSA-120",
+      "active": true
+    },
+    "SPU11": {
+      "ip": "192.168.101.146",
+      "source": "nc8",
+      "area": "Sputter",
+      "model": "EnduraP5500",
+      "active": true
+    },
+    "SPU13": {
+      "ip": "192.168.101.207",
+      "source": "nc8",
+      "area": "Sputter",
+      "model": "EnduraP5500",
+      "active": true
+    },
+    "SPU14": {
+      "ip": "192.168.101.166",
+      "source": "nc8",
+      "area": "Sputter",
+      "model": "EnduraP5500",
+      "active": true
+    },
+    "SPU15": {
+      "ip": "192.168.101.155",
+      "source": "nc8",
+      "area": "Sputter",
+      "model": "INOVA NEXT",
+      "active": true
+    },
+    "SPU04": {
+      "ip": "192.168.999.999",
+      "source": "nc8",
+      "area": "Sputter",
+      "model": "Nimbus304",
+      "active": true
+    },
+    "SPU16": {
+      "ip": "192.168.101.127",
+      "source": "nc8",
+      "area": "Sputter",
+      "model": "XT-200",
+      "active": true
+    },
+    "SPU17": {
+      "ip": "192.168.102.62",
+      "source": "nc8",
+      "area": "Sputter",
+      "model": "XT-200",
+      "active": true
+    },
+    "SPU18": {
+      "ip": "192.168.102.136",
+      "source": "nc8",
+      "area": "Sputter",
+      "model": "XT-200",
+      "active": true
+    },
+    "AUC-01": {
+      "ip": "192.168.202.99",
+      "source": "nc12",
+      "area": "AU CLEAN",
+      "model": "TRAUM310SC",
+      "active": true
+    },
+    "AOV-01": {
+      "ip": "192.168.34.135",
+      "source": "nc12",
+      "area": "Bake",
+      "model": "ANNEALOVEN",
+      "active": true
+    },
+    "AOV-02": {
+      "ip": "192.168.202.127",
+      "source": "nc12",
+      "area": "Bake",
+      "model": "ANNEALOVEN",
+      "active": true
+    },
+    "DES-03": {
+      "ip": "192.168.202.181",
+      "source": "nc12",
+      "area": "Descum",
+      "model": "ECOLITE2",
+      "active": true
+    },
+    "DES-04": {
+      "ip": "192.168.201.79",
+      "source": "nc12",
+      "area": "Descum",
+      "model": "ECOLITE2",
+      "active": true
+    },
+    "DES-01": {
+      "ip": "192.168.212.18",
+      "source": "nc12",
+      "area": "Descum",
+      "model": "ICE300",
+      "active": true
+    },
+    "ADM-01": {
+      "ip": "192.168.202.73",
+      "source": "nc12",
+      "area": "Inspection",
+      "model": "Measurement F550",
+      "active": true
+    },
+    "MET-09": {
+      "ip": "192.168.202.139",
+      "source": "nc12",
+      "area": "Metal Etch",
+      "model": "ART_3008",
+      "active": true
+    },
+    "MET-03": {
+      "ip": "192.168.202.229",
+      "source": "nc12",
+      "area": "Metal Etch",
+      "model": "Astro3080",
+      "active": true
+    },
+    "MET-04": {
+      "ip": "192.168.34.81",
+      "source": "nc12",
+      "area": "Metal Etch",
+      "model": "Astro3080",
+      "active": false
+    },
+    "MET-05": {
+      "ip": "192.168.202.200",
+      "source": "nc12",
+      "area": "Metal Etch",
+      "model": "Astro3083",
+      "active": true
+    },
+    "MET-07": {
+      "ip": "192.168.202.164",
+      "source": "nc12",
+      "area": "Metal Etch",
+      "model": "Astro3083",
+      "active": true
+    },
+    "MET-10": {
+      "ip": "192.168.201.76",
+      "source": "nc12",
+      "area": "Metal Etch",
+      "model": "Astro3083",
+      "active": true
+    },
+    "MET-11": {
+      "ip": "192.168.201.77",
+      "source": "nc12",
+      "area": "Metal Etch",
+      "model": "TRAUM_310LS",
+      "active": true
+    },
+    "PRS-02": {
+      "ip": "192.168.202.115",
+      "source": "nc12",
+      "area": "PR Strip",
+      "model": "Bath Type",
+      "active": true
+    },
+    "PRS-03": {
+      "ip": "192.168.202.132",
+      "source": "nc12",
+      "area": "PR Strip",
+      "model": "TRAUM310LS",
+      "active": true
+    },
+    "PRS-04": {
+      "ip": "192.168.201.210",
+      "source": "nc12",
+      "area": "PR Strip",
+      "model": "TRAUM310LS",
+      "active": true
+    },
+    "COA-01": {
+      "ip": "192.168.202.239",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "COA-02": {
+      "ip": "192.168.202.47",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "COA-03": {
+      "ip": "192.168.202.245",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "DEV-01": {
+      "ip": "192.168.202.244",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "DEV-02": {
+      "ip": "192.168.202.239",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "DEV-03": {
+      "ip": "192.168.202.47",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "DEV-04": {
+      "ip": "192.168.202.245",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "EXP-02": {
+      "ip": "192.168.202.177",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "MA_300",
+      "active": true
+    },
+    "EXP-04": {
+      "ip": "192.168.202.51",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "PPS-8300",
+      "active": true
+    },
+    "EXP-05": {
+      "ip": "192.168.201.74",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "PPS-8300",
+      "active": true
+    },
+    "EXP-06": {
+      "ip": "192.168.201.123",
+      "source": "nc12",
+      "area": "Photo",
+      "model": "PPS-8300",
+      "active": true
+    },
+    "PLA-05": {
+      "ip": "192.168.201.34",
+      "source": "nc12",
+      "area": "Plating",
+      "model": "Nokota",
+      "active": true
+    },
+    "PLA-01": {
+      "ip": "192.168.202.236",
+      "source": "nc12",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "PLA-02": {
+      "ip": "192.168.202.138",
+      "source": "nc12",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "PLA-03": {
+      "ip": "192.168.202.183",
+      "source": "nc12",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "PLA-04": {
+      "ip": "192.168.202.80",
+      "source": "nc12",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "REF-04": {
+      "ip": "192.168.201.78",
+      "source": "nc12",
+      "area": "Reflow",
+      "model": "GENEVA STP 300XP",
+      "active": true
+    },
+    "REF-02": {
+      "ip": "192.168.202.182",
+      "source": "nc12",
+      "area": "Reflow",
+      "model": "Geneva",
+      "active": true
+    },
+    "SCR-02": {
+      "ip": "192.168.202.16",
+      "source": "nc12",
+      "area": "Scrubber",
+      "model": "Astro3041",
+      "active": true
+    },
+    "SCR-03": {
+      "ip": "192.168.202.96",
+      "source": "nc12",
+      "area": "Scrubber",
+      "model": "Astro3041",
+      "active": true
+    },
+    "SCR-04": {
+      "ip": "192.168.201.163",
+      "source": "nc12",
+      "area": "Scrubber",
+      "model": "Astro3041",
+      "active": true
+    },
+    "SCR-01": {
+      "ip": "192.168.12.92",
+      "source": "nc12",
+      "area": "Scrubber",
+      "model": "SS_3000",
+      "active": true
+    },
+    "SOT-03": {
+      "ip": "192.168.202.79",
+      "source": "nc12",
+      "area": "Sorter",
+      "model": "CUWSA-120",
+      "active": true
+    },
+    "SOT-04": {
+      "ip": "192.168.201.64",
+      "source": "nc12",
+      "area": "Sorter",
+      "model": "CUWSA-120",
+      "active": true
+    },
+    "SOT-02": {
+      "ip": "192.168.202.157",
+      "source": "nc12",
+      "area": "Sorter",
+      "model": "KTSSP-300",
+      "active": true
+    },
+    "SPU-01": {
+      "ip": "192.168.202.242",
+      "source": "nc12",
+      "area": "Sputter",
+      "model": "ENDURA",
+      "active": true
+    },
+    "SPU-01F": {
+      "ip": "172.30.61.41",
+      "source": "nc12",
+      "area": "Sputter",
+      "model": "ENDURA",
+      "active": true
+    },
+    "SPU-04": {
+      "ip": "192.168.202.50",
+      "source": "nc12",
+      "area": "Sputter",
+      "model": "INOVA NEXT",
+      "active": true
+    },
+    "SPU-05": {
+      "ip": "192.168.201.120",
+      "source": "nc12",
+      "area": "Sputter",
+      "model": "INOVA NEXT",
+      "active": true
+    },
+    "ALT10": {
+      "ip": "192.168.211.215",
+      "source": "pkg",
+      "area": "ALT",
+      "model": "CUWLA-121",
+      "active": true
+    },
+    "ALT09": {
+      "ip": "192.168.211.55",
+      "source": "pkg",
+      "area": "ALT",
+      "model": "RAD-3520F12",
+      "active": true
+    },
+    "BGP04": {
+      "ip": "192.168.211.121",
+      "source": "pkg",
+      "area": "BackGrinding",
+      "model": "DGP8761",
+      "active": true
+    },
+    "BGP05": {
+      "ip": "192.168.111.176",
+      "source": "pkg",
+      "area": "BackGrinding",
+      "model": "DGP8761",
+      "active": true
+    },
+    "BGP09": {
+      "ip": "192.168.112.131",
+      "source": "pkg",
+      "area": "BackGrinding",
+      "model": "DGP8761",
+      "active": true
+    },
+    "BGP10": {
+      "ip": "192.168.211.69",
+      "source": "pkg",
+      "area": "BackGrinding",
+      "model": "DGP8761",
+      "active": true
+    },
+    "BGP11": {
+      "ip": "192.168.211.110",
+      "source": "pkg",
+      "area": "BackGrinding",
+      "model": "DGP8761",
+      "active": true
+    },
+    "BGP12": {
+      "ip": "192.168.211.111",
+      "source": "pkg",
+      "area": "BackGrinding",
+      "model": "DGP8761",
+      "active": true
+    },
+    "BGP13": {
+      "ip": "192.168.211.112",
+      "source": "pkg",
+      "area": "BackGrinding",
+      "model": "DGP8761",
+      "active": true
+    },
+    "BGP14": {
+      "ip": "192.168.111.171",
+      "source": "pkg",
+      "area": "BackGrinding",
+      "model": "DGP8761",
+      "active": true
+    },
+    "OCR03": {
+      "ip": "192.168.201.38",
+      "source": "pkg",
+      "area": "OCR",
+      "model": "CUBPA-120",
+      "active": true
+    },
+    "R-SAW-07": {
+      "ip": "192.168.112.70",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "R-SAW-08": {
+      "ip": "192.168.112.71",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW34": {
+      "ip": "192.168.111.115",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW35": {
+      "ip": "192.168.111.122",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW36": {
+      "ip": "192.168.112.167",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW42": {
+      "ip": "192.168.112.161",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW43": {
+      "ip": "192.168.112.169",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW44": {
+      "ip": "192.168.111.134",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW45": {
+      "ip": "192.168.111.239",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW46": {
+      "ip": "192.168.112.170",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW47": {
+      "ip": "192.168.112.171",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW48": {
+      "ip": "192.168.112.149",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW49": {
+      "ip": "192.168.112.150",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW50": {
+      "ip": "192.168.112.151",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW51": {
+      "ip": "192.168.112.156",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW52": {
+      "ip": "192.168.112.157",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW53": {
+      "ip": "192.168.112.152",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW54": {
+      "ip": "192.168.112.159",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW55": {
+      "ip": "192.168.112.172",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW56": {
+      "ip": "192.168.112.173",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW57": {
+      "ip": "192.168.112.189",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW58": {
+      "ip": "192.168.112.190",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW59": {
+      "ip": "192.168.112.191",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW60": {
+      "ip": "192.168.112.192",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW61": {
+      "ip": "192.168.112.193",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW62": {
+      "ip": "192.168.112.194",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW63": {
+      "ip": "192.168.112.195",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW64": {
+      "ip": "192.168.112.62",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW65": {
+      "ip": "192.168.112.196",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW66": {
+      "ip": "192.168.112.197",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW67": {
+      "ip": "192.168.112.198",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW68": {
+      "ip": "192.168.112.199",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW69": {
+      "ip": "192.168.211.130",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW70": {
+      "ip": "192.168.112.200",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "SAW71": {
+      "ip": "192.168.111.135",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFD6362",
+      "active": true
+    },
+    "L-SAW01": {
+      "ip": "192.168.112.89",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFL7161",
+      "active": true
+    },
+    "L-SAW03": {
+      "ip": "192.168.112.91",
+      "source": "pkg",
+      "area": "Sawing",
+      "model": "DFL7161",
+      "active": true
+    },
+    "UVC05": {
+      "ip": "192.168.111.238",
+      "source": "pkg",
+      "area": "UV",
+      "model": "CUUVA-120",
+      "active": true
+    },
+    "UVC06": {
+      "ip": "192.168.34.135",
+      "source": "pkg",
+      "area": "UV",
+      "model": "CUUVA-120",
+      "active": true
+    },
+    "RBAK-06": {
+      "ip": "192.168.202.143",
+      "source": "rcp",
+      "area": "Bake",
+      "model": "HESTIA300",
+      "active": true
+    },
+    "RDES-02": {
+      "ip": "192.168.202.18",
+      "source": "rcp",
+      "area": "Descum",
+      "model": "ECOLITE2",
+      "active": true
+    },
+    "RDES-01": {
+      "ip": "192.168.202.77",
+      "source": "rcp",
+      "area": "Descum",
+      "model": "FlexTRAK",
+      "active": true
+    },
+    "RMET-02": {
+      "ip": "192.168.202.37",
+      "source": "rcp",
+      "area": "Metal Etch",
+      "model": "Astro3083ASM",
+      "active": true
+    },
+    "RMET-01": {
+      "ip": "192.168.202.34",
+      "source": "rcp",
+      "area": "Metal Etch",
+      "model": "Astro3090",
+      "active": true
+    },
+    "RPRS-01": {
+      "ip": "192.168.202.230",
+      "source": "rcp",
+      "area": "PR Strip",
+      "model": "Astro3041ASP",
+      "active": true
+    },
+    "RCOA-01": {
+      "ip": "192.168.202.195",
+      "source": "rcp",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "RDEV-01": {
+      "ip": "192.168.202.195",
+      "source": "rcp",
+      "area": "Photo",
+      "model": "ACT_12",
+      "active": true
+    },
+    "RACS-01": {
+      "ip": "192.168.202.84",
+      "source": "rcp",
+      "area": "Photo",
+      "model": "ASC300Plus",
+      "active": true
+    },
+    "REXP-03": {
+      "ip": "192.168.202.150",
+      "source": "rcp",
+      "area": "Photo",
+      "model": "JetStep2300",
+      "active": true
+    },
+    "RPLA-01": {
+      "ip": "192.168.202.173",
+      "source": "rcp",
+      "area": "Plating",
+      "model": "STRATUS300",
+      "active": true
+    },
+    "RSCR-01": {
+      "ip": "192.168.202.128",
+      "source": "rcp",
+      "area": "Scrubber",
+      "model": "ACT_12",
+      "active": true
+    },
+    "RSCR-02": {
+      "ip": "192.168.202.186",
+      "source": "rcp",
+      "area": "Scrubber",
+      "model": "ACT_12",
+      "active": true
+    },
+    "RSPU-01": {
+      "ip": "192.168.202.45",
+      "source": "rcp",
+      "area": "Sputter",
+      "model": "Nimbus",
+      "active": true
+    }
+  }
+}

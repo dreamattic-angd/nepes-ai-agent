@@ -1,0 +1,11 @@
+# 에이전트 구현 파일 (커맨드 실행 시에만 로드)
+.claude/agents/
+.claude/README.txt
+.claude/version.txt
+
+# SECS/GEM 원본 문서 및 산출물
+.claude/agents/secsgem-analysis/secsgem-specs/
+.claude/agents/secsgem-analysis/analysis-reports/
+
+# 기타
+nul

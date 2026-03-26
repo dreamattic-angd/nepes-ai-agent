@@ -1,0 +1,42 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "node \"%USERPROFILE%/.claude/scripts/status-line.js\""
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"%USERPROFILE%/.claude/hooks/check-db-write.js\""
+          },
+          {
+            "type": "command",
+            "command": "node \"%USERPROFILE%/.claude/hooks/check-dangerous-cmd.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"%USERPROFILE%/.claude/hooks/check-sensitive-write.js\""
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"%USERPROFILE%/.claude/hooks/post-compact-notice.js\""
+          }
+        ]
+      }
+    ]
+  }
+}

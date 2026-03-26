@@ -1,0 +1,146 @@
+# nepes-ai-agents 버전 관리
+
+## 버전 체계
+
+**3-Level 버전**: `MAJOR.MINOR.PATCH`
+
+### 버전 계산 규칙
+
+| commit type | 버전 변경 | 예시 |
+|-------------|----------|------|
+| feat | MINOR +1, PATCH = 0 | 1.3.2 → 1.4.0 |
+| fix | PATCH +1 | 1.3.2 → 1.3.3 |
+| improve | PATCH +1 | 1.3.2 → 1.3.3 |
+| docs | PATCH +1 | 1.3.2 → 1.3.3 |
+| refactor | PATCH +1 | 1.3.2 → 1.3.3 |
+| chore | PATCH +1 | 1.3.2 → 1.3.3 |
+
+**⚠️ MAJOR는 자동 증가하지 않는다. 사용자가 직접 지정해야 한다.**
+
+MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
+
+---
+
+## 현재 버전: 1.28.0
+
+## 에이전트 현황
+
+| 에이전트 | 상태 | 추가된 버전 | 설명 |
+|----------|------|------------|------|
+| secsgem-analysis | ✅ 운영 | v1.0 | SECS/GEM Spec PDF/Word/Excel 자동 분석 |
+| naa/git-workflow | ❌ 삭제 | v2.0~v1.26.0 | v1.26.0에서 통합 워크플로우로 대체 |
+| code-review | ✅ 운영 | v4.0 | 코드 품질 및 잠재 버그 분석 (4관점 리뷰) |
+| git-workflow (통합) | ✅ 운영 | v26.0 | 프로젝트 공용 Git 워크플로우 (Git Flow, develop 브랜치, 자동 감지, NAA 포함) |
+| app-rmspage/git-workflow | ❌ 삭제 | v4.0~v25.0 | v26.0에서 통합 워크플로우로 대체 |
+| issue-analysis | ✅ 운영 | v5.0 | 로그/코드 기반 장애 근본 원인 분석 |
+| pr-review | ✅ 운영 | v11.0 | PR 코드 리뷰 자동화 (4관점 리뷰 + gh CLI) |
+| ytap/git-workflow | ❌ 삭제 | v12.0~v25.0 | v26.0에서 통합 워크플로우로 대체 |
+| rmsserver/git-workflow | ❌ 삭제 | v13.0~v25.0 | v26.0에서 통합 워크플로우로 대체 |
+| ytap-mgr/git-workflow | ❌ 삭제 | v16.0~v25.0 | v26.0에서 통합 워크플로우로 대체 |
+| naa/cm-audit | ✅ 운영 | v19.0 | NAA 형상 감사 자동 점검 (CM-SP3.2) |
+| naa/weekly-report | ✅ 운영 | v20.0 | NAA 주간 보고 자동 생성 (PMC-SP1.6) |
+| naa/ppqa-audit | ✅ 운영 | v21.0 | NAA PPQA 셀프 감사 자동 점검 (PPQA-SP1) |
+| ytap/cm-audit | ✅ 운영 | v22.0 | YTAP 형상 감사 자동 점검 |
+| ytap/ppqa-audit | ✅ 운영 | v22.0 | YTAP PPQA 셀프 감사 자동 점검 |
+| ytap/weekly-report | ✅ 운영 | v22.0 | YTAP 주간 보고 자동 생성 |
+| rmsserver/cm-audit | ✅ 운영 | v22.0 | RMSSERVER 형상 감사 자동 점검 |
+| rmsserver/ppqa-audit | ✅ 운영 | v22.0 | RMSSERVER PPQA 셀프 감사 자동 점검 |
+| rmsserver/weekly-report | ✅ 운영 | v22.0 | RMSSERVER 주간 보고 자동 생성 |
+| app-rmspage/cm-audit | ✅ 운영 | v22.0 | APP_RMSPAGE 형상 감사 자동 점검 |
+| app-rmspage/ppqa-audit | ✅ 운영 | v22.0 | APP_RMSPAGE PPQA 셀프 감사 자동 점검 |
+| app-rmspage/weekly-report | ✅ 운영 | v22.0 | APP_RMSPAGE 주간 보고 자동 생성 |
+| ytap-mgr/cm-audit | ✅ 운영 | v22.0 | YTAP_MANAGER 형상 감사 자동 점검 |
+| ytap-mgr/ppqa-audit | ✅ 운영 | v22.0 | YTAP_MANAGER PPQA 셀프 감사 자동 점검 |
+| ytap-mgr/weekly-report | ✅ 운영 | v22.0 | YTAP_MANAGER 주간 보고 자동 생성 |
+| ai-insight (skill) | ✅ 운영 | v24.0 | AI 활용 인사이트 월간 보고서 자동 생성 |
+| obsidian-note (skill) | ✅ 운영 | v24.0 | Obsidian vault 노트 디자인 가이드 자동 적용 |
+| web-rmspage/git-workflow | ❌ 삭제 | v25.0 | v26.0에서 통합 워크플로우로 대체 |
+
+상태 값:
+- ✅ 운영: 실사용 중
+- 🔄 수정중: 변경 작업 진행 중
+- 🚧 예정: 미구현
+- ⚠️ 실험: 테스트 필요
+
+---
+
+## 변경 이력
+
+1.28.0 feat: Git 워크플로우 develop 브랜치 전략 도입 (#ITSM-3552)
+1.27.0 feat: git-workflow 차단 브랜치 기능 추가 (#ITSM-3520)
+1.26.1 refactor: NAA Git 워크플로우 통합 - 전체 프로젝트 공용 워크플로우로 전환 (#ITSM-3433)
+v26.0 refactor: Git 워크플로우 통합 - 프로젝트 공용 워크플로우로 전환 (#ITSM-3427)
+v25.0 feat: web-rmspage git-workflow 에이전트 추가 (#ITSM-3419)
+v24.4 improve: obsidian-note 스킬 프론트매터 가이드 업데이트 (status 제거, author 추가) (#ITSM-3374)
+v24.3 fix: 프로젝트 전체 검토 오류 수정 및 문서 동기화 (#ITSM-3366)
+v24.2 improve: install.bat 배포 전 백업 기능 추가 (#ITSM-3360)
+v24.1 fix: ai-insight skill 하드코딩 경로 이식성 수정 (#ITSM-3347)
+v24.0 feat: ai-insight, obsidian-note skill 추가 및 install.bat skills 배포 단계 추가 (#ITSM-3342)
+v23.5 fix: 전체 git-workflow Phase 1 ITSM 번호 확인 단계 강제 정지 지시 추가 (#ITSM-3286)
+v23.4 improve: 전체 git-workflow Phase 1 ITSM 번호 확인 간소화 (#ITSM-3284)
+v23.3 improve: git-workflow Phase 1 강제 정지 지시 추가 및 핵심 원칙 업데이트 (#ITSM-3247)
+v23.2 improve: 전체 프로젝트 git-workflow Phase 2/3 사용자 확인 단계 제거 (#ITSM-3243)
+v23.1 improve: analyze-log ↔ issue-analyze 연계 기능 추가 (#ITSM-3241)
+v23.0 refactor: 프로젝트별 개별 커맨드를 통합 커맨드로 리팩토링 (#ITSM-3239)
+v22.0 feat: 4개 프로젝트 SCM 프로세스 커맨드 추가 및 git-workflow ITSM 연결 규칙 적용 (#ITSM-3218)
+v21.1 improve: naa/cm-audit, naa/ppqa-audit 결과 출력 형식을 Loop 마크다운 호환으로 변경 (#ITSM-3212)
+v21.0 feat: naa/ppqa-audit 커맨드 추가 (#ITSM-3211)
+v20.1 improve: naa/git-workflow 커밋/머지 메시지에 ITSM 번호 연결 규칙 추가 (#ITSM-3207)
+v20.0 feat: naa/weekly-report 커맨드 추가 (#ITSM-3200)
+v19.0 feat: naa/cm-audit 커맨드 추가
+v18.5 improve: git-workflow 태그 메시지에 커밋 메시지 포함
+v18.4 docs: README 개요 섹션 추가
+v18.3 improve: settings.json 사용자 기반 보존형 병합 및 CLAUDE.md 백업 파일명 변경
+v18.2 improve: install.bat CLAUDE.md 마커 기반 병합 및 README 추가
+v18.1 improve: Git 워크플로우 자연어 트리거 복원
+v18.0 refactor: build-eqp-info 커맨드 제거 및 analyze-log DB 조회 통합
+v17.0 feat: help-cmd 커맨드 추가
+v16.3 refactor: CLAUDE.md 프로젝트 자동 감지 및 Git 워크플로우 섹션 삭제
+v16.2 improve: 자연어 요청으로 워크플로우 자동 실행 방지
+v16.1 improve: code-review, pr-review, issue-analysis, secsgem-analysis 서브에이전트 병렬 실행 지침 추가
+v16.0 feat: ytap-mgr/git-workflow 에이전트 추가 및 code-review 사용 예시 수정
+v15.1 chore: settings.json 절대경로 전환 및 config.json git 추적
+v15.0 refactor: claude/ 제거, .claude/ 단일 소스 배포 구조로 전환
+v14.1 improve: log-analyzer 환경변수 자동 치환 및 프로젝트 커맨드 추가
+v14.0 feat: 글로벌 배포 시스템 구축 (claude/, install.bat)
+v13.5 improve: git-workflow Phase 3 코드 리뷰 기본 모드를 Full로 변경
+v13.4 improve: git-workflow Phase 3 코드 리뷰에 Deep 모드 자동 전환 추가
+v13.3 chore: context7 MCP 추가 및 코드 생성 규칙 설정
+v13.2 feat: code-review Deep 리뷰 모드 추가
+v13.1 chore: .gitignore에 Windows NUL 아티팩트 제외 규칙 추가
+v13.0 feat: rmsserver/git-workflow 에이전트 및 커맨드 추가
+v12.5 fix: git-workflow 버전 bump-태그 순서 통일 (머지 전 feature 브랜치에서 수행)
+v12.4 fix: Git 워크플로우 자연어 요청 시 커맨드 미실행 문제 수정
+v12.3 refactor: CLAUDE_USER 템플릿 삭제 및 CLAUDE.local.md 체계 전환
+v12.2 fix: 파일 내 README.md → README.txt 참조 일괄 수정
+v12.1 fix: CLAUDE.md main 브랜치 보호 지침 삭제
+v12.0 feat: ytap/git-workflow 에이전트 추가
+v11.0 feat: Claude Code Tips 기반 프로젝트 종합 개선 (pr-review 에이전트, handoff/review-claudemd 커맨드, 보안 Hook, 상태 라인)
+v10.3 fix: Phase 3 버전 업데이트 시 CLAUDE.md 버전 동기화 누락 수정
+v10.2 improve: issue-analysis 자연어 분석 품질 향상을 위한 프롬프트 개선
+v10.1 improve: issue-analysis 최종 리포트 자동 저장 및 logs/reports gitignore 추가
+v10.0 improve: issue-analysis 에이전트에 Phase 0 (Log Pre-scan) 추가
+v9.7 improve: issue-analysis 에이전트 구조 개선
+v9.6 improve: issue-analysis 에이전트에 logs/reports 폴더 추가
+v9.5 improve: main 브랜치 보호 규칙 추가 및 프로젝트 자동 감지 보강
+v9.4 improve: git remote URL 기반 프로젝트 자동 감지 및 워크플로우 격리
+v9.3 improve: 미정의 프로젝트 git 워크플로우 격리 (기본 동작 보장)
+v9.2 improve: 토큰 소모 최적화 (.claudeignore 추가, thinking 토큰 제한)
+v9.1 improve: naa/git-workflow 사용자 버전 지정 시 워크플로우 전체 실행 보장
+v9.0 feat: DB 접속 지원 (sqlplus) 및 write 보호 hook 추가
+v8.0 feat: app-rmspage/git-workflow develop→main 릴리스 Phase 추가
+v7.4 improve: app-rmspage/git-workflow Phase 3에 코드 리뷰 단계 추가
+v7.3 improve: 전체 에이전트 토큰 최적화 (guide 압축, command 중복 제거, .md→.txt 변환)
+v7.2 improve: secsgem-analysis 중간 산출물을 analysis-reports/extract/로 이동
+v7.1 improve: secsgem-analysis 중간 산출물을 extract/ 폴더로 분리
+v7.0 feat: secsgem-analysis 에이전트 Word(.doc/.docx) 분석 지원 추가
+v6.3 chore: secsgem-specs 기밀 파일 git 추적 해제 및 .gitignore 수정
+v6.2 improve: 에이전트 문서 개선 (Phase 구조 명시, 명령어 오류 수정, 버전 기준 구체화)
+v6.1 improve: CLAUDE_USER.md gitignore 추가 및 에이전트 가용성 정리
+v6.0 feat: CLAUDE.md 프로젝트 컨텍스트 시스템 추가
+v5.0 feat: issue-analysis 에이전트 추가
+v4.0 feat: code-review 에이전트 및 app-rmspage git-workflow 마이그레이션
+v3.0 feat: README 구조 개선 및 자동 업데이트 Phase 추가
+v2.1 improve: 버전 형식 v 접두사 적용 및 settings.local.json 제외
+v2.0 feat: naa git-workflow 에이전트 추가
+v1.0 feat: nepes-ai-agents 초기 구성 (secsgem-spec-analysis)

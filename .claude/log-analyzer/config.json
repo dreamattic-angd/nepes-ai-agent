@@ -1,0 +1,23 @@
+{
+  "ftp": {
+    "user": "xx",
+    "password": "xx",
+    "log_path": "/LogDir/"
+  },
+  "server": {
+    "host": "192.168.10.38",
+    "user": "nepes",
+    "password": "P@ssw0rd",
+    "paths": {
+      "rms":       "/data1/log/rms/",
+      "framework": "/data1/log/framework/",
+      "amq":       "/data1/log/amq/",
+      "das":       "/data1/log/das/",
+      "fdc12":     "/data2/log/fdc/",
+      "fdc8":      "/data4/log/fdc/"
+    }
+  },
+  "eqp_info":     "__USERPROFILE__/.claude/log-analyzer/eqp-info.json",
+  "download_dir": "__USERPROFILE__/.claude/logs",
+  "retention_days": 3
+}

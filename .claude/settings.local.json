@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "MultiEdit(*)",
+      "Grep(*)",
+      "Glob(*)",
+      "LS(*)",
+      "Bash(where:*)",
+      "Bash(antiword:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__oracle-db__query",
+      "mcp__oracle-db__describe_table",
+      "mcp__oracle-db__test_connection",
+      "WebSearch"
+    ]
+  }
+}
