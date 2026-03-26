@@ -30,6 +30,39 @@ $ARGUMENTS에서 버전 지정 여부를 확인한다.
 
 **버전이 지정되어도 모든 Phase를 반드시 실행한다.** 버전 지정은 Phase 3의 버전 계산만 오버라이드한다.
 
+## 워크플로우 재개 확인
+
+Phase 실행 전에 이전 체크포인트가 있는지 확인한다:
+
+```bash
+node -e "const cp=require(process.env.USERPROFILE+'/.claude/hooks/checkpoint.js').loadCheckpoint('git-workflow'); console.log(cp ? JSON.stringify(cp) : 'null')"
+```
+
+- **null** → 처음부터 시작 (Phase 1)
+- **체크포인트 존재** → 사용자에게 확인:
+  ```
+  ℹ️ 이전 워크플로우가 {phase}까지 진행된 기록이 있습니다. ({timestamp})
+  프로젝트: {data.project}, ITSM: {data.itsm}
+
+  1. 이어서 진행 (다음 phase부터)
+  2. 처음부터 다시 시작
+
+  선택해주세요 (1/2):
+  ```
+  - **1** → 체크포인트의 data를 이전 phase 출력으로 사용하여 다음 phase부터 재개
+  - **2** → `clearCheckpoint('git-workflow')` 실행 후 Phase 1부터 시작
+
+## 반복 실패 패턴 확인
+
+Phase 실행 전에 최근 반복 실패 패턴을 조회한다:
+
+```bash
+node -e "const fr=require(process.env.USERPROFILE+'/.claude/hooks/failure-registry.js'); const ctx=fr.getContextForWorkflow('git-workflow'); if(ctx) console.log(ctx); else console.log('__NO_PATTERNS__');"
+```
+
+- **`__NO_PATTERNS__`** → 그대로 진행
+- **패턴이 출력되면** → 해당 내용을 참고하여 동일 실패를 예방하며 진행
+
 ## 워크플로우 실행 순서
 
 에이전트 폴더: `.claude/agents/git-workflow/`

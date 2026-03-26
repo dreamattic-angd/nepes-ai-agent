@@ -16,6 +16,40 @@ git status
 변경된 파일이 없습니다. 워크플로우를 종료합니다.
 ```
 
+### 1.5단계: 연동 무결성 자동 검증
+
+변경사항이 있으면 커밋 전에 프로젝트 무결성을 자동 검증한다.
+사용자 확인 없이 자동 실행하며, 결과를 안내 메시지로 출력한다.
+
+```bash
+node .claude/scripts/integrity-check.js
+```
+
+- **exit code 0 (PASS)** → 결과를 한 줄로 요약 출력 후 2단계로 진행:
+  ```
+  ✅ 연동 무결성 검증: PASS (4/4)
+  ```
+- **exit code 1 (FAIL)** → 스크립트 출력을 그대로 보여주고 사용자에게 확인:
+  ```
+  ⚠️ 연동 무결성 검증에서 문제가 발견되었습니다:
+  {스크립트 출력}
+
+  문제를 무시하고 계속 진행할까요? (Y/N)
+  ```
+  - Y → 2단계로 진행 (사용자 판단으로 무시)
+  - N → 워크플로우 종료 (문제 해결 후 재실행)
+- **스크립트 실행 자체 실패** (파일 없음, 런타임 에러 등) → 경고 출력 후 사용자에게 확인:
+  ```
+  ⚠️ 연동 무결성 검증 스크립트를 실행할 수 없습니다:
+  {에러 메시지}
+
+  검증을 건너뛰고 계속 진행할까요? (Y/N)
+  ```
+  - Y → 2단계로 진행 (검증 스킵)
+  - N → 워크플로우 종료 (스크립트 문제 해결 후 재실행)
+
+**사용자가 상세 정보를 요청하면** `--verbose` 옵션으로 재실행하고, 결과를 항목별 테이블로 정리하여 보여준다.
+
 ### 2단계: 현재 브랜치 확인
 
 ```bash
@@ -195,3 +229,59 @@ commit type: feat / fix / improve / ...
 현재 브랜치: {브랜치명}
 브랜치 전략: 새 브랜치 생성 / 현재 브랜치 유지
 ```
+
+## 체크포인트 저장 (자동)
+
+Phase 1 출력이 확정되면, 아래 명령을 Bash로 실행하여 진행 상태를 저장한다.
+실패해도 워크플로우를 중단하지 않는다 (best-effort).
+
+```bash
+node -e "
+  const cp = require(process.env.USERPROFILE + '/.claude/hooks/checkpoint.js');
+  const log = require(process.env.USERPROFILE + '/.claude/hooks/log-workflow.js');
+  cp.saveCheckpoint('git-workflow', 'phase1', {
+    project: '{PROJECT_NAME}',
+    commitType: '{COMMIT_TYPE}',
+    itsm: '{ITSM_NUMBER}',
+    branch: '{현재 브랜치명}',
+    branchStrategy: '{새 브랜치 생성 / 현재 브랜치 유지}',
+    summary: '{변경 요약}'
+  });
+  log.logWorkflow({
+    workflow: 'git-workflow', phase: 1, event: 'phase1_complete',
+    project: '{PROJECT_NAME}', commitType: '{COMMIT_TYPE}', itsm: '{ITSM_NUMBER}'
+  });
+"
+```
+
+`{...}` 부분은 이 phase에서 결정된 실제 값으로 치환한다.
+
+## 실패 처리
+
+### 실패 기록
+
+Phase 1에서 발생하는 모든 실패 (워크플로우 종료 포함)를 아래 명령으로 기록한다:
+
+```bash
+node -e "
+  const fl = require(process.env.USERPROFILE+'/.claude/hooks/failure-logger.js');
+  fl.logFailure({
+    workflow: 'git-workflow', phase: 1,
+    failureType: '{TYPE}', subType: '{SUBTYPE}',
+    severity: '{SEVERITY}',
+    cause: '{에러 메시지 또는 종료 사유}',
+    context: { project: '{PROJECT_NAME}', branch: '{브랜치명}' },
+    recoveryAction: '{수행한 조치}',
+    resolved: {true/false},
+    retryCount: 0
+  });
+"
+```
+
+**기록 대상 실패:**
+- 연동 무결성 검증 실패 (failureType: `script_error`, subType: `integrity_check_fail`)
+- 연동 무결성 검증 스크립트 실행 실패 (failureType: `script_error`, subType: `integrity_check_crash`)
+- 차단 브랜치 감지 (failureType: `validation_fail`, subType: `blocked_branch`)
+- 사용자가 변경사항 확인에서 N 선택 (failureType: `validation_fail`, subType: `user_rejected`)
+
+`{...}` 부분은 실제 값으로 치환한다.

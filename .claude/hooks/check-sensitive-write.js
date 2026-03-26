@@ -39,10 +39,14 @@ process.stdin.on('end', () => {
         console.error(`[SENSITIVE WRITE WARNING] 민감 파일 쓰기가 감지되었습니다: ${desc}`);
         console.error(`[SENSITIVE WRITE WARNING] 파일: ${filePath}`);
         console.error('[SENSITIVE WRITE WARNING] 이 파일은 보호 대상입니다. 쓰기가 차단되었습니다.');
+        try {
+          const fl = require(process.env.USERPROFILE + '/.claude/hooks/failure-logger.js');
+          fl.logFailure({ workflow: 'unknown', phase: 0, failureType: 'hook_block', subType: desc, severity: 'critical', cause: filePath, context: { hook: 'check-sensitive-write' }, recoveryAction: 'user_must_change_approach', resolved: false });
+        } catch (_) {}
         process.exit(2);
       }
     }
   } catch (e) {
-    // 파싱 실패 시 조용히 통과
+    console.error('[check-sensitive-write] 입력 파싱 실패 — 검증을 건너뜁니다:', e.message);
   }
 });

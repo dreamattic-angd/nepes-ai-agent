@@ -21,7 +21,7 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ---
 
-## 현재 버전: 1.28.0
+## 현재 버전: 1.32.0
 
 ## 에이전트 현황
 
@@ -66,6 +66,14 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ## 변경 이력
 
+1.32.0 feat: 실패 처리 체계 구축 — 실패 분류·복구 경로·재발 방지 (#ITSM-3581)
+1.31.4 improve: check-dangerous-cmd.js rm -rf 차단 범위 확장
+1.31.3 improve: integrity-check 상세 정보 요청 시 --verbose 실행 지침 추가
+1.31.2 improve: integrity-check --verbose 상세 출력 보강
+1.31.1 improve: integrity-check --verbose 옵션 추가
+1.31.0 feat: 연동 무결성 자동 검증 스크립트 추가 및 git-workflow 통합 (#ITSM-3574)
+1.30.0 feat: checkpoint/log-workflow 유틸리티 git-workflow 연동 (#ITSM-3572)
+1.29.0 feat: 하네스 엔지니어링 6대 요소 개선 (#ITSM-3563)
 1.28.0 feat: Git 워크플로우 develop 브랜치 전략 도입 (#ITSM-3552)
 1.27.0 feat: git-workflow 차단 브랜치 기능 추가 (#ITSM-3520)
 1.26.1 refactor: NAA Git 워크플로우 통합 - 전체 프로젝트 공용 워크플로우로 전환 (#ITSM-3433)
