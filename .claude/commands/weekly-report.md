@@ -6,19 +6,72 @@
 ## 사용자 입력
 $ARGUMENTS
 
-## 프로젝트 매핑
+## 프로젝트 확인
 
-| 프로젝트명 | 에이전트 경로 |
-|-----------|-------------|
-| app-rmspage | .claude/agents/app-rmspage/weekly-report/report.md |
-| naa | .claude/agents/naa/weekly-report/report.md |
-| rmsserver | .claude/agents/rmsserver/weekly-report/report.md |
-| ytap | .claude/agents/ytap/weekly-report/report.md |
-| ytap-mgr | .claude/agents/ytap-mgr/weekly-report/report.md |
+$ARGUMENTS에서 프로젝트명을 확인한다. 없으면 사용자에게 질문한다.
 
-## 실행 방법
+| 프로젝트명 | 키워드 |
+|-----------|--------|
+| NEPES_AI_AGENTS | naa, nepes-ai-agents |
+| APP_RMSPAGE | app-rmspage, rms앱 |
+| RMSSERVER | rmsserver |
+| YTAP | ytap |
+| YTAP_MANAGER | ytap-mgr, ytap-manager |
 
-1. $ARGUMENTS에서 프로젝트명을 확인한다
-2. 프로젝트명이 없으면 사용자에게 질문한다
-3. 매핑 테이블에서 해당 에이전트 경로를 찾는다
-4. 보고서 생성 에이전트 파일을 읽고 순차적으로 수행한다
+## 수행 절차
+
+### 1단계: 보고 기간 설정
+
+기본 범위: 직전 수요일 ~ 화요일 (7일)
+보고 작성일: 매주 수요일
+
+사용자가 기간을 지정하면 해당 기간을 사용한다.
+
+### 2단계: 커밋 내역 수집
+
+```bash
+# 해당 기간 커밋 목록
+git log --since="{시작일}" --until="{종료일}" --oneline --no-merges
+
+# 해당 기간 머지 커밋 목록
+git log --since="{시작일}" --until="{종료일}" --oneline --merges
+```
+
+### 3단계: 태그(버전) 수집
+
+```bash
+# 해당 기간에 생성된 태그
+git for-each-ref refs/tags --sort=-creatordate --format='%(refname:short) | %(creatordate:short) | %(contents:subject)' | head -20
+```
+
+위 결과에서 보고 기간에 해당하는 태그만 필터링한다.
+
+### 4단계: 보고서 생성
+
+아래 형식으로 출력한다. Loop에 붙여넣기 가능하도록 코드블록 안에 넣는다.
+
+```
+주간 보고 ({프로젝트명})
+기간: {시작일} ~ {종료일}
+
+완료:
+  - {버전} {태그 메시지} (#ITSM-{번호})
+
+진행 중:
+  - {미머지 브랜치 또는 열린 작업 내역}
+
+다음 주 예정:
+  - {사용자에게 확인}
+```
+
+작성 규칙:
+- 완료: 해당 기간에 머지 + 태그가 생성된 항목
+- 진행 중: feature 브랜치가 남아있거나 머지 전인 작업
+- 다음 주 예정: 사용자에게 직접 확인하여 기록
+- ITSM 티켓 번호는 커밋 메시지에서 추출. 없으면 생략.
+- 해당 기간에 변경이 없으면 "변경 없음"으로 표기
+
+### 5단계: 사용자 확인
+
+생성된 보고서를 사용자에게 보여주고 수정 사항을 확인한다.
+"다음 주 예정" 항목은 사용자에게 직접 물어본다.

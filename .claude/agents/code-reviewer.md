@@ -131,10 +131,10 @@ tools: Read, Grep, Glob, Bash, Write, Agent
 
 ## 출력 형식
 
-결과를 설계 문서와 같은 경로에 **review.md**로 저장:
+**모든 출력은 한국어로 작성한다.** 결과를 설계 문서와 같은 경로에 **review.md**로 저장:
 
 ```markdown
-# Code Review Report
+# 코드 리뷰 리포트
 
 **리뷰 일시:** YYYY-MM-DD HH:mm
 **설계 문서:** {참조한 설계 문서 경로}
@@ -143,7 +143,7 @@ tools: Read, Grep, Glob, Bash, Write, Agent
 
 ---
 
-## Summary
+## 요약
 | 등급 | 건수 |
 |------|------|
 | 🔴 Critical | N |
@@ -162,22 +162,22 @@ tools: Read, Grep, Glob, Bash, Write, Agent
 
 ---
 
-## 🔴 Critical Issues
+## 🔴 Critical 이슈
 
 ### [파일명:라인번호] 제목
-- **관점:** Quality/Logic/Security/Performance
+- **관점:** 품질/로직/보안/성능
 - **문제:** 설명
 - **수정 제안:**
 ```코드 예시```
 
 ---
 
-## 🟡 Warnings
+## 🟡 Warning
 (동일 형식)
 
 ---
 
-## 🟢 Suggestions
+## 🟢 Suggestion
 (동일 형식)
 
 ---

@@ -88,6 +88,8 @@ Review the implementation against the design document. Focus on: design alignmen
 
 → CHECKPOINT-2 출력 → **사용자 응답 대기**
 
+**Critical 자동 재수행:** Critical이 1건이라도 있으면 사용자 입력 없이 developer → code-reviewer를 자동 재실행한다. PASS 또는 REVIEW_NEEDED이 될 때까지 반복한다.
+
 n 시: developer → code-reviewer 재실행
 
 ### Phase 3: 테스트 (y 후)
@@ -101,7 +103,7 @@ Write tests based on completion criteria in the design document. Run all tests a
 
 → CHECKPOINT-3 출력 → **사용자 응답 대기**
 
-y 시: `git add -A && git commit -m "feat: {기능명} - 설계·구현·테스트 완료"`
+y 시: 워크플로우 완료. git commit은 수행하지 않는다 (사용자가 별도로 진행).
 
 ---
 
@@ -146,6 +148,8 @@ Focus on: regression risk, side effects, minimal change principle.
 
 → CHECKPOINT-2 출력 → **사용자 응답 대기**
 
+**Critical 자동 재수행:** Critical이 1건이라도 있으면 사용자 입력 없이 developer → code-reviewer를 자동 재실행한다. PASS 또는 REVIEW_NEEDED이 될 때까지 반복한다.
+
 ### Phase 3: 회귀 테스트 (y 후)
 
 ```
@@ -157,7 +161,7 @@ Verify: (1) the reported bug is fixed, (2) related features still work correctly
 
 → CHECKPOINT-3 출력 → **사용자 응답 대기**
 
-y 시: `git add -A && git commit -m "fix: {이슈번호} - {버그 요약}"`
+y 시: 워크플로우 완료. git commit은 수행하지 않는다 (사용자가 별도로 진행).
 
 ---
 
@@ -216,7 +220,7 @@ Write unit tests per component and integration tests for main user flows.
 
 → CHECKPOINT-3 출력 → **사용자 응답 대기**
 
-y 시: `git init && git add -A && git commit -m "feat: {프로젝트명} initial commit - 설계·구현·테스트 완료"`
+y 시: 워크플로우 완료. git commit은 수행하지 않는다 (사용자가 별도로 진행).
 
 ---
 

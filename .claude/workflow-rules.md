@@ -43,7 +43,7 @@ architect        developer        code-reviewer       tester
                                                     테스트 작성·실행
                                                          │
                                                          ▼
-                                       [CHECKPOINT-3] ── 사용자 승인 → git commit
+                                       [CHECKPOINT-3] ── 사용자 승인 → 워크플로우 완료
 ```
 
 ---
@@ -53,7 +53,8 @@ architect        developer        code-reviewer       tester
 1. specs/ 에 설계 문서 없이 코드 작성 시작 금지
 2. 사용자 승인(y) 없이 체크포인트를 넘어가지 말 것
 3. 각 단계는 반드시 해당 전문 서브에이전트에 위임할 것
-4. 각 체크포인트 승인 직후 git commit 실행할 것
+4. **Critical 자동 재수행**: CHECKPOINT-2에서 Critical이 1건이라도 있으면 사용자 입력 없이 developer → code-reviewer를 자동 재실행한다
+5. **git commit 금지**: 워크플로우에서 git commit을 직접 수행하지 않는다. 사용자가 별도로 진행한다
 
 ---
 
@@ -81,11 +82,22 @@ architect        developer        code-reviewer       tester
 ```
 
 ### CHECKPOINT-2 (코드 리뷰 완료 후)
+
+**Critical이 1건이라도 있으면 → 사용자 입력 없이 자동으로 developer → code-reviewer 재실행.**
+PASS 또는 REVIEW_NEEDED이 될 때까지 반복한 후 아래 형식으로 출력한다.
+
 ```
 ✅ [CHECKPOINT-2] 코드 리뷰 완료.
 📄 리뷰 결과: {파일 경로}
 🔴 Critical: N건 | 🟡 Warning: N건 | 🟢 Suggestion: N건
 📋 판정: {PASS / REVIEW_NEEDED / REJECT}
+
+주요 지적사항:
+  🔴 {Critical 한 줄 요약} (있는 경우)
+  🟡 {Warning 한 줄 요약} (있는 경우)
+  🟢 Suggestion N건 (있는 경우)
+
+상세: {리뷰 파일 경로} 참조
 
 → y: 다음 단계 | n: 수정 후 재리뷰
 ```
@@ -97,7 +109,7 @@ architect        developer        code-reviewer       tester
 ✅ 통과: N/N | 커버리지: N%
 상태: {PASS / FAIL}
 
-→ y: git commit | n: 재테스트
+→ y: 워크플로우 완료 | n: 재테스트
 ```
 
 ---

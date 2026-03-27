@@ -30,6 +30,14 @@ $ARGUMENTS에서 버전 지정 여부를 확인한다.
 
 **버전이 지정되어도 모든 Phase를 반드시 실행한다.** 버전 지정은 Phase 3의 버전 계산만 오버라이드한다.
 
+## 핵심 원칙
+1. **Phase 1 변경사항 분석 결과는 반드시 사용자 확인을 받는다** — 변경 파일 리스트를 사용자가 검토해야 한다.
+2. **버전 업데이트는 머지 직전 feature 브랜치에서만** — 커밋 단계에서 버전 파일을 건드리지 않는다.
+3. **변경사항이 없으면 즉시 종료** — 불필요한 빈 커밋을 만들지 않는다.
+4. **Push는 Claude가 직접 실행하지 않는다** — 사용자가 직접 수행한다.
+5. **버전 증가는 commit type 기준** — feat → MINOR, 나머지(fix/docs/refactor/chore/improve) → PATCH.
+6. **develop 브랜치가 기본 작업 브랜치** — feature/bugfix는 develop에서 생성하고 develop에 머지한다. main은 사용자가 명시적으로 요청할 때만 머지한다.
+
 ## 워크플로우 재개 확인
 
 Phase 실행 전에 이전 체크포인트가 있는지 확인한다:
@@ -63,16 +71,32 @@ node -e "const fr=require(process.env.USERPROFILE+'/.claude/hooks/failure-regist
 - **`__NO_PATTERNS__`** → 그대로 진행
 - **패턴이 출력되면** → 해당 내용을 참고하여 동일 실패를 예방하며 진행
 
+## 14일 자동 증류 체크
+
+Phase 실행 전에 마지막 distill 실행일을 확인한다:
+
+```bash
+node -e "
+  const fs=require('fs'),p=require('path');
+  const f=p.join(process.env.USERPROFILE||process.env.HOME,'.claude','logs','distill-last-run.json');
+  if(!fs.existsSync(f)){console.log('__DISTILL_NEEDED__');process.exit(0);}
+  const d=JSON.parse(fs.readFileSync(f,'utf8'));
+  const origin=require('child_process').execSync('git remote get-url origin',{encoding:'utf8'}).trim();
+  const repo=origin.split('/').pop().replace('.git','');
+  const map={'APP_RMSPAGE':'APP_RMSPAGE','Web_rmspage':'WEB_RMSPAGE','YTAP':'YTAP','RMSSERVER':'RMSSERVER','YTAP_MANAGER':'YTAP_MANAGER','nepes-ai-agents':'NEPES_AI_AGENTS'};
+  const proj=map[repo]||null;
+  const last=proj&&d[proj];
+  if(!last){console.log('__DISTILL_NEEDED__');process.exit(0);}
+  const days=Math.floor((Date.now()-new Date(last))/(86400000));
+  if(days>=14){console.log('__DISTILL_NEEDED__');}else{console.log('__DISTILL_OK__:'+days);}
+"
+```
+
+- **`__DISTILL_NEEDED__`** → `/distill-failures`를 자동 실행한 뒤 워크플로우를 계속 진행한다
+- **`__DISTILL_OK__:{N}일`** → 그대로 진행
+
 ## 워크플로우 실행 순서
 
 에이전트 폴더: `.claude/agents/git-workflow/`
 Phase 1(phase1-change-analysis.md) → 2(phase2-branch-commit.md) → 3(phase3-review-merge.md) → 4(phase4-cleanup.md) 순서로 실행.
 각 phase 파일을 해당 단계 시작 시에만 읽는다. 단계를 건너뛰지 않는다.
-
-## 핵심 원칙
-1. **Phase 1 변경사항 분석 결과는 반드시 사용자 확인을 받는다** — 변경 파일 리스트를 사용자가 검토해야 한다.
-2. **버전 업데이트는 머지 직전 feature 브랜치에서만** — 커밋 단계에서 버전 파일을 건드리지 않는다.
-3. **변경사항이 없으면 즉시 종료** — 불필요한 빈 커밋을 만들지 않는다.
-4. **Push는 Claude가 직접 실행하지 않는다** — 사용자가 직접 수행한다.
-5. **버전 증가는 commit type 기준** — feat → MINOR, 나머지(fix/docs/refactor/chore/improve) → PATCH.
-6. **develop 브랜치가 기본 작업 브랜치** — feature/bugfix는 develop에서 생성하고 develop에 머지한다. main은 사용자가 명시적으로 요청할 때만 머지한다.

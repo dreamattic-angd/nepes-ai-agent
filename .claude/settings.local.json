@@ -1,23 +1,33 @@
 {
   "permissions": {
     "allow": [
-      "Bash(*)",
-      "Read(*)",
-      "Write(*)",
-      "Edit(*)",
-      "MultiEdit(*)",
-      "Grep(*)",
-      "Glob(*)",
-      "LS(*)",
-      "Bash(where:*)",
-      "Bash(antiword:*)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:www.npmjs.com)",
-      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__oracle-db__test_connection",
+      "mcp__oracle-db__list_tables",
       "mcp__oracle-db__query",
       "mcp__oracle-db__describe_table",
-      "mcp__oracle-db__test_connection",
-      "WebSearch"
+      "Bash(python:*)",
+      "Read(//c/Users/lgw1156/$USERPROFILE/.claude/logs/**)",
+      "Bash(grep:*)",
+      "Skill(keybindings-help)",
+      "Bash(powershell -Command '\n$apiKey = \\(Get-Content \"C:\\\\Users\\\\lgw1156\\\\.claude\\\\skills\\\\itsm-register\\\\api_key.txt\" -Raw\\).Trim\\(\\)\n$request = [System.Net.HttpWebRequest]::Create\\(\"https://itsm.nepes.co.kr/api/v1/itsm/requests/my-tasks/all/20251156\"\\)\n$request.Method = \"GET\"\n$request.Headers.Add\\(\"X-API-KEY\", $apiKey\\)\n$request.Headers.Add\\(\"X-User-Id\", \"20251156\"\\)\n$request.Accept = \"application/json\"\n$response = $request.GetResponse\\(\\)\n$stream = New-Object System.IO.StreamReader\\($response.GetResponseStream\\(\\), [System.Text.Encoding]::UTF8\\)\n$json = $stream.ReadToEnd\\(\\)\n$stream.Close\\(\\); $response.Close\\(\\)\n[System.IO.File]::WriteAllText\\(\"C:\\\\Users\\\\lgw1156\\\\.claude\\\\skills\\\\itsm-register\\\\itsm_temp.json\", $json, \\(New-Object System.Text.UTF8Encoding $false\\)\\)\n')",
+      "Bash(powershell -Command '\n$today = [DateTime]\"2026-03-25\"\n$count = 0\n$date = $today\nwhile \\($count -lt 3\\) {\n    $date = $date.AddDays\\(1\\)\n    if \\($date.DayOfWeek -ne \"Saturday\" -and $date.DayOfWeek -ne \"Sunday\"\\) { $count++ }\n}\n$date.ToString\\(\"yyyy-MM-dd\"\\)\n')",
+      "Bash(find ~/.claude -type f -name *workflow* -o -name *git*)",
+      "Bash(cp \"D:/lgw/77_AI/00_nepes-ai-agent/.claude/commands/git-workflow.md\" \"C:/Users/lgw1156/.claude/commands/git-workflow.md\")",
+      "Bash(cp \"D:/lgw/77_AI/00_nepes-ai-agent/.claude/agents/git-workflow/phase1-change-analysis.md\" \"C:/Users/lgw1156/.claude/agents/git-workflow/phase1-change-analysis.md\")",
+      "Bash(cp \"D:/lgw/77_AI/00_nepes-ai-agent/.claude/agents/git-workflow/phase2-branch-commit.md\" \"C:/Users/lgw1156/.claude/agents/git-workflow/phase2-branch-commit.md\")",
+      "Bash(cp \"D:/lgw/77_AI/00_nepes-ai-agent/.claude/agents/git-workflow/phase3-review-merge.md\" \"C:/Users/lgw1156/.claude/agents/git-workflow/phase3-review-merge.md\")",
+      "Bash(cp \"D:/lgw/77_AI/00_nepes-ai-agent/.claude/agents/git-workflow/phase4-cleanup.md\" \"C:/Users/lgw1156/.claude/agents/git-workflow/phase4-cleanup.md\")",
+      "Bash(powershell -Command \"[math]::Round\\(0\\); $today = Get-Date; $count = 0; $d = $today; while\\($count -lt 3\\){ $d = $d.AddDays\\(1\\); if\\($d.DayOfWeek -ne 'Saturday' -and $d.DayOfWeek -ne 'Sunday'\\){ $count++ } }; $d.ToString\\('yyyy-MM-dd'\\)\")",
+      "Bash(powershell -Command \"$today = Get-Date; $count = 0; $d = $today; while\\($count -lt 3\\){ $d = $d.AddDays\\(1\\); if\\($d.DayOfWeek -ne 'Saturday' -and $d.DayOfWeek -ne 'Sunday'\\){ $count = $count + 1 } }; $d.ToString\\('yyyy-MM-dd'\\)\")",
+      "Bash(python3 -c \"from datetime import datetime, timedelta; d=datetime.now\\(\\); c=0:*)",
+      "Bash(python3:*)",
+      "Read(//c/Users/lgw1156/$APPDATA/Claude/**)",
+      "Bash(cmd.exe /c \"dir C:\\\\Users\\\\lgw1156\\\\AppData\\\\Roaming\\\\Claude\\\\ 2>nul\")",
+      "Bash(cmd.exe /c \"if exist \\\\\"C:\\\\Users\\\\lgw1156\\\\AppData\\\\Roaming\\\\Claude\\\\claude_desktop_config.json\\\\\" \\(type \\\\\"C:\\\\Users\\\\lgw1156\\\\AppData\\\\Roaming\\\\Claude\\\\claude_desktop_config.json\\\\\"\\) else \\(echo FILE_NOT_FOUND\\)\")"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "sequential-thinking",
+    "context7"
+  ]
 }

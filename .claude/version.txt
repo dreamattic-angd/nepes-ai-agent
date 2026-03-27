@@ -21,7 +21,7 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ---
 
-## 현재 버전: 1.32.0
+## 현재 버전: 1.36.3
 
 ## 에이전트 현황
 
@@ -37,21 +37,21 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 | ytap/git-workflow | ❌ 삭제 | v12.0~v25.0 | v26.0에서 통합 워크플로우로 대체 |
 | rmsserver/git-workflow | ❌ 삭제 | v13.0~v25.0 | v26.0에서 통합 워크플로우로 대체 |
 | ytap-mgr/git-workflow | ❌ 삭제 | v16.0~v25.0 | v26.0에서 통합 워크플로우로 대체 |
-| naa/cm-audit | ✅ 운영 | v19.0 | NAA 형상 감사 자동 점검 (CM-SP3.2) |
-| naa/weekly-report | ✅ 운영 | v20.0 | NAA 주간 보고 자동 생성 (PMC-SP1.6) |
-| naa/ppqa-audit | ✅ 운영 | v21.0 | NAA PPQA 셀프 감사 자동 점검 (PPQA-SP1) |
-| ytap/cm-audit | ✅ 운영 | v22.0 | YTAP 형상 감사 자동 점검 |
-| ytap/ppqa-audit | ✅ 운영 | v22.0 | YTAP PPQA 셀프 감사 자동 점검 |
-| ytap/weekly-report | ✅ 운영 | v22.0 | YTAP 주간 보고 자동 생성 |
-| rmsserver/cm-audit | ✅ 운영 | v22.0 | RMSSERVER 형상 감사 자동 점검 |
-| rmsserver/ppqa-audit | ✅ 운영 | v22.0 | RMSSERVER PPQA 셀프 감사 자동 점검 |
-| rmsserver/weekly-report | ✅ 운영 | v22.0 | RMSSERVER 주간 보고 자동 생성 |
-| app-rmspage/cm-audit | ✅ 운영 | v22.0 | APP_RMSPAGE 형상 감사 자동 점검 |
-| app-rmspage/ppqa-audit | ✅ 운영 | v22.0 | APP_RMSPAGE PPQA 셀프 감사 자동 점검 |
-| app-rmspage/weekly-report | ✅ 운영 | v22.0 | APP_RMSPAGE 주간 보고 자동 생성 |
-| ytap-mgr/cm-audit | ✅ 운영 | v22.0 | YTAP_MANAGER 형상 감사 자동 점검 |
-| ytap-mgr/ppqa-audit | ✅ 운영 | v22.0 | YTAP_MANAGER PPQA 셀프 감사 자동 점검 |
-| ytap-mgr/weekly-report | ✅ 운영 | v22.0 | YTAP_MANAGER 주간 보고 자동 생성 |
+| naa/cm-audit | ❌ 삭제 | v19.0~v1.35.1 | v1.35.1에서 commands/cm-audit.md로 통합 |
+| naa/weekly-report | ❌ 삭제 | v20.0~v1.35.1 | v1.35.1에서 commands/weekly-report.md로 통합 |
+| naa/ppqa-audit | ❌ 삭제 | v21.0~v1.35.1 | v1.35.1에서 commands/ppqa-audit.md로 통합 |
+| ytap/cm-audit | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/cm-audit.md로 통합 |
+| ytap/ppqa-audit | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/ppqa-audit.md로 통합 |
+| ytap/weekly-report | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/weekly-report.md로 통합 |
+| rmsserver/cm-audit | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/cm-audit.md로 통합 |
+| rmsserver/ppqa-audit | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/ppqa-audit.md로 통합 |
+| rmsserver/weekly-report | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/weekly-report.md로 통합 |
+| app-rmspage/cm-audit | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/cm-audit.md로 통합 |
+| app-rmspage/ppqa-audit | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/ppqa-audit.md로 통합 |
+| app-rmspage/weekly-report | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/weekly-report.md로 통합 |
+| ytap-mgr/cm-audit | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/cm-audit.md로 통합 |
+| ytap-mgr/ppqa-audit | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/ppqa-audit.md로 통합 |
+| ytap-mgr/weekly-report | ❌ 삭제 | v22.0~v1.35.1 | v1.35.1에서 commands/weekly-report.md로 통합 |
 | ai-insight (skill) | ✅ 운영 | v24.0 | AI 활용 인사이트 월간 보고서 자동 생성 |
 | obsidian-note (skill) | ✅ 운영 | v24.0 | Obsidian vault 노트 디자인 가이드 자동 적용 |
 | web-rmspage/git-workflow | ❌ 삭제 | v25.0 | v26.0에서 통합 워크플로우로 대체 |
@@ -66,6 +66,21 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ## 변경 이력
 
+1.36.3 docs: README.md hooks 디렉토리에 누락된 유틸리티 4개 추가
+1.36.2 docs: README.md, README.txt 실제 프로젝트 구조에 맞게 최신화
+1.36.1 chore: weekly-report 커맨드 삭제 및 참조 정리
+1.36.0 feat: PostToolUse CRLF 자동 변환 훅 + install.bat 배포 검증 자동화
+1.35.8 fix: install.bat xcopy→robocopy 교체 (evals 배포 누락 수정)
+1.35.7 fix: install.bat .claude 전체 배포로 변경 (evals 등 누락 방지)
+1.35.6 fix: git-workflow 14일 자동 distill 체크 코드 추가
+1.35.5 improve: issue-analyze failure-registry 주입 및 external_data 격리 추가
+1.35.4 chore: mcp__oracle-db__execute 권한 제거 (DB write 실수 방지)
+1.35.3 improve: 확증 편향 방지 구조 개선 — 실패/성공 로그 스키마 업그레이드 및 프로젝트별 격리 (#ITSM-3626)
+1.35.2 fix: version.txt 에이전트 삭제 버전 오류 및 help-cmd.md 삭제된 경로 참조 수정
+1.35.1 improve: 하네스 엔지니어링 심화 개선 — 복잡도 관리, 인젝션 방어, 설계 문서화 (#ITSM-3622)
+1.35.0 feat: Read 도구 대용량 파일 사전 차단 hook 추가
+1.34.0 feat: 실패 패턴 증류(distillation) 메커니즘 구현 (#ITSM-3588)
+1.33.0 feat: 모니터링/평가 체계 구축 — 로그 보강, 성공률 추적, Eval, status-line, 집계 리포트 (#ITSM-3586)
 1.32.0 feat: 실패 처리 체계 구축 — 실패 분류·복구 경로·재발 방지 (#ITSM-3581)
 1.31.4 improve: check-dangerous-cmd.js rm -rf 차단 범위 확장
 1.31.3 improve: integrity-check 상세 정보 요청 시 --verbose 실행 지침 추가

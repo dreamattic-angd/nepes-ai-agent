@@ -1,4 +1,32 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Edit",
+      "Write",
+      "Read",
+      "Glob",
+      "Grep",
+      "Agent",
+      "NotebookEdit",
+      "WebFetch",
+      "WebSearch",
+      "mcp__oracle-db__query",
+      "mcp__oracle-db__list_tables",
+      "mcp__oracle-db__describe_table",
+      "mcp__oracle-db__list_schemas",
+      "mcp__oracle-db__test_connection",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "mcp__obsidian__*",
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__Claude_Preview__*",
+      "mcp__Claude_in_Chrome__*",
+      "mcp__scheduled-tasks__*",
+      "mcp__mcp-registry__*",
+      "mcp__38bb0b1c-87df-456b-a6ef-0ef64310dd1e__*"
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "node \"%USERPROFILE%/.claude/scripts/status-line.js\""
@@ -19,11 +47,31 @@
         ]
       },
       {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"%USERPROFILE%/.claude/hooks/check-read-size.js\""
+          }
+        ]
+      },
+      {
         "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
             "command": "node \"%USERPROFILE%/.claude/hooks/check-sensitive-write.js\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"%USERPROFILE%/.claude/hooks/auto-crlf.js\""
           }
         ]
       }

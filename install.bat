@@ -23,48 +23,25 @@ if not exist "%TARGET%" mkdir "%TARGET%"
 
 :: 백업 (직전 1세대만 유지)
 set "BACKUP=%TARGET%\_backup"
-echo [0/7] 기존 파일 백업 (_backup, 직전 1세대만 유지)...
+echo [0/2] 기존 파일 백업 (_backup, 직전 1세대만 유지)...
 if exist "%BACKUP%" rmdir /S /Q "%BACKUP%" >nul
-mkdir "%BACKUP%"
-for %%F in (commands agents hooks scripts log-analyzer skills) do (
-    if exist "%TARGET%\%%F" (
-        xcopy /E /Y /I /Q "%TARGET%\%%F" "%BACKUP%\%%F" >nul 2>&1
-    )
-)
+robocopy "%TARGET%" "%BACKUP%" /E /XD _backup /NFL /NDL /NJH /NJS >nul 2>&1
 echo       OK
 
-echo [1/7] commands 배포...
-xcopy /E /Y /I "%SOURCE%\commands" "%TARGET%\commands" >nul
+echo [1/2] .claude 전체 배포 (settings.json, settings.local.json 제외)...
+robocopy "%SOURCE%" "%TARGET%" /E /XF settings.json settings.local.json /XD _backup /NFL /NDL /NJH /NJS >nul 2>&1
 echo       OK
 
-echo [2/7] agents 배포...
-xcopy /E /Y /I "%SOURCE%\agents" "%TARGET%\agents" >nul
-echo       OK
-
-echo [3/7] hooks 배포...
-xcopy /E /Y /I "%SOURCE%\hooks" "%TARGET%\hooks" >nul
-echo       OK
-
-echo [4/7] scripts 배포...
-xcopy /E /Y /I "%SOURCE%\scripts" "%TARGET%\scripts" >nul
-echo       OK
-
-echo [5/7] log-analyzer 배포...
-xcopy /E /Y /I "%SOURCE%\log-analyzer" "%TARGET%\log-analyzer" >nul
-echo       OK
-
-echo [6/7] skills 배포 (itsm-register 등 개인 skill은 보존)...
-if exist "%SOURCE%\skills" (
-    for /d %%D in ("%SOURCE%\skills\*") do (
-        xcopy /E /Y /I "%%D" "%TARGET%\skills\%%~nxD" >nul
-    )
-)
-echo       OK
-
-echo [7/7] settings.json + .mcp.json + CLAUDE.md 병합...
+echo [2/3] settings.json + .mcp.json + CLAUDE.md 병합...
 node "%SCRIPTDIR%install-merge.js" "%SOURCE%" "%TARGET%" "%SCRIPTDIR%CLAUDE.md"
 if errorlevel 1 (
     echo       [ERROR] 병합 실패. node.js가 설치되어 있는지 확인하세요.
+)
+
+echo [3/3] 배포 검증...
+node "%SCRIPTDIR%install-verify.js" "%SOURCE%" "%TARGET%"
+if errorlevel 1 (
+    echo       [WARNING] 일부 디렉토리가 배포되지 않았습니다. 위 메시지를 확인하세요.
 )
 
 echo.
