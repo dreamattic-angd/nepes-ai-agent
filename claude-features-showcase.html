@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>naa v1.36.3 — Feature Showcase</title>
+  <title>naa v1.36.3 — Feature Showcase rev1</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
   <style>
@@ -292,6 +292,70 @@
     .appendix-list li { padding: 3px 0 3px 16px; position: relative; }
     .appendix-list li::before { content: ""; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); opacity: 0.4; }
 
+    /* USE CASE */
+    .usecase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 1.5rem; }
+    .usecase-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow); transition: all 0.2s;
+    }
+    .usecase-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .usecase-header {
+      padding: 1.25rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .usecase-num {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800; color: #fff;
+    }
+    .usecase-num.c1 { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+    .usecase-num.c2 { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
+    .usecase-num.c3 { background: linear-gradient(135deg, #dc2626, #ea580c); }
+    .usecase-title { font-size: 15px; font-weight: 750; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
+    .usecase-subtitle { font-size: 12px; color: var(--text-muted); }
+    .usecase-body { padding: 1.25rem 1.5rem; }
+    .usecase-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-bottom: 1rem; }
+    .usecase-tag {
+      padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+      background: var(--primary-light); color: var(--primary); border: 1px solid rgba(79,70,229,0.15);
+    }
+    [data-theme="dark"] .usecase-tag { border-color: rgba(129,140,248,0.2); }
+    .flow-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 1.25rem; }
+    .flow-step { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.5rem 0; position: relative; }
+    .flow-step:not(:last-child)::after {
+      content: ''; position: absolute; left: 13px; top: 32px;
+      width: 2px; height: calc(100% - 8px); background: var(--border); border-radius: 1px;
+    }
+    .flow-dot {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; background: var(--bg-secondary); border: 2px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .flow-step.active .flow-dot { border-color: var(--primary); background: var(--primary-light); }
+    .flow-step-content { min-width: 0; padding-top: 3px; }
+    .flow-step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .flow-step-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .roi-box {
+      background: var(--accent-green); border: 1px solid rgba(5,150,105,0.2);
+      border-radius: 8px; padding: 0.875rem 1rem;
+    }
+    [data-theme="dark"] .roi-box { border-color: rgba(52,211,153,0.2); }
+    .roi-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--tag-quality); margin-bottom: 6px; }
+    .roi-items { display: flex; flex-direction: column; gap: 4px; }
+    .roi-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .roi-label { color: var(--text-secondary); }
+    .roi-value { font-weight: 700; color: var(--tag-quality); white-space: nowrap; }
+    .before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .ba-box { border-radius: 8px; padding: 0.75rem; }
+    .ba-before { background: var(--accent-rose); border: 1px solid rgba(220,38,38,0.15); }
+    .ba-after { background: var(--accent-blue); border: 1px solid rgba(2,132,199,0.15); }
+    .ba-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .ba-before .ba-label { color: var(--tag-issue); }
+    .ba-after .ba-label { color: var(--secondary); }
+    .ba-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
     /* FOOTER */
     footer { margin-top: 2rem; padding: 2rem 0; border-top: 1px solid var(--border); }
     .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; font-size: 12px; color: var(--text-muted); }
@@ -330,7 +394,6 @@
     <div class="nav-inner">
       <a href="#" class="nav-brand">naa</a>
       <div class="nav-links">
-        <a href="#architecture">아키텍처</a>
         <a href="#commands">커맨드</a>
         <a href="#agents">에이전트</a>
         <a href="#hooks">훅</a>
@@ -339,6 +402,7 @@
         <a href="#evals">Evals</a>
         <a href="#principles">원칙</a>
         <a href="#projects">프로젝트</a>
+        <a href="#usecases" style="color: var(--primary); font-weight: 700;">활용 사례</a>
         <button class="theme-btn" id="themeToggle" title="테마 전환">&#9790;</button>
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;">
@@ -348,7 +412,6 @@
     </div>
   </nav>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#architecture">아키텍처</a>
     <a href="#commands">커맨드</a>
     <a href="#agents">에이전트</a>
     <a href="#hooks">훅</a>
@@ -357,6 +420,7 @@
     <a href="#evals">Evals</a>
     <a href="#principles">원칙</a>
     <a href="#projects">프로젝트</a>
+    <a href="#usecases">활용 사례</a>
   </div>
 
   <main>
@@ -365,6 +429,7 @@
       <div class="wrap">
         <div class="hero-content">
           <span class="hero-version">v1.36.3</span>
+          <span class="hero-version" style="background: var(--accent-green); color: var(--tag-quality); border-color: rgba(5,150,105,0.2); margin-left: 0.5rem;">rev1 · 활용 사례 추가</span>
           <h1 class="hero-title">naa <span>Feature Showcase</span></h1>
           <p class="hero-sub">Automated workflow orchestration for code review, git flow, issue analysis, audit & deployment</p>
           <p class="hero-desc">Deploy via <code>install.bat</code> — 3단계 배포(백업→로그카피→설정병합)로 <code>~/.claude/</code>에 글로벌 설치. 무결성 자동 검증 지원.</p>
@@ -374,56 +439,12 @@
             <div class="stat"><span class="stat-icon">🛡️</span> 훅 10</div>
             <div class="stat"><span class="stat-icon">📝</span> 스크립트 4</div>
             <div class="stat"><span class="stat-icon">🧪</span> 프로젝트 6</div>
+            <div class="stat" style="border-color: var(--tag-quality); color: var(--tag-quality);"><span class="stat-icon">✨</span> 실사례 3</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ARCHITECTURE -->
-    <section id="architecture">
-      <div class="wrap">
-        <div class="section-label">🏗️ 아키텍처</div>
-        <h2 class="section-title">시스템 아키텍처</h2>
-        <p class="section-desc">naa의 배포 흐름 및 워크플로우 오케스트레이션 구조</p>
-        <div class="arch-container">
-          <div class="arch-flow">
-            <div class="arch-row">
-              <div class="arch-node primary">install.bat</div>
-            </div>
-            <div class="arch-connector">↓</div>
-            <div class="arch-row">
-              <div class="arch-node">backup</div>
-              <span class="arch-connector">→</span>
-              <div class="arch-node">robocopy deploy</div>
-              <span class="arch-connector">→</span>
-              <div class="arch-node">settings merge</div>
-            </div>
-            <div class="arch-connector">↓</div>
-            <div class="arch-row">
-              <div class="arch-node">~/.claude/</div>
-            </div>
-            <div class="arch-connector">↓</div>
-            <div class="arch-row">
-              <div class="arch-node primary">Global Availability</div>
-            </div>
-            <div class="arch-connector">↓</div>
-            <div class="arch-row">
-              <div class="arch-node">Checkpoint 1</div>
-              <span class="arch-connector">→</span>
-              <div class="arch-node">Checkpoint 2</div>
-              <span class="arch-connector">→</span>
-              <div class="arch-node">Checkpoint 3</div>
-            </div>
-            <div class="arch-connector">↓</div>
-            <div class="arch-row">
-              <div class="arch-node mcp">sequential-thinking</div>
-              <span class="arch-connector">+</span>
-              <div class="arch-node mcp">context7</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- COMMANDS -->
     <section id="commands">
@@ -1114,13 +1135,231 @@
       </div>
     </section>
 
+    <!-- USE CASES -->
+    <section id="usecases">
+      <div class="wrap">
+        <div class="section-label">✨ 활용 사례</div>
+        <h2 class="section-title">Real-World Use Cases</h2>
+        <p class="section-desc">nepes-ai-agents를 현업에서 실제 활용한 사례. 반도체 설비 개발부터 알람 모니터링, 이슈 분석까지.</p>
+
+        <div class="usecase-grid">
+
+          <!-- Case 1: 신규 설비 YTAP 개발 -->
+          <div class="usecase-card">
+            <div class="usecase-header">
+              <div class="usecase-num c1">01</div>
+              <div>
+                <div class="usecase-title">신규 설비 YTAP 개발 자동화</div>
+                <div class="usecase-subtitle">Spec 분석 → YTAP 생성 → 실설비 자동화 테스트 → FTP 로그 분석 · 수정</div>
+              </div>
+            </div>
+            <div class="usecase-body">
+              <div class="usecase-tags">
+                <span class="usecase-tag">설비 개발</span>
+                <span class="usecase-tag">YTAP</span>
+                <span class="usecase-tag">SECS/GEM</span>
+                <span class="usecase-tag">FTP</span>
+                <span class="usecase-tag">/analyze-secsgem</span>
+              </div>
+              <div class="flow-steps">
+                <div class="flow-step active">
+                  <div class="flow-dot">📄</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">Spec 문서 분석</div>
+                    <div class="flow-step-desc">설비 SECS/GEM Spec PDF·Excel 업로드 → /analyze-secsgem으로 자동 파싱 및 메시지 구조 추출</div>
+                  </div>
+                </div>
+                <div class="flow-step active">
+                  <div class="flow-dot">🏗️</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">YTAP 자동 생성</div>
+                    <div class="flow-step-desc">분석 결과를 바탕으로 Architect 에이전트가 신규 설비 YTAP 코드 초안 생성</div>
+                  </div>
+                </div>
+                <div class="flow-step active">
+                  <div class="flow-dot">🧪</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">실설비 자동화 테스트</div>
+                    <div class="flow-step-desc">생성된 YTAP으로 실설비 대상 자동화 테스트 수행</div>
+                  </div>
+                </div>
+                <div class="flow-step active">
+                  <div class="flow-dot">🔍</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">FTP 로그 분석 → 즉시 수정</div>
+                    <div class="flow-step-desc">테스트 중 발생 문제에 대해 FTP 자동 접속, /analyze-log로 로그 분석 후 원인 추적 → 인라인 수정 반복</div>
+                  </div>
+                </div>
+              </div>
+              <div class="roi-box">
+                <div class="roi-title">⚖️ ROI 추정 (보수적)</div>
+                <div class="roi-items">
+                  <div class="roi-item">
+                    <span class="roi-label">YTAP 초안 작성 시간</span>
+                    <span class="roi-value">약 3일 → 1일</span>
+                  </div>
+                  <div class="roi-item">
+                    <span class="roi-label">디버깅 사이클당 소요</span>
+                    <span class="roi-value">2~3시간 → 30분</span>
+                  </div>
+                  <div class="roi-item">
+                    <span class="roi-label">설비 1대 기준 전체 절감</span>
+                    <span class="roi-value" style="color: var(--tag-audit);">약 30~40% 단축</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 2: PKG 전설비 알람 데이터 확인 -->
+          <div class="usecase-card">
+            <div class="usecase-header">
+              <div class="usecase-num c2">02</div>
+              <div>
+                <div class="usecase-title">PKG 전설비 알람 데이터 일괄 모니터링</div>
+                <div class="usecase-subtitle">Oracle DB MCP + 자연어 쿼리로 S5F1 알람 수신 여부 일괄 확인</div>
+              </div>
+            </div>
+            <div class="usecase-body">
+              <div class="usecase-tags">
+                <span class="usecase-tag">Oracle DB</span>
+                <span class="usecase-tag">MCP</span>
+                <span class="usecase-tag">S5F1</span>
+                <span class="usecase-tag">자연어 쿼리</span>
+                <span class="usecase-tag">알람 모니터링</span>
+              </div>
+              <div class="before-after">
+                <div class="ba-box ba-before">
+                  <div class="ba-label">⏱ Before</div>
+                  <div class="ba-text">설비마다 직접 접속하여 S5F1 로그 수동 확인<br>— 수십 대 순차 점검</div>
+                </div>
+                <div class="ba-box ba-after">
+                  <div class="ba-label">⚡ After</div>
+                  <div class="ba-text">MCP Oracle DB에 자연어로 한 번에 요청<br>— 전설비 결과 즉시 확인</div>
+                </div>
+              </div>
+              <div class="flow-steps">
+                <div class="flow-step active">
+                  <div class="flow-dot">💬</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">현업 자연어 요청</div>
+                    <div class="flow-step-desc">"PKG 전설비 알람 데이터 정상적으로 올라오는지 확인해줘"</div>
+                  </div>
+                </div>
+                <div class="flow-step active">
+                  <div class="flow-dot">🔌</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">MCP Oracle DB 연동</div>
+                    <div class="flow-step-desc">mcp-oracle 서버를 통해 읽기 전용 쿼리 자동 생성 및 실행</div>
+                  </div>
+                </div>
+                <div class="flow-step active">
+                  <div class="flow-dot">📊</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">결과 요약 보고</div>
+                    <div class="flow-step-desc">설비별 S5F1 알람 수신 여부 표 형태로 정리, 누락 설비 즉시 식별</div>
+                  </div>
+                </div>
+              </div>
+              <div class="roi-box">
+                <div class="roi-title">⚖️ ROI 추정 (보수적)</div>
+                <div class="roi-items">
+                  <div class="roi-item">
+                    <span class="roi-label">기존 수동 확인 소요</span>
+                    <span class="roi-value">설비당 ~5분 × 다수 설비</span>
+                  </div>
+                  <div class="roi-item">
+                    <span class="roi-label">자연어 쿼리 후 소요</span>
+                    <span class="roi-value">전설비 ~3분 이내</span>
+                  </div>
+                  <div class="roi-item">
+                    <span class="roi-label">반복 업무 기준 효과</span>
+                    <span class="roi-value" style="color: var(--tag-audit);">90%+ 시간 절감</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 3: SECS/GEM 로그 기반 이슈 분석 -->
+          <div class="usecase-card">
+            <div class="usecase-header">
+              <div class="usecase-num c3">03</div>
+              <div>
+                <div class="usecase-title">SECS/GEM 로그 기반 소프트웨어 이슈 분석</div>
+                <div class="usecase-subtitle">FTP 자동 접속 → 로그 직접 Read → Agent 분석 → Report</div>
+              </div>
+            </div>
+            <div class="usecase-body">
+              <div class="usecase-tags">
+                <span class="usecase-tag">FTP</span>
+                <span class="usecase-tag">SECS/GEM Log</span>
+                <span class="usecase-tag">RMS Log</span>
+                <span class="usecase-tag">/issue-analyze</span>
+                <span class="usecase-tag">5-Why</span>
+              </div>
+              <div class="flow-steps">
+                <div class="flow-step active">
+                  <div class="flow-dot">🚨</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">소프트웨어 이슈 발생</div>
+                    <div class="flow-step-desc">설비 이상 감지 또는 현업 이슈 접수</div>
+                  </div>
+                </div>
+                <div class="flow-step active">
+                  <div class="flow-dot">📡</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">FTP 자동 접속 · 로그 수집</div>
+                    <div class="flow-step-desc">설비 SECS/GEM 로그 + RMS Server RMS 로그를 FTP를 통해 직접 Read</div>
+                  </div>
+                </div>
+                <div class="flow-step active">
+                  <div class="flow-dot">🔬</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">멀티소스 로그 분석</div>
+                    <div class="flow-step-desc">/issue-analyze — Phase 0~4 단계별 분석, 5-Why 근본 원인 추적, 시간 범위 교차 비교</div>
+                  </div>
+                </div>
+                <div class="flow-step active">
+                  <div class="flow-dot">📋</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">이슈 리포트 생성</div>
+                    <div class="flow-step-desc">원인, 영향 범위, 재발 방지 조치 포함한 구조화 보고서 자동 생성</div>
+                  </div>
+                </div>
+              </div>
+              <div class="roi-box">
+                <div class="roi-title">⚖️ ROI 추정 (보수적)</div>
+                <div class="roi-items">
+                  <div class="roi-item">
+                    <span class="roi-label">기존 이슈 분석 소요</span>
+                    <span class="roi-value">2~4시간 (수동)</span>
+                  </div>
+                  <div class="roi-item">
+                    <span class="roi-label">Agent 분석 후 소요</span>
+                    <span class="roi-value">30분 이내</span>
+                  </div>
+                  <div class="roi-item">
+                    <span class="roi-label">분석 품질</span>
+                    <span class="roi-value" style="color: var(--tag-audit);">멀티소스 교차검증 포함</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- FOOTER -->
     <footer>
       <div class="wrap">
         <div class="footer-inner">
-          <div style="font-weight: 600;">naa v1.36.3</div>
+          <div style="font-weight: 600;">naa v1.36.3 <span style="font-size:11px; font-weight:600; padding:2px 8px; border-radius:5px; background: var(--accent-green); color: var(--tag-quality); margin-left:6px;">rev1</span></div>
           <div class="footer-meta">
             <span>Base Model: Claude Opus (최신 버전)</span>
+            <span>활용 사례 3건 추가</span>
             <span>Generated: 2026-03-27</span>
           </div>
         </div>
