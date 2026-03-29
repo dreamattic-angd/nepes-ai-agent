@@ -1,1451 +1,1261 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="theme-dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>naa v1.36.3 — Feature Showcase rev1</title>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nepes-ai-agents Overview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script>Chart.defaults.animation = false;</script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { interpolate-size: allow-keywords; }
 
-    :root {
-      --bg: #ffffff; --bg-secondary: #f8fafc;
-      --card: #ffffff; --card-hover: #f8fafc;
-      --primary: #4f46e5; --primary-light: #eef2ff;
-      --secondary: #0284c7;
-      --text: #111827; --text-secondary: #4b5563; --text-muted: #9ca3af;
-      --border: #e5e7eb; --border-light: #f3f4f6;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.03);
-      --shadow-lg: 0 10px 25px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
-      --radius: 10px; --radius-lg: 16px;
-      --tag-quality: #059669; --tag-git: #d97706; --tag-issue: #dc2626;
-      --tag-audit: #7c3aed; --tag-report: #0284c7; --tag-workflow: #ea580c;
-      --tag-util: #6b7280; --tag-special: #db2777; --tag-script: #2563eb;
-      --accent-green: #d1fae5; --accent-blue: #dbeafe; --accent-amber: #fef3c7; --accent-rose: #ffe4e6;
+    html.theme-dark {
+      --bg: #0A0A0A; --surface: #141414; --surface-hover: #1C1C1C;
+      --border: rgba(255,255,255,0.06);
+      --text: #EDEDED; --text-secondary: #888;
+      --accent: #3b82f6; --accent-secondary: #8b5cf6;
+      --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
+    }
+    html.theme-light {
+      --bg: #FAFAF9; --surface: #FFFFFF; --surface-hover: #F5F5F4;
+      --border: rgba(0,0,0,0.06);
+      --text: #0f172a; --text-secondary: #64748b;
+      --accent: #2563eb; --accent-secondary: #7c3aed;
+      --positive: #059669; --negative: #e11d48; --warning: #d97706;
     }
 
-    [data-theme="dark"] {
-      --bg: #0f172a; --bg-secondary: #1e293b;
-      --card: #1e293b; --card-hover: #334155;
-      --primary: #818cf8; --primary-light: #1e1b4b;
-      --secondary: #38bdf8;
-      --text: #f1f5f9; --text-secondary: #cbd5e1; --text-muted: #64748b;
-      --border: #334155; --border-light: #1e293b;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
-      --shadow: 0 1px 3px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 6px rgba(0,0,0,0.3);
-      --shadow-lg: 0 10px 25px rgba(0,0,0,0.4);
-      --tag-quality: #34d399; --tag-git: #fbbf24; --tag-issue: #f87171;
-      --tag-audit: #a78bfa; --tag-report: #38bdf8; --tag-workflow: #fb923c;
-      --tag-util: #9ca3af; --tag-special: #f472b6; --tag-script: #60a5fa;
-      --accent-green: #064e3b; --accent-blue: #1e3a5f; --accent-amber: #451a03; --accent-rose: #4c0519;
-    }
-
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body {
-      font-family: 'Pretendard Variable', 'Pretendard', -apple-system, 'Segoe UI', sans-serif;
+      font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--bg); color: var(--text);
-      line-height: 1.65; font-size: 15px;
-      transition: background 0.3s, color 0.3s; overflow-x: hidden;
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
+      transition: background 0.3s, color 0.3s;
+      overflow: hidden; height: 100vh; width: 100vw;
+    }
+    h1,h2,h3 { color: var(--text); letter-spacing: -0.03em; line-height: 1.1; text-wrap: balance; }
+    h1 { font-weight: 800; font-size: 3.5rem; }
+    h2 { font-weight: 700; font-size: 2.5rem; }
+    h3 { font-weight: 600; font-size: 1.5rem; }
+    p,li,td,th,span,label { color: var(--text); font-weight: 400; }
+    .text-secondary { color: var(--text-secondary); }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes slideInLeft { from { opacity:0; transform:translateX(-50px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes slideInRight { from { opacity:0; transform:translateX(50px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes scaleIn { from { opacity:0; transform:scale(0.85); } to { opacity:1; transform:scale(1); } }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+    @keyframes drawLine { from { stroke-dashoffset: 200; } to { stroke-dashoffset: 0; } }
+    @keyframes countUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px rgba(59,130,246,0.1); } 50% { box-shadow: 0 0 40px rgba(59,130,246,0.25); } }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    /* Slide-aware animation: elements are hidden until slide is active */
+    .sa { opacity: 0; transform: translateY(30px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+    .sa-left { opacity: 0; transform: translateX(-50px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+    .sa-right { opacity: 0; transform: translateX(50px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+    .sa-scale { opacity: 0; transform: scale(0.85); transition: opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+    .sa-down { opacity: 0; transform: translateY(-20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+
+    .slide.active .sa,
+    .slide.active .sa-left,
+    .slide.active .sa-right,
+    .slide.active .sa-scale,
+    .slide.active .sa-down { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
+
+    /* Stagger delays */
+    .d1 { transition-delay: 0.08s; } .d2 { transition-delay: 0.16s; } .d3 { transition-delay: 0.24s; }
+    .d4 { transition-delay: 0.32s; } .d5 { transition-delay: 0.40s; } .d6 { transition-delay: 0.48s; }
+    .d7 { transition-delay: 0.56s; } .d8 { transition-delay: 0.64s; } .d9 { transition-delay: 0.72s; }
+    .d10 { transition-delay: 0.80s; } .d11 { transition-delay: 0.88s; } .d12 { transition-delay: 0.96s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .sa, .sa-left, .sa-right, .sa-scale, .sa-down { opacity: 1; transform: none; }
     }
 
-    /* NAV */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border); transition: background 0.3s;
+    @media print {
+      body { background: white !important; color: black !important; overflow: visible !important; height: auto !important; }
+      .viz-menu, .slide-nav, .progress-bar { display: none !important; }
+      .slide { page-break-after: always; display: flex !important; position: relative !important; height: auto !important; min-height: 100vh; }
+      .slides-container { transform: none !important; flex-wrap: wrap; }
+      .sa, .sa-left, .sa-right, .sa-scale, .sa-down { opacity: 1 !important; transform: none !important; }
+      .card { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     }
-    [data-theme="dark"] .nav { background: rgba(15,23,42,0.92); }
-    .nav-inner {
-      max-width: 1200px; margin: 0 auto;
-      padding: 0 clamp(1rem,4vw,2rem);
-      display: flex; align-items: center; justify-content: space-between; height: 56px;
-    }
-    .nav-brand { font-weight: 700; font-size: 15px; color: var(--primary); text-decoration: none; letter-spacing: -0.3px; }
-    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
-    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s; white-space: nowrap; }
-    .nav-links a:hover { color: var(--primary); }
-    .theme-btn {
-      background: var(--bg-secondary); border: 1px solid var(--border);
-      width: 34px; height: 34px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 15px; transition: all 0.2s; flex-shrink: 0;
-    }
-    .theme-btn:hover { border-color: var(--primary); background: var(--primary-light); }
-    .nav-hamburger {
-      display: none; background: none; border: none;
-      width: 34px; height: 34px; cursor: pointer;
-      flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-    }
-    .nav-hamburger span { display: block; width: 18px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s; }
-    .mobile-menu {
-      display: none; position: fixed; top: 56px; left: 0; right: 0;
-      background: var(--bg); border-bottom: 1px solid var(--border);
-      padding: 1rem; z-index: 99; flex-direction: column; gap: 0.25rem;
-      box-shadow: var(--shadow-lg);
-    }
-    .mobile-menu.open { display: flex; }
-    .mobile-menu a {
-      display: block; padding: 0.75rem 1rem; border-radius: 8px;
-      color: var(--text-secondary); text-decoration: none;
-      font-size: 14px; font-weight: 500; transition: all 0.2s;
-    }
-    .mobile-menu a:hover, .mobile-menu a:active { background: var(--primary-light); color: var(--primary); }
+    @page { margin: 0.5in; }
 
-    /* LAYOUT */
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1rem,4vw,2rem); }
-    main { padding-top: 56px; }
-    section { padding: clamp(2.5rem,6vw,4rem) 0; }
-
-    /* SECTION HEADERS */
-    .section-label {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.08em; color: var(--primary); margin-bottom: 0.5rem;
+    /* ===== MENU ===== */
+    .viz-menu { position: fixed; top: 16px; right: 16px; z-index: 9999; }
+    .viz-menu-toggle {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(12px); transition: all 0.2s;
     }
-    .section-title {
-      font-size: clamp(22px,4vw,30px); font-weight: 750;
-      color: var(--text); letter-spacing: -0.5px; margin-bottom: 0.5rem; line-height: 1.3;
+    .viz-menu-toggle:hover { background: var(--surface-hover); }
+    .viz-menu-dropdown {
+      position: absolute; top: 52px; right: 0; min-width: 200px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 8px;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: all 0.2s; backdrop-filter: blur(16px);
     }
-    .section-desc { color: var(--text-secondary); font-size: 14px; margin-bottom: clamp(1.5rem,4vw,2.5rem); max-width: 560px; line-height: 1.6; }
+    .viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .viz-menu-dropdown button {
+      width: 100%; padding: 10px 14px; border: none; border-radius: 8px;
+      background: transparent; color: var(--text); font-size: 14px;
+      font-family: inherit; cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 10px; transition: background 0.15s;
+    }
+    .viz-menu-dropdown button:hover { background: var(--surface-hover); }
 
-    /* HERO */
-    .hero { padding: clamp(3rem,8vw,5rem) 0 clamp(2rem,5vw,3rem); border-bottom: 1px solid var(--border); }
-    .hero-content { max-width: 640px; }
+    /* ===== SLIDES ===== */
+    .slides-wrapper { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
+    .slides-container { display: flex; height: 100%; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+    .slide {
+      min-width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 60px 80px; position: relative; overflow: hidden;
+    }
+    .slide-inner { max-width: 1100px; width: 100%; z-index: 1; }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 9998;
+      background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+      transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Slide backgrounds */
+    .theme-dark .slide-hero {
+      background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 50%),
+                  linear-gradient(135deg, #0c0c2d 0%, #1a1040 40%, #0d1b2a 100%);
+    }
+    .theme-light .slide-hero {
+      background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 50%),
+                  linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 40%, #dbeafe 100%);
+    }
+    .theme-dark .slide-section {
+      background: radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.06) 0%, transparent 70%),
+                  linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #172554 100%);
+    }
+    .theme-light .slide-section {
+      background: radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.06) 0%, transparent 70%),
+                  linear-gradient(135deg, #eff6ff 0%, #e0e7ff 50%, #dbeafe 100%);
+    }
+    .slide-content { background: var(--bg); }
+
+    /* Decorative bg dots */
+    .slide::before {
+      content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+      background-size: 32px 32px; opacity: 0.5;
+    }
+
+    /* Hero */
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 24px; padding: 8px 18px; font-size: 0.875rem;
+      color: var(--accent); font-weight: 500;
+    }
+    .hero-title { font-size: 4.2rem; margin: 20px 0 16px; line-height: 1.05; }
+    .hero-subtitle { font-size: 1.2rem; color: var(--text-secondary); max-width: 680px; line-height: 1.7; }
     .hero-version {
-      display: inline-block; padding: 4px 12px; border-radius: 20px;
-      background: var(--primary-light); color: var(--primary);
-      font-size: 12px; font-weight: 600; margin-bottom: 1.25rem;
-      border: 1px solid rgba(79,70,229,0.15);
+      display: inline-block; font-size: 1rem; color: var(--accent); font-weight: 600;
+      margin-top: 32px; padding: 10px 24px;
+      background: rgba(59,130,246,0.08); border-radius: 10px;
+      border: 1px solid rgba(59,130,246,0.15);
+      animation: glowPulse 3s ease-in-out infinite;
     }
-    [data-theme="dark"] .hero-version { border-color: rgba(129,140,248,0.25); }
-    .hero-title { font-size: clamp(28px,6vw,44px); font-weight: 800; letter-spacing: -1px; line-height: 1.15; color: var(--text); margin-bottom: 0.75rem; }
-    .hero-title span { color: var(--primary); }
-    .hero-sub { font-size: clamp(15px,2.5vw,18px); color: var(--text-secondary); font-weight: 400; margin-bottom: 0.5rem; line-height: 1.5; }
-    .hero-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 2rem; }
-    .hero-desc code {
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      background: var(--bg-secondary); border: 1px solid var(--border);
-      padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--primary);
+    .hero-stats {
+      display: flex; gap: 40px; margin-top: 40px;
     }
-    .stats-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .stat {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 14px; border-radius: 8px;
-      background: var(--bg-secondary); border: 1px solid var(--border);
-      font-size: 13px; font-weight: 600; color: var(--text-secondary); white-space: nowrap;
+    .hero-stat-item { text-align: left; }
+    .hero-stat-num { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+    .hero-stat-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+
+    /* Section label */
+    .section-label {
+      font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--accent); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
     }
-    .stat-icon { font-size: 14px; }
-
-    /* ARCHITECTURE */
-    .arch-container {
-      background: var(--bg-secondary); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: clamp(1.5rem,4vw,2.5rem); overflow-x: auto;
+    .section-label::before {
+      content: ''; width: 20px; height: 2px; background: var(--accent); border-radius: 1px;
     }
-    .arch-flow { display: flex; flex-direction: column; align-items: center; gap: 0; min-width: 320px; }
-    .arch-row { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; width: 100%; }
-    .arch-node {
-      background: var(--card); border: 1.5px solid var(--border);
-      border-radius: 10px; padding: 10px 18px;
-      font-size: 13px; font-weight: 600; color: var(--text);
-      box-shadow: var(--shadow-sm); white-space: nowrap; transition: all 0.2s;
+
+    /* Grid layouts */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* Cards */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
     }
-    .arch-node:hover { border-color: var(--primary); box-shadow: var(--shadow-md); }
-    .arch-node.primary { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-    .arch-node.accent { border-color: var(--tag-audit); color: var(--tag-audit); }
-    .arch-node.mcp { border-color: var(--tag-special); color: var(--tag-special); }
-    .arch-connector { display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 18px; padding: 4px 0; }
-    .arch-sub-labels { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
-    .arch-sub-label { font-size: 11px; color: var(--text-muted); background: var(--card); border: 1px solid var(--border); padding: 3px 10px; border-radius: 6px; }
+    .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.12); border-color: rgba(59,130,246,0.15); }
 
-    /* GRID */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%,300px),1fr)); gap: 1rem; }
-    .grid-2 { grid-template-columns: repeat(auto-fill, minmax(min(100%,280px),1fr)); }
-    .grid-3 { grid-template-columns: repeat(auto-fill, minmax(min(100%,240px),1fr)); }
-
-    /* CMD CARD */
-    .cmd-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.25rem;
-      transition: all 0.2s; box-shadow: var(--shadow-sm);
-      display: flex; flex-direction: column;
+    /* Problem/Solution */
+    .ps-row { display: flex; gap: 16px; align-items: stretch; margin-bottom: 16px; }
+    .ps-card {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; transition: all 0.3s;
     }
-    .cmd-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary); transform: translateY(-1px); }
-    .cmd-card.hidden { display: none; }
-    .cmd-name { font-family: 'JetBrains Mono','Fira Code',monospace; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-    .cmd-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.55; flex: 1; margin-bottom: 0.75rem; }
-    .cmd-tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; color: #fff; align-self: flex-start; }
-    .cmd-tag.quality { background: var(--tag-quality); }
-    .cmd-tag.git { background: var(--tag-git); }
-    .cmd-tag.issue { background: var(--tag-issue); }
-    .cmd-tag.audit { background: var(--tag-audit); }
-    .cmd-tag.report { background: var(--tag-report); }
-    .cmd-tag.workflow { background: var(--tag-workflow); }
-    .cmd-tag.util { background: var(--tag-util); }
-    .cmd-tag.special { background: var(--tag-special); }
-    [data-theme="dark"] .cmd-tag { color: #0f172a; }
-
-    /* FILTER */
-    .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-    .filter-btn {
-      padding: 6px 14px; border: 1px solid var(--border);
-      background: var(--card); color: var(--text-secondary);
-      border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
-      transition: all 0.2s; white-space: nowrap; font-family: inherit;
+    .ps-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .ps-card.problem { border-left: 3px solid var(--negative); }
+    .ps-card.solution { border-left: 3px solid var(--positive); }
+    .ps-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
     }
-    .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-    /* EXPAND CARD */
-    .expand-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.2s; box-shadow: var(--shadow-sm); }
-    .expand-card:hover { box-shadow: var(--shadow-md); }
-    .expand-header { padding: 1.25rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; user-select: none; }
-    .expand-header:hover { background: var(--card-hover); }
-    .expand-left { display: flex; align-items: center; gap: 0.75rem; }
-    .expand-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: var(--primary-light); flex-shrink: 0; }
-    .expand-name { font-size: 14px; font-weight: 700; color: var(--text); }
-    .expand-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .expand-chevron { font-size: 12px; color: var(--text-muted); transition: transform 0.25s; flex-shrink: 0; }
-    .expand-card.open .expand-chevron { transform: rotate(180deg); }
-    .expand-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-    .expand-card.open .expand-body { max-height: 600px; }
-    .expand-inner { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--border-light); }
-    .detail-group { margin-top: 1rem; }
-    .detail-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--primary); margin-bottom: 6px; }
-    .detail-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-    .detail-list { list-style: none; padding: 0; }
-    .detail-list li { font-size: 13px; color: var(--text-secondary); padding: 4px 0 4px 18px; position: relative; line-height: 1.5; }
-    .detail-list li::before { content: ""; position: absolute; left: 0; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); opacity: 0.5; }
-    .detail-code { font-family: 'JetBrains Mono',monospace; font-size: 12px; background: var(--bg-secondary); border: 1px solid var(--border); padding: 2px 8px; border-radius: 4px; color: var(--primary); }
-    .detail-badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); margin-right: 4px; margin-bottom: 4px; }
-
-    /* AGENT CARD */
-    .agent-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm); transition: all 0.2s; }
-    .agent-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-    .agent-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
-    .agent-emoji { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: var(--primary-light); flex-shrink: 0; }
-    .agent-info-name { font-size: 14px; font-weight: 700; color: var(--text); }
-    .agent-info-role { font-size: 12px; color: var(--text-muted); }
-    .agent-principle { font-size: 12px; color: var(--text-secondary); background: var(--bg-secondary); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--primary); line-height: 1.5; margin-bottom: 0.6rem; }
-    .agent-eng {
-      font-size: 11px; color: var(--text-muted); padding: 6px 10px;
-      border-radius: 6px; background: var(--accent-blue);
-      border: 1px solid var(--border-light); line-height: 1.5;
-      display: flex; align-items: flex-start; gap: 6px;
+    .ps-label.prob { color: var(--negative); }
+    .ps-label.sol { color: var(--positive); }
+    .ps-title { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .ps-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+    .ps-arrow {
+      display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0;
     }
-    .agent-eng-icon { flex-shrink: 0; font-size: 12px; margin-top: 1px; }
 
-    /* HOOK CARD */
-    .hook-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; box-shadow: var(--shadow-sm); transition: all 0.2s; display: flex; gap: 0.75rem; align-items: flex-start; }
-    .hook-card:hover { box-shadow: var(--shadow-md); }
-    .hook-shield { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; background: var(--primary-light); }
-    .hook-body { min-width: 0; }
-    .hook-name { font-family: 'JetBrains Mono',monospace; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-    .hook-trigger { font-size: 11px; color: var(--primary); font-weight: 600; margin-bottom: 4px; }
-    .hook-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
-
-    /* MCP CARD */
-    .mcp-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm); transition: all 0.2s; text-align: center; }
-    .mcp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-    .mcp-icon { width: 44px; height: 44px; border-radius: 10px; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 22px; background: var(--primary-light); }
-    .mcp-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .mcp-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
-
-    /* SCRIPT CARD */
-    .script-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm); transition: all 0.2s; }
-    .script-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-    .script-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: var(--primary-light); margin-bottom: 0.75rem; }
-    .script-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .script-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
-
-    /* TABLE */
-    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius); border: 1px solid var(--border); }
-    .tbl { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
-    .tbl th { background: var(--bg-secondary); padding: 10px 14px; text-align: left; font-weight: 700; color: var(--text); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); }
-    .tbl td { padding: 10px 14px; border-bottom: 1px solid var(--border-light); color: var(--text-secondary); vertical-align: top; }
-    .tbl tbody tr:last-child td { border-bottom: none; }
-    .tbl tbody tr:hover { background: var(--bg-secondary); }
-    .tbl code { font-family: 'JetBrains Mono',monospace; font-size: 12px; background: var(--primary-light); padding: 1px 6px; border-radius: 4px; color: var(--primary); }
-
-    /* COLLAPSIBLE */
-    .collapsible-trigger {
-      width: 100%; padding: 1rem 1.25rem; cursor: pointer;
-      background: var(--bg-secondary); border: 1px solid var(--border);
-      border-radius: var(--radius); font-size: 14px; font-weight: 700;
-      color: var(--text); display: flex; align-items: center;
-      justify-content: space-between; transition: all 0.2s; font-family: inherit;
+    /* Architecture flow */
+    .arch-pipeline { display: flex; align-items: center; gap: 0; justify-content: center; flex-wrap: wrap; }
+    .arch-stage {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; min-width: 180px; text-align: center;
+      transition: all 0.3s; position: relative;
     }
-    .collapsible-trigger:hover { border-color: var(--primary); color: var(--primary); }
-    .collapsible-chevron { font-size: 12px; color: var(--text-muted); transition: transform 0.25s; }
-    .collapsible-trigger.open .collapsible-chevron { transform: rotate(180deg); }
-    .collapsible-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-    .collapsible-body.open { max-height: 2000px; }
-    .appendix-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(100%,280px),1fr)); gap: 1rem; padding-top: 1rem; }
-    .appendix-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
-    .appendix-card h4 { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem; }
-    .appendix-card li, .appendix-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-    .appendix-list { list-style: none; padding: 0; }
-    .appendix-list li { padding: 3px 0 3px 16px; position: relative; }
-    .appendix-list li::before { content: ""; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); opacity: 0.4; }
-
-    /* USE CASE */
-    .usecase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 1.5rem; }
-    .usecase-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
-      overflow: hidden; box-shadow: var(--shadow); transition: all 0.2s;
-    }
-    .usecase-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-    .usecase-header {
-      padding: 1.25rem 1.5rem 1rem;
-      border-bottom: 1px solid var(--border-light);
-      display: flex; align-items: flex-start; gap: 1rem;
-    }
-    .usecase-num {
-      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    .arch-stage:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); border-color: var(--accent); }
+    .arch-stage-icon {
+      width: 44px; height: 44px; border-radius: 12px; margin: 0 auto 10px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 800; color: #fff;
     }
-    .usecase-num.c1 { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
-    .usecase-num.c2 { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
-    .usecase-num.c3 { background: linear-gradient(135deg, #dc2626, #ea580c); }
-    .usecase-title { font-size: 15px; font-weight: 750; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
-    .usecase-subtitle { font-size: 12px; color: var(--text-muted); }
-    .usecase-body { padding: 1.25rem 1.5rem; }
-    .usecase-tags { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-bottom: 1rem; }
-    .usecase-tag {
-      padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
-      background: var(--primary-light); color: var(--primary); border: 1px solid rgba(79,70,229,0.15);
+    .arch-stage-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+    .arch-stage-items { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; }
+    .arch-connector {
+      width: 40px; display: flex; align-items: center; justify-content: center;
+      color: var(--accent); flex-shrink: 0;
     }
-    [data-theme="dark"] .usecase-tag { border-color: rgba(129,140,248,0.2); }
-    .flow-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 1.25rem; }
-    .flow-step { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.5rem 0; position: relative; }
-    .flow-step:not(:last-child)::after {
-      content: ''; position: absolute; left: 13px; top: 32px;
-      width: 2px; height: calc(100% - 8px); background: var(--border); border-radius: 1px;
+    .arch-connector svg { animation: pulse 2s ease-in-out infinite; }
+
+    /* Command table */
+    .cmd-table { width: 100%; border-collapse: collapse; }
+    .cmd-table th {
+      text-align: left; padding: 10px 14px; font-size: 0.7rem;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--text-secondary); border-bottom: 2px solid var(--border);
     }
-    .flow-dot {
-      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    .cmd-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    .cmd-table tbody tr { transition: background 0.15s; }
+    .cmd-table tbody tr:hover td { background: var(--surface-hover); }
+    .cmd-name { font-family: 'Inter', monospace; font-weight: 600; color: var(--accent); font-size: 0.82rem; }
+    .cmd-cat {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .cat-dev { background: rgba(59,130,246,0.12); color: var(--accent); }
+    .cat-ops { background: rgba(16,185,129,0.12); color: var(--positive); }
+    .cat-audit { background: rgba(139,92,246,0.12); color: var(--accent-secondary); }
+    .cat-util { background: rgba(245,158,11,0.12); color: var(--warning); }
+
+    /* Hook cards */
+    .hook-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px; transition: all 0.3s;
+    }
+    .hook-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); border-color: rgba(59,130,246,0.15); }
+    .hook-icon-wrap {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 10px;
+    }
+    .hook-icon-wrap.sec { background: rgba(244,63,94,0.1); color: var(--negative); }
+    .hook-icon-wrap.auto { background: rgba(59,130,246,0.1); color: var(--accent); }
+    .hook-icon-wrap.mon { background: rgba(16,185,129,0.1); color: var(--positive); }
+    .hook-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+    .hook-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Stat cards */
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; text-align: center; transition: all 0.3s;
+    }
+    .stat-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .stat-value { font-size: 2.5rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+
+    /* Chart container */
+    .chart-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; transition: all 0.3s;
+    }
+    .chart-box:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .chart-box-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 12px; }
+    .chart-container { height: 280px; position: relative; }
+
+    /* Project cards */
+    .proj-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px; text-align: center; transition: all 0.3s;
+    }
+    .proj-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(59,130,246,0.1); }
+    .proj-from { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; }
+    .proj-to { font-size: 0.9rem; font-weight: 700; color: var(--accent); }
+
+    /* Install steps */
+    .install-step {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; transition: all 0.3s;
+    }
+    .install-step:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: rgba(59,130,246,0.15); }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(59,130,246,0.12); color: var(--accent);
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px; background: var(--bg-secondary); border: 2px solid var(--border);
-      position: relative; z-index: 1;
+      font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
     }
-    .flow-step.active .flow-dot { border-color: var(--primary); background: var(--primary-light); }
-    .flow-step-content { min-width: 0; padding-top: 3px; }
-    .flow-step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-    .flow-step-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
-    .roi-box {
-      background: var(--accent-green); border: 1px solid rgba(5,150,105,0.2);
-      border-radius: 8px; padding: 0.875rem 1rem;
+    .step-text h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 1px; }
+    .step-text p { font-size: 0.8rem; color: var(--text-secondary); }
+
+    /* Timeline */
+    .tl-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; margin-bottom: 8px; transition: all 0.3s;
     }
-    [data-theme="dark"] .roi-box { border-color: rgba(52,211,153,0.2); }
-    .roi-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--tag-quality); margin-bottom: 6px; }
-    .roi-items { display: flex; flex-direction: column; gap: 4px; }
-    .roi-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-    .roi-label { color: var(--text-secondary); }
-    .roi-value { font-weight: 700; color: var(--tag-quality); white-space: nowrap; }
-    .before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1.25rem; }
-    .ba-box { border-radius: 8px; padding: 0.75rem; }
-    .ba-before { background: var(--accent-rose); border: 1px solid rgba(220,38,38,0.15); }
-    .ba-after { background: var(--accent-blue); border: 1px solid rgba(2,132,199,0.15); }
-    .ba-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
-    .ba-before .ba-label { color: var(--tag-issue); }
-    .ba-after .ba-label { color: var(--secondary); }
-    .ba-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .tl-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: rgba(59,130,246,0.15); }
+    .tl-ver {
+      font-family: 'Inter', monospace; font-size: 0.78rem; font-weight: 700;
+      color: var(--accent); min-width: 52px; padding-top: 1px;
+    }
+    .tl-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+    .tl-hl { color: var(--text); font-weight: 600; }
 
-    /* FOOTER */
-    footer { margin-top: 2rem; padding: 2rem 0; border-top: 1px solid var(--border); }
-    .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; font-size: 12px; color: var(--text-muted); }
-    .footer-meta { display: flex; flex-wrap: wrap; gap: 1.5rem; }
-    .footer-meta span { white-space: nowrap; }
+    /* CTA */
+    .cta-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 48px; text-align: center;
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    .cta-code {
+      font-family: 'Inter', monospace; font-size: 1.05rem;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 32px; display: inline-block;
+      color: var(--accent); font-weight: 500;
+    }
 
-    .divider { height: 1px; background: var(--border); margin: 0; }
-    .fade-up { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    /* Slide nav */
+    .slide-nav {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 8px; z-index: 9998;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 4px 12px; backdrop-filter: blur(12px);
+    }
+    .slide-nav button {
+      width: 32px; height: 32px; border-radius: 6px;
+      background: transparent; border: none; color: var(--text-secondary);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .slide-nav button:hover { color: var(--text); background: var(--surface-hover); }
+    .slide-counter {
+      font-size: 12px; color: var(--text-secondary); font-weight: 500;
+      min-width: 48px; text-align: center;
+    }
 
-    /* RESPONSIVE */
+    /* Feature list with icons */
+    .feat-list { display: flex; flex-direction: column; gap: 12px; }
+    .feat-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 16px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; transition: all 0.3s;
+    }
+    .feat-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .feat-check { color: var(--positive); flex-shrink: 0; margin-top: 2px; }
+    .feat-item p { font-size: 0.88rem; }
+    .feat-item strong { font-weight: 600; }
+
     @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .nav-hamburger { display: flex; }
-      .stat { padding: 5px 10px; font-size: 12px; }
-      .arch-node { padding: 8px 12px; font-size: 12px; }
-      .filters { gap: 0.375rem; }
-      .filter-btn { padding: 5px 10px; font-size: 11px; }
+      .slide { padding: 32px 24px; }
+      .hero-title { font-size: 2.5rem; }
+      h2 { font-size: 2rem; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 12px; }
+      .arch-pipeline { flex-direction: column; }
+      .arch-connector { transform: rotate(90deg); width: auto; height: 30px; }
+      .ps-row { flex-direction: column; }
+      .ps-arrow { transform: rotate(90deg); }
+      .hero-stats { flex-direction: column; gap: 16px; }
     }
-    @media (max-width: 480px) {
-      .stats-row { gap: 0.375rem; }
-      .stat { font-size: 11px; padding: 4px 8px; gap: 4px; }
-      .stat-icon { font-size: 12px; }
-      .grid, .grid-2, .grid-3 { grid-template-columns: 1fr; }
-      .arch-row { gap: 0.5rem; }
-      .arch-node { padding: 6px 10px; font-size: 11px; }
-      .tbl { font-size: 12px; }
-      .tbl th, .tbl td { padding: 8px 10px; }
+    @media (max-width: 375px) {
+      body { overflow-x: hidden; }
+      .slide { padding: 24px 16px; }
+      .hero-title { font-size: 2rem; }
+      .stat-value { font-size: 2rem; }
     }
-    @media (min-width: 769px) { .mobile-menu { display: none !important; } }
   </style>
 </head>
 <body>
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="#" class="nav-brand">naa</a>
-      <div class="nav-links">
-        <a href="#commands">커맨드</a>
-        <a href="#agents">에이전트</a>
-        <a href="#hooks">훅</a>
-        <a href="#scripts">스크립트</a>
-        <a href="#mcp">MCP</a>
-        <a href="#evals">Evals</a>
-        <a href="#principles">원칙</a>
-        <a href="#projects">프로젝트</a>
-        <a href="#usecases" style="color: var(--primary); font-weight: 700;">활용 사례</a>
-        <button class="theme-btn" id="themeToggle" title="테마 전환">&#9790;</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:0.5rem;">
-        <button class="theme-btn" id="themeToggleMobile" title="테마 전환" style="display:none;">&#9790;</button>
-        <button class="nav-hamburger" id="hamburger" aria-label="메뉴"><span></span><span></span><span></span></button>
-      </div>
+  <a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:10000;padding:8px 16px;background:var(--accent);color:white;text-decoration:none;border-radius:4px;" onfocus="this.style.cssText='position:fixed;left:16px;top:16px;z-index:10000;padding:8px 16px;background:var(--accent);color:white;text-decoration:none;border-radius:4px;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to content</a>
+
+  <div class="viz-menu">
+    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown">
+      <button onclick="cycleTheme()"><span id="themeIcon">&#127769;</span><span id="themeLabel">Dark</span></button>
+      <button onclick="downloadImage()"><span>&#128229;</span><span>Download PNG</span></button>
+      <button onclick="window.print()"><span>&#128424;</span><span>Print / PDF</span></button>
     </div>
-  </nav>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#commands">커맨드</a>
-    <a href="#agents">에이전트</a>
-    <a href="#hooks">훅</a>
-    <a href="#scripts">스크립트</a>
-    <a href="#mcp">MCP</a>
-    <a href="#evals">Evals</a>
-    <a href="#principles">원칙</a>
-    <a href="#projects">프로젝트</a>
-    <a href="#usecases">활용 사례</a>
   </div>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="wrap">
-        <div class="hero-content">
-          <span class="hero-version">v1.36.3</span>
-          <span class="hero-version" style="background: var(--accent-green); color: var(--tag-quality); border-color: rgba(5,150,105,0.2); margin-left: 0.5rem;">rev1 · 활용 사례 추가</span>
-          <h1 class="hero-title">naa <span>Feature Showcase</span></h1>
-          <p class="hero-sub">Automated workflow orchestration for code review, git flow, issue analysis, audit & deployment</p>
-          <p class="hero-desc">Deploy via <code>install.bat</code> — 3단계 배포(백업→로그카피→설정병합)로 <code>~/.claude/</code>에 글로벌 설치. 무결성 자동 검증 지원.</p>
-          <div class="stats-row">
-            <div class="stat"><span class="stat-icon">⚡</span> 커맨드 13</div>
-            <div class="stat"><span class="stat-icon">🔄</span> 에이전트 4+α</div>
-            <div class="stat"><span class="stat-icon">🛡️</span> 훅 10</div>
-            <div class="stat"><span class="stat-icon">📝</span> 스크립트 4</div>
-            <div class="stat"><span class="stat-icon">🧪</span> 프로젝트 6</div>
-            <div class="stat" style="border-color: var(--tag-quality); color: var(--tag-quality);"><span class="stat-icon">✨</span> 실사례 3</div>
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+  <main id="main-content" role="main">
+    <div class="slides-wrapper">
+      <div class="slides-container" id="slidesContainer">
+
+        <!-- SLIDE 1: HERO -->
+        <section class="slide slide-hero" aria-label="Title slide">
+          <div class="slide-inner">
+            <div class="hero-badge sa d1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Claude Code Extension
+            </div>
+            <h1 class="hero-title sa d2">nepes-ai-agents</h1>
+            <p class="hero-subtitle sa d3">
+              Claude Code 기반 AI 에이전트 관리 저장소.<br>
+              반복 작업을 자동화하고, 팀 전체의 일관된 품질을 유지합니다.
+            </p>
+            <span class="hero-version sa d4">v1.36.3</span>
+            <div class="hero-stats sa d5">
+              <div class="hero-stat-item">
+                <div class="hero-stat-num" data-count="13">0</div>
+                <div class="hero-stat-label">커맨드</div>
+              </div>
+              <div class="hero-stat-item">
+                <div class="hero-stat-num" data-count="6">0</div>
+                <div class="hero-stat-label">지원 프로젝트</div>
+              </div>
+              <div class="hero-stat-item">
+                <div class="hero-stat-num" data-count="10">0</div>
+                <div class="hero-stat-label">안전 Hook</div>
+              </div>
+              <div class="hero-stat-item">
+                <div class="hero-stat-num" data-count="80" data-suffix="+">0</div>
+                <div class="hero-stat-label">릴리스</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
-
-    <!-- COMMANDS -->
-    <section id="commands">
-      <div class="wrap">
-        <div class="section-label">⚡ 커맨드</div>
-        <h2 class="section-title">13 Commands</h2>
-        <p class="section-desc">Quick/Deep/Full 모드 코드 리뷰, Git Flow 자동화, 다단계 로그 분석, 형상 감사 및 보고</p>
-
-        <div class="filters">
-          <button class="filter-btn active" data-filter="all">모두</button>
-          <button class="filter-btn" data-filter="quality">코드 품질</button>
-          <button class="filter-btn" data-filter="git">Git 자동화</button>
-          <button class="filter-btn" data-filter="issue">이슈 분석</button>
-          <button class="filter-btn" data-filter="audit">감사/품질</button>
-          <button class="filter-btn" data-filter="report">보고</button>
-          <button class="filter-btn" data-filter="workflow">워크플로우</button>
-          <button class="filter-btn" data-filter="util">유틸리티</button>
-          <button class="filter-btn" data-filter="special">특수 분석</button>
-        </div>
-
-        <div class="grid">
-          <!-- 코드 품질 -->
-          <div class="cmd-card" data-category="quality">
-            <span class="cmd-tag quality">코드 품질</span>
-            <div class="cmd-name">/code-review</div>
-            <div class="cmd-desc">Quick/Deep/Full 모드 코드 리뷰. 4관점(품질/로직/보안/성능) 멀티레이어 분석</div>
+        <!-- SLIDE 2: PROBLEM & SOLUTION -->
+        <section class="slide slide-content" aria-label="Problem and Solution">
+          <div class="slide-inner">
+            <p class="section-label sa">Why</p>
+            <h2 class="sa d1" style="margin-bottom:32px;">해결하는 문제들</h2>
+            <div class="ps-row sa d2">
+              <div class="ps-card problem">
+                <p class="ps-label prob">Problem</p>
+                <p class="ps-title">Git 규칙 불일치</p>
+                <p class="ps-desc">커밋, 브랜치, 태그 규칙이 프로젝트마다 다름</p>
+              </div>
+              <div class="ps-arrow"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+              <div class="ps-card solution">
+                <p class="ps-label sol">Solution</p>
+                <p class="ps-title">Git 워크플로우 에이전트</p>
+                <p class="ps-desc">프로젝트 자동 감지, 브랜치 전략, 버전 체계 일괄 처리</p>
+              </div>
+            </div>
+            <div class="ps-row sa d3">
+              <div class="ps-card problem">
+                <p class="ps-label prob">Problem</p>
+                <p class="ps-title">코드 리뷰 품질 편차</p>
+                <p class="ps-desc">리뷰어마다 관점이 달라 놓치는 부분 발생</p>
+              </div>
+              <div class="ps-arrow"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+              <div class="ps-card solution">
+                <p class="ps-label sol">Solution</p>
+                <p class="ps-title">4관점 자동 리뷰</p>
+                <p class="ps-desc">품질, 로직, 보안, 성능을 빠짐없이 분석</p>
+              </div>
+            </div>
+            <div class="ps-row sa d4">
+              <div class="ps-card problem">
+                <p class="ps-label prob">Problem</p>
+                <p class="ps-title">장애 분석 부담</p>
+                <p class="ps-desc">로그 수집과 근본 원인 추적에 시간 소모</p>
+              </div>
+              <div class="ps-arrow"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+              <div class="ps-card solution">
+                <p class="ps-label sol">Solution</p>
+                <p class="ps-title">5-Why 자동 분석</p>
+                <p class="ps-desc">로그 기반 근본 원인 분석을 단계적 자동 수행</p>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <div class="cmd-card" data-category="quality">
-            <span class="cmd-tag quality">코드 품질</span>
-            <div class="cmd-name">/pr-review</div>
-            <div class="cmd-desc">GitHub PR 분석 및 4관점 코드 리뷰 (gh CLI 연동)</div>
+        <!-- SLIDE 3: ARCHITECTURE -->
+        <section class="slide slide-content" aria-label="Architecture">
+          <div class="slide-inner">
+            <p class="section-label sa">Architecture</p>
+            <h2 class="sa d1" style="margin-bottom:36px;">동작 구조</h2>
+            <div class="arch-pipeline">
+              <div class="arch-stage sa-scale d2">
+                <div class="arch-stage-icon" style="background:rgba(59,130,246,0.1); color:var(--accent);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <p class="arch-stage-title">사용자 입력</p>
+                <p class="arch-stage-items">/code-review<br>/git-workflow<br>/issue-analyze</p>
+              </div>
+              <div class="arch-connector sa d3"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+              <div class="arch-stage sa-scale d4">
+                <div class="arch-stage-icon" style="background:rgba(139,92,246,0.1); color:var(--accent-secondary);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <p class="arch-stage-title">Commands</p>
+                <p class="arch-stage-items">commands/*.md<br>진입점 + Phase 지정</p>
+              </div>
+              <div class="arch-connector sa d5"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+              <div class="arch-stage sa-scale d6">
+                <div class="arch-stage-icon" style="background:rgba(16,185,129,0.1); color:var(--positive);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                </div>
+                <p class="arch-stage-title">Agents</p>
+                <p class="arch-stage-items">Phase 1~N 실행<br>서브에이전트 병렬</p>
+              </div>
+              <div class="arch-connector sa d7"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+              <div class="arch-stage sa-scale d8">
+                <div class="arch-stage-icon" style="background:rgba(244,63,94,0.1); color:var(--negative);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <p class="arch-stage-title">Hooks</p>
+                <p class="arch-stage-items">PreToolUse 차단<br>PostToolUse 자동화</p>
+              </div>
+            </div>
+            <div class="grid-4 sa d9" style="margin-top:32px;">
+              <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; text-align:center;">
+                <p style="font-size:0.7rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.06em;">Scripts</p>
+                <p style="font-size:0.85rem; font-weight:500; margin-top:4px;">상태 라인, 통계</p>
+              </div>
+              <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; text-align:center;">
+                <p style="font-size:0.7rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.06em;">Skills</p>
+                <p style="font-size:0.85rem; font-weight:500; margin-top:4px;">자연어 트리거</p>
+              </div>
+              <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; text-align:center;">
+                <p style="font-size:0.7rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.06em;">Evals</p>
+                <p style="font-size:0.85rem; font-weight:500; margin-top:4px;">골든 셋 검증</p>
+              </div>
+              <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px; text-align:center;">
+                <p style="font-size:0.7rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.06em;">Log Analyzer</p>
+                <p style="font-size:0.85rem; font-weight:500; margin-top:4px;">FTP 로그 수집</p>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <!-- Git 자동화 -->
-          <div class="cmd-card" data-category="git">
-            <span class="cmd-tag git">Git 자동화</span>
-            <div class="cmd-name">/git-workflow</div>
-            <div class="cmd-desc">Git Flow + 3단계 버전 관리. Phase 1~4 오케스트레이션, develop 브랜치 전략, 전체 프로젝트 자동 감지</div>
+        <!-- SLIDE 4: COMMANDS -->
+        <section class="slide slide-content" aria-label="Available commands">
+          <div class="slide-inner">
+            <p class="section-label sa">Commands</p>
+            <h2 class="sa d1" style="margin-bottom:20px;">사용 가능한 커맨드</h2>
+            <div class="sa d2" style="overflow:auto; max-height:62vh;">
+              <table class="cmd-table">
+                <thead><tr><th>커맨드</th><th>분류</th><th>설명</th></tr></thead>
+                <tbody>
+                  <tr><td class="cmd-name">/code-review</td><td><span class="cmd-cat cat-dev">개발</span></td><td>4관점 코드 리뷰 (품질/로직/보안/성능)</td></tr>
+                  <tr><td class="cmd-name">/pr-review</td><td><span class="cmd-cat cat-dev">개발</span></td><td>PR 코드 리뷰 자동화 (gh CLI 연동)</td></tr>
+                  <tr><td class="cmd-name">/git-workflow</td><td><span class="cmd-cat cat-dev">개발</span></td><td>Git 워크플로우 (프로젝트 자동 감지)</td></tr>
+                  <tr><td class="cmd-name">/issue-analyze</td><td><span class="cmd-cat cat-ops">운영</span></td><td>이슈 근본 원인 분석 (5-Why)</td></tr>
+                  <tr><td class="cmd-name">/analyze-log</td><td><span class="cmd-cat cat-ops">운영</span></td><td>장비 로그 분석</td></tr>
+                  <tr><td class="cmd-name">/analyze-secsgem</td><td><span class="cmd-cat cat-ops">운영</span></td><td>SECS/GEM Spec 문서 분석</td></tr>
+                  <tr><td class="cmd-name">/cm-audit</td><td><span class="cmd-cat cat-audit">감사</span></td><td>형상 감사</td></tr>
+                  <tr><td class="cmd-name">/ppqa-audit</td><td><span class="cmd-cat cat-audit">감사</span></td><td>PPQA 셀프 감사</td></tr>
+                  <tr><td class="cmd-name">/monitoring-report</td><td><span class="cmd-cat cat-util">유틸</span></td><td>하네스 모니터링 리포트</td></tr>
+                  <tr><td class="cmd-name">/handoff</td><td><span class="cmd-cat cat-util">유틸</span></td><td>작업 인수인계 문서 생성</td></tr>
+                  <tr><td class="cmd-name">/distill-failures</td><td><span class="cmd-cat cat-util">유틸</span></td><td>실패 패턴 증류</td></tr>
+                  <tr><td class="cmd-name">/review-claudemd</td><td><span class="cmd-cat cat-util">유틸</span></td><td>CLAUDE.md 건강 점검</td></tr>
+                  <tr><td class="cmd-name">/help-cmd</td><td><span class="cmd-cat cat-util">유틸</span></td><td>커맨드 도움말</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+        </section>
 
-          <!-- 이슈 분석 -->
-          <div class="cmd-card" data-category="issue">
-            <span class="cmd-tag issue">이슈 분석</span>
-            <div class="cmd-name">/issue-analyze</div>
-            <div class="cmd-desc">다단계 로그 분석. Phase 0(로그 스캔) ~ Phase 4(보고서 생성). 5-Why 근본 원인 분석</div>
+        <!-- SLIDE 5: COMMANDS CHART -->
+        <section class="slide slide-content" aria-label="Command categories chart">
+          <div class="slide-inner">
+            <p class="section-label sa">Command Analysis</p>
+            <h2 class="sa d1" style="margin-bottom:28px;">커맨드 분류 분석</h2>
+            <div class="grid-2 sa d2">
+              <div class="chart-box" role="img" aria-label="커맨드 카테고리별 분포: 개발 3, 운영 3, 감사 2, 유틸 5">
+                <p class="chart-box-title">카테고리별 분포</p>
+                <div class="chart-container"><canvas id="chartCmdBar"></canvas></div>
+              </div>
+              <div class="chart-box" role="img" aria-label="커맨드 비율 차트">
+                <p class="chart-box-title">카테고리 비율</p>
+                <div class="chart-container"><canvas id="chartCmdDoughnut"></canvas></div>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <div class="cmd-card" data-category="issue">
-            <span class="cmd-tag issue">이슈 분석</span>
-            <div class="cmd-name">/analyze-log</div>
-            <div class="cmd-desc">장비/서버 로그 분석. FTP/Oracle DB 연동, 시간 범위 필터링</div>
+        <!-- SLIDE 6: HOOKS & SAFETY -->
+        <section class="slide slide-content" aria-label="Hooks and Safety">
+          <div class="slide-inner">
+            <p class="section-label sa">Safety Hooks</p>
+            <h2 class="sa d1" style="margin-bottom:28px;">안전 장치</h2>
+            <div class="grid-3">
+              <div class="hook-card sa-scale d2">
+                <div class="hook-icon-wrap sec">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <p class="hook-title">DB Write 차단</p>
+                <p class="hook-desc">INSERT, UPDATE, DELETE 등 DB 쓰기 SQL 자동 감지 및 차단</p>
+              </div>
+              <div class="hook-card sa-scale d3">
+                <div class="hook-icon-wrap sec">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 11-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                </div>
+                <p class="hook-title">위험 명령어 차단</p>
+                <p class="hook-desc">rm -rf, git push --force 등 파괴적 명령어 사전 차단</p>
+              </div>
+              <div class="hook-card sa-scale d4">
+                <div class="hook-icon-wrap sec">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <p class="hook-title">민감 파일 보호</p>
+                <p class="hook-desc">설정 파일, 자격 증명 등 민감 파일 수정 차단</p>
+              </div>
+              <div class="hook-card sa-scale d5">
+                <div class="hook-icon-wrap auto">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <p class="hook-title">대용량 파일 차단</p>
+                <p class="hook-desc">Read 도구 사전 크기 검사로 컨텍스트 낭비 방지</p>
+              </div>
+              <div class="hook-card sa-scale d6">
+                <div class="hook-icon-wrap auto">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                </div>
+                <p class="hook-title">CRLF 자동 변환</p>
+                <p class="hook-desc">.bat/.cmd 파일 생성 시 줄바꿈을 CRLF로 자동 변환</p>
+              </div>
+              <div class="hook-card sa-scale d7">
+                <div class="hook-icon-wrap mon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <p class="hook-title">실패 로깅 & 증류</p>
+                <p class="hook-desc">실패 이벤트 자동 로깅 + 반복 패턴 감지 및 증류</p>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <div class="cmd-card" data-category="issue">
-            <span class="cmd-tag issue">이슈 분석</span>
-            <div class="cmd-name">/distill-failures</div>
-            <div class="cmd-desc">실패 패턴 증류. 14일 주기 자동 트리거, verified 패턴만 CLAUDE.md 영구 규칙 승격, 확증 편향 방지</div>
+        <!-- SLIDE 7: HOOK ANALYSIS CHART -->
+        <section class="slide slide-content" aria-label="Hook analysis">
+          <div class="slide-inner">
+            <p class="section-label sa">Hook Analysis</p>
+            <h2 class="sa d1" style="margin-bottom:28px;">Hook 분류 분석</h2>
+            <div class="grid-2 sa d2">
+              <div class="chart-box" role="img" aria-label="Hook 유형별 분포: 보안 3, 자동화 4, 모니터링 3">
+                <p class="chart-box-title">Hook 유형별 분포</p>
+                <div class="chart-container"><canvas id="chartHookRadar"></canvas></div>
+              </div>
+              <div class="chart-box" role="img" aria-label="Hook 실행 시점 분포">
+                <p class="chart-box-title">실행 시점 분류</p>
+                <div class="chart-container"><canvas id="chartHookTiming"></canvas></div>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <!-- 감사/품질 -->
-          <div class="cmd-card" data-category="audit">
-            <span class="cmd-tag audit">감사/품질</span>
-            <div class="cmd-name">/cm-audit</div>
-            <div class="cmd-desc">형상 감사 — Git 태그 일관성, 버전 정합, 브랜치 검증</div>
+        <!-- SLIDE 8: PROJECT DETECTION -->
+        <section class="slide slide-section" aria-label="Project Detection">
+          <div class="slide-inner" style="text-align:center;">
+            <p class="section-label sa" style="justify-content:center;">Auto Detection</p>
+            <h2 class="sa d1" style="margin-bottom:20px;">프로젝트 자동 감지</h2>
+            <p class="text-secondary sa d2" style="font-size:1.05rem; margin-bottom:36px; max-width:640px; margin-left:auto; margin-right:auto;">
+              <code style="color:var(--accent); font-family:'Inter',monospace;">git remote get-url origin</code> 에서 repo명을 추출하여<br>프로젝트별 워크플로우를 자동으로 적용합니다.
+            </p>
+            <div class="grid-3" style="max-width:720px; margin:0 auto;">
+              <div class="proj-card sa-scale d3"><p class="proj-from">nepes-ai-agents</p><p class="proj-to">NEPES_AI_AGENTS</p></div>
+              <div class="proj-card sa-scale d4"><p class="proj-from">APP_RMSPAGE</p><p class="proj-to">APP_RMSPAGE</p></div>
+              <div class="proj-card sa-scale d5"><p class="proj-from">YTAP</p><p class="proj-to">YTAP</p></div>
+              <div class="proj-card sa-scale d6"><p class="proj-from">RMSSERVER</p><p class="proj-to">RMSSERVER</p></div>
+              <div class="proj-card sa-scale d7"><p class="proj-from">Web_rmspage</p><p class="proj-to">WEB_RMSPAGE</p></div>
+              <div class="proj-card sa-scale d8"><p class="proj-from">YTAP_MANAGER</p><p class="proj-to">YTAP_MANAGER</p></div>
+            </div>
           </div>
+        </section>
 
-          <div class="cmd-card" data-category="audit">
-            <span class="cmd-tag audit">감사/품질</span>
-            <div class="cmd-name">/ppqa-audit</div>
-            <div class="cmd-desc">PPQA 셀프 감사 — 커밋 컨벤션 검증, ITSM 연계 확인</div>
-          </div>
-
-          <!-- 보고 -->
-          <div class="cmd-card" data-category="report">
-            <span class="cmd-tag report">보고</span>
-            <div class="cmd-name">/monitoring-report</div>
-            <div class="cmd-desc">하네스 모니터링 리포트 — 워크플로우 통계, 실패 패턴, eval 결과 집계</div>
-          </div>
-
-          <!-- 워크플로우 -->
-          <div class="cmd-card" data-category="workflow">
-            <span class="cmd-tag workflow">워크플로우</span>
-            <div class="cmd-name">/handoff</div>
-            <div class="cmd-desc">작업 인수인계 문서(HANDOFF.md) 생성. 세션 간 컨텍스트 보존</div>
-          </div>
-
-          <!-- 유틸리티 -->
-          <div class="cmd-card" data-category="util">
-            <span class="cmd-tag util">유틸리티</span>
-            <div class="cmd-name">/review-claudemd</div>
-            <div class="cmd-desc">CLAUDE.md 건강 점검 — 버전 일관성, 규칙 검증, 에이전트 상태 감사</div>
-          </div>
-
-          <div class="cmd-card" data-category="util">
-            <span class="cmd-tag util">유틸리티</span>
-            <div class="cmd-name">/help-cmd</div>
-            <div class="cmd-desc">동적 커맨드 목록 + 버전 표시</div>
-          </div>
-
-          <!-- 특수 분석 -->
-          <div class="cmd-card" data-category="special">
-            <span class="cmd-tag special">특수 분석</span>
-            <div class="cmd-name">/analyze-secsgem</div>
-            <div class="cmd-desc">SECS/GEM Specification PDF/Excel/Word 분석 및 비교</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- AGENTS -->
-    <section id="agents">
-      <div class="wrap">
-        <div class="section-label">🤖 에이전트</div>
-        <h2 class="section-title">4 Core Agents + α</h2>
-        <p class="section-desc">Workflow Orchestrator, Architect, Developer, Code Reviewer, Tester와 추가 특화 에이전트</p>
-
-        <div class="grid">
-          <!-- Architect -->
-          <div class="agent-card">
-            <div class="agent-head">
-              <div class="agent-emoji">🏗️</div>
+        <!-- SLIDE 9: INSTALL -->
+        <section class="slide slide-content" aria-label="Installation">
+          <div class="slide-inner">
+            <p class="section-label sa">Installation</p>
+            <h2 class="sa d1" style="margin-bottom:28px;">설치 방법</h2>
+            <div class="grid-2">
               <div>
-                <div class="agent-info-name">Architect</div>
-                <div class="agent-info-role">설계 및 명세화</div>
+                <div class="install-step sa-left d2">
+                  <div class="step-num">0</div>
+                  <div class="step-text"><h3>백업</h3><p>기존 ~/.claude/ 파일을 _backup/에 보관</p></div>
+                </div>
+                <div class="install-step sa-left d3">
+                  <div class="step-num">1</div>
+                  <div class="step-text"><h3>전체 배포</h3><p>robocopy로 .claude/ 전체 복사</p></div>
+                </div>
+                <div class="install-step sa-left d4">
+                  <div class="step-num">2</div>
+                  <div class="step-text"><h3>설정 병합</h3><p>settings.json, .mcp.json, CLAUDE.md 보존형 병합</p></div>
+                </div>
+                <div class="install-step sa-left d5">
+                  <div class="step-num">3</div>
+                  <div class="step-text"><h3>배포 검증</h3><p>install-verify.js로 서브디렉토리 확인</p></div>
+                </div>
+              </div>
+              <div class="sa-right d3">
+                <div class="feat-list">
+                  <div class="feat-item">
+                    <svg class="feat-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <p><strong>보존형 병합</strong> - 기존 사용자 설정 절대 덮어쓰지 않음</p>
+                  </div>
+                  <div class="feat-item">
+                    <svg class="feat-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <p><strong>마커 기반</strong> - 배포 구간만 추가/갱신, 개인 설정 보존</p>
+                  </div>
+                  <div class="feat-item">
+                    <svg class="feat-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <p><strong>자동 백업</strong> - 덮어쓰기 전 직전 1세대 안전 백업</p>
+                  </div>
+                  <div class="feat-item">
+                    <svg class="feat-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <p><strong>전역 배포</strong> - 한 번 설치로 모든 프로젝트에서 사용</p>
+                  </div>
+                </div>
+                <div style="text-align:center; margin-top:16px;">
+                  <div class="cta-code">git clone && cd nepes-ai-agents && install.bat</div>
+                </div>
               </div>
             </div>
-            <div class="agent-principle">Minimum scope, implementation-ready design</div>
-            <div class="agent-eng">
-              <span class="agent-eng-icon">📋</span>
-              <span><strong>EARS format</strong> — Essential, Absent, Realizable, Signed-off</span>
-            </div>
           </div>
+        </section>
 
-          <!-- Developer -->
-          <div class="agent-card">
-            <div class="agent-head">
-              <div class="agent-emoji">💻</div>
-              <div>
-                <div class="agent-info-name">Developer</div>
-                <div class="agent-info-role">구현 및 최소 변경</div>
+        <!-- SLIDE 10: STATS & CHARTS -->
+        <section class="slide slide-content" aria-label="Project stats">
+          <div class="slide-inner">
+            <p class="section-label sa">Stats</p>
+            <h2 class="sa d1" style="margin-bottom:24px;">프로젝트 현황</h2>
+            <div class="grid-2 sa d2">
+              <div class="chart-box" role="img" aria-label="에이전트 운영 현황: 운영 7, 삭제(통합) 18">
+                <p class="chart-box-title">에이전트 현황</p>
+                <div class="chart-container"><canvas id="chartAgentStatus"></canvas></div>
+              </div>
+              <div class="chart-box" role="img" aria-label="버전별 기능 누적 추이">
+                <p class="chart-box-title">버전별 기능 성장</p>
+                <div class="chart-container"><canvas id="chartGrowth"></canvas></div>
               </div>
             </div>
-            <div class="agent-principle">Design-as-truth (Single Source of Truth), minimum change</div>
-            <div class="agent-eng">
-              <span class="agent-eng-icon">🔒</span>
-              <span><strong>OWASP Top 10</strong> — 보안 설계 위험 패턴 제거</span>
+            <div class="grid-2 sa d3" style="margin-top:16px;">
+              <div class="chart-box" role="img" aria-label="디렉토리별 파일 분포">
+                <p class="chart-box-title">디렉토리 구조</p>
+                <div class="chart-container"><canvas id="chartDirPolar"></canvas></div>
+              </div>
+              <div class="chart-box" role="img" aria-label="기능 영역별 커버리지">
+                <p class="chart-box-title">기능 영역 커버리지</p>
+                <div class="chart-container"><canvas id="chartCapability"></canvas></div>
+              </div>
             </div>
           </div>
+        </section>
 
-          <!-- Code Reviewer -->
-          <div class="agent-card">
-            <div class="agent-head">
-              <div class="agent-emoji">👁️</div>
-              <div>
-                <div class="agent-info-name">Code Reviewer</div>
-                <div class="agent-info-role">Diff 기반 검토</div>
-              </div>
-            </div>
-            <div class="agent-principle">False positive elimination, file:line location</div>
-            <div class="agent-eng">
-              <span class="agent-eng-icon">📊</span>
-              <span><strong>4-perspective review</strong> — 품질, 로직, 보안, 성능</span>
+        <!-- SLIDE 11: EVOLUTION -->
+        <section class="slide slide-content" aria-label="Project evolution">
+          <div class="slide-inner">
+            <p class="section-label sa">Evolution</p>
+            <h2 class="sa d1" style="margin-bottom:20px;">주요 진화 과정</h2>
+            <div>
+              <div class="tl-item sa-left d2"><span class="tl-ver">v1.0</span><span class="tl-text"><span class="tl-hl">초기 구성</span> - SECS/GEM Spec 분석 에이전트로 시작</span></div>
+              <div class="tl-item sa-left d3"><span class="tl-ver">v4.0</span><span class="tl-text"><span class="tl-hl">코드 리뷰</span> - 4관점 자동 리뷰 에이전트 추가</span></div>
+              <div class="tl-item sa-left d4"><span class="tl-ver">v11.0</span><span class="tl-text"><span class="tl-hl">보안 Hook</span> - DB write 차단, PR 리뷰, 상태 라인 도입</span></div>
+              <div class="tl-item sa-left d5"><span class="tl-ver">v14.0</span><span class="tl-text"><span class="tl-hl">전역 배포</span> - install.bat 글로벌 배포 시스템 구축</span></div>
+              <div class="tl-item sa-left d6"><span class="tl-ver">v26.0</span><span class="tl-text"><span class="tl-hl">워크플로우 통합</span> - 6개 프로젝트를 단일 에이전트로 통합</span></div>
+              <div class="tl-item sa-left d7"><span class="tl-ver">v1.29</span><span class="tl-text"><span class="tl-hl">하네스 엔지니어링</span> - 6대 요소 개선, checkpoint/log 유틸리티</span></div>
+              <div class="tl-item sa-left d8"><span class="tl-ver">v1.33</span><span class="tl-text"><span class="tl-hl">모니터링 체계</span> - Eval 골든 셋, 워크플로우 통계, 성공률 추적</span></div>
+              <div class="tl-item sa-left d9"><span class="tl-ver">v1.34</span><span class="tl-text"><span class="tl-hl">실패 증류</span> - 반복 실패 패턴 자동 감지 및 증류 메커니즘</span></div>
+              <div class="tl-item sa-left d10"><span class="tl-ver">v1.36</span><span class="tl-text"><span class="tl-hl">자동화 강화</span> - CRLF 자동 변환, 배포 검증 자동화</span></div>
             </div>
           </div>
+        </section>
 
-          <!-- Tester -->
-          <div class="agent-card">
-            <div class="agent-head">
-              <div class="agent-emoji">🧪</div>
-              <div>
-                <div class="agent-info-name">Tester</div>
-                <div class="agent-info-role">테스트 및 검증</div>
-              </div>
+        <!-- SLIDE 12: CLOSING -->
+        <section class="slide slide-hero" aria-label="Closing slide">
+          <div class="slide-inner" style="text-align:center;">
+            <h2 class="sa" style="font-size:3.2rem; margin-bottom:16px;">시작하기</h2>
+            <p class="text-secondary sa d1" style="font-size:1.1rem; margin-bottom:40px; max-width:580px; margin-left:auto; margin-right:auto;">
+              설치 한 번으로 모든 프로젝트에서<br>AI 에이전트를 활용할 수 있습니다.
+            </p>
+            <div class="cta-box sa-scale d2" style="max-width:480px; margin:0 auto;">
+              <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:14px;">Quick Start</p>
+              <div class="cta-code">install.bat</div>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:20px;">
+                그 다음, 아무 프로젝트에서 <code style="color:var(--accent); font-family:'Inter',monospace;">/help-cmd</code> 실행
+              </p>
             </div>
-            <div class="agent-principle">Reproducibility, max 3 production fixes</div>
-            <div class="agent-eng">
-              <span class="agent-eng-icon">🎯</span>
-              <span><strong>EARS→test case 1:1 mapping</strong> — 명세와 테스트 직결</span>
-            </div>
+            <p class="sa d3" style="margin-top:48px; font-size:0.85rem; color:var(--text-secondary);">
+              nepes-ai-agents v1.36.3 &middot; Claude Code Extension
+            </p>
           </div>
-        </div>
+        </section>
+
       </div>
-    </section>
-
-    <!-- HOOKS -->
-    <section id="hooks">
-      <div class="wrap">
-        <div class="section-label">🛡️ 훅</div>
-        <h2 class="section-title">10 Safety & Utility Hooks</h2>
-        <p class="section-desc">PreToolUse, PostToolUse, Notification, Utility 훅으로 안전성과 자동화 강화</p>
-
-        <!-- PreToolUse Hooks -->
-        <div style="margin-bottom: 2rem;">
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 1rem;">PreToolUse 훅 (4)</h3>
-          <div class="grid">
-            <div class="hook-card">
-              <div class="hook-shield">🚫</div>
-              <div class="hook-body">
-                <div class="hook-name">check-dangerous-cmd</div>
-                <div class="hook-trigger">Bash 실행 전</div>
-                <div class="hook-desc">위험 명령어 차단 (rm -rf, mkfs, format 등)</div>
-              </div>
-            </div>
-
-            <div class="hook-card">
-              <div class="hook-shield">🔐</div>
-              <div class="hook-body">
-                <div class="hook-name">check-db-write</div>
-                <div class="hook-trigger">Bash 실행 전</div>
-                <div class="hook-desc">비인가 DB 쓰기 방지</div>
-              </div>
-            </div>
-
-            <div class="hook-card">
-              <div class="hook-shield">📏</div>
-              <div class="hook-body">
-                <div class="hook-name">check-read-size</div>
-                <div class="hook-trigger">Read 실행 전</div>
-                <div class="hook-desc">대용량 파일 읽기 제한</div>
-              </div>
-            </div>
-
-            <div class="hook-card">
-              <div class="hook-shield">✋</div>
-              <div class="hook-body">
-                <div class="hook-name">check-sensitive-write</div>
-                <div class="hook-trigger">Write/Edit 실행 전</div>
-                <div class="hook-desc">민감 파일 수정 차단</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- PostToolUse Hook -->
-        <div style="margin-bottom: 2rem;">
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 1rem;">PostToolUse 훅 (1)</h3>
-          <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(min(100%,300px),1fr));">
-            <div class="hook-card">
-              <div class="hook-shield">🔄</div>
-              <div class="hook-body">
-                <div class="hook-name">auto-crlf</div>
-                <div class="hook-trigger">Write 실행 후</div>
-                <div class="hook-desc">.bat/.cmd 파일 LF→CRLF 자동 변환</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Notification Hook -->
-        <div style="margin-bottom: 2rem;">
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 1rem;">Notification 훅 (1)</h3>
-          <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(min(100%,300px),1fr));">
-            <div class="hook-card">
-              <div class="hook-shield">📢</div>
-              <div class="hook-body">
-                <div class="hook-name">post-compact-notice</div>
-                <div class="hook-trigger">컨텍스트 압축 후</div>
-                <div class="hook-desc">압축 알림 + HANDOFF.md 생성 권장</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Utility Hooks -->
-        <div>
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 1rem;">Utility 훅 (4)</h3>
-          <div class="grid">
-            <div class="hook-card">
-              <div class="hook-shield">📌</div>
-              <div class="hook-body">
-                <div class="hook-name">checkpoint</div>
-                <div class="hook-trigger">워크플로우 중</div>
-                <div class="hook-desc">Phase 체크포인트 영속화</div>
-              </div>
-            </div>
-
-            <div class="hook-card">
-              <div class="hook-shield">📝</div>
-              <div class="hook-body">
-                <div class="hook-name">log-workflow</div>
-                <div class="hook-trigger">워크플로우 중</div>
-                <div class="hook-desc">실행 로그 JSONL 기록</div>
-              </div>
-            </div>
-
-            <div class="hook-card">
-              <div class="hook-shield">💥</div>
-              <div class="hook-body">
-                <div class="hook-name">failure-logger</div>
-                <div class="hook-trigger">실패 발생 시</div>
-                <div class="hook-desc">실패 이벤트 로깅 + 자동 로테이션 (512KB)</div>
-              </div>
-            </div>
-
-            <div class="hook-card">
-              <div class="hook-shield">🔍</div>
-              <div class="hook-body">
-                <div class="hook-name">failure-registry</div>
-                <div class="hook-trigger">실패 패턴 관리</div>
-                <div class="hook-desc">반복 실패 패턴 감지 + 증류</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCRIPTS -->
-    <section id="scripts">
-      <div class="wrap">
-        <div class="section-label">📄 스크립트</div>
-        <h2 class="section-title">4 Utility Scripts</h2>
-        <p class="section-desc">상태 표시, 무결성 검증, 통계 집계, Eval 자동 실행</p>
-
-        <div class="grid">
-          <div class="script-card">
-            <div class="script-icon">📊</div>
-            <div class="script-name">status-line.js</div>
-            <div class="script-desc">커스텀 상태 라인 표시</div>
-          </div>
-
-          <div class="script-card">
-            <div class="script-icon">✅</div>
-            <div class="script-name">integrity-check.js</div>
-            <div class="script-desc">연동 무결성 자동 검증 (--verbose 지원)</div>
-          </div>
-
-          <div class="script-card">
-            <div class="script-icon">📈</div>
-            <div class="script-name">workflow-stats.js</div>
-            <div class="script-desc">워크플로우 실행 통계 집계</div>
-          </div>
-
-          <div class="script-card">
-            <div class="script-icon">🧪</div>
-            <div class="script-name">eval-runner.js</div>
-            <div class="script-desc">Eval 골든 셋 자동 실행기 (git-workflow 7케이스)</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MCP -->
-    <section id="mcp">
-      <div class="wrap">
-        <div class="section-label">🔌 MCP</div>
-        <h2 class="section-title">2 Project-Configured Servers</h2>
-        <p class="section-desc">프로젝트 레벨 .mcp.json에서 관리되는 MCP 서버. 사용자 레벨 MCP 서버(Oracle DB, Obsidian 등)는 settings.json에서 활성화 가능</p>
-
-        <div class="grid">
-          <div class="mcp-card">
-            <div class="mcp-icon">🤔</div>
-            <div class="mcp-name">sequential-thinking</div>
-            <div class="mcp-desc">Chain-of-thought 추론 및 복잡한 문제 해결을 위한 구조화된 사고 프로세스</div>
-          </div>
-
-          <div class="mcp-card">
-            <div class="mcp-icon">📚</div>
-            <div class="mcp-name">context7</div>
-            <div class="mcp-desc">프로그래밍 라이브러리/프레임워크 문서 및 예제 접근</div>
-          </div>
-        </div>
-
-        <div style="margin-top: 2rem; padding: 1.25rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
-          <strong>사용자 레벨 MCP 서버:</strong> settings.json을 통해 Oracle DB (읽기 전용), Obsidian, Scheduled Tasks 등 추가 서버 활성화 가능
-        </div>
-      </div>
-    </section>
-
-    <!-- EVALS -->
-    <section id="evals">
-      <div class="wrap">
-        <div class="section-label">🧪 Evals</div>
-        <h2 class="section-title">Golden Test Cases</h2>
-        <p class="section-desc">evals/git-workflow/ 디렉토리에 자동화된 회귀 테스트 7가지 사례</p>
-
-        <div class="table-wrap">
-          <table class="tbl">
-            <thead>
-              <tr>
-                <th>테스트 케이스</th>
-                <th>설명</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>blocked-branch</code></td>
-                <td>차단된 브랜치 처리</td>
-              </tr>
-              <tr>
-                <td><code>feat-minor-bump</code></td>
-                <td>기능 추가 시 마이너 버전 업</td>
-              </tr>
-              <tr>
-                <td><code>feat-resets-patch</code></td>
-                <td>기능 추가 시 패치 버전 리셋</td>
-              </tr>
-              <tr>
-                <td><code>fix-patch-bump</code></td>
-                <td>버그 수정 시 패치 버전 업</td>
-              </tr>
-              <tr>
-                <td><code>improve-patch-bump</code></td>
-                <td>개선 시 패치 버전 업</td>
-              </tr>
-              <tr>
-                <td><code>major-version</code></td>
-                <td>메이저 버전 업</td>
-              </tr>
-              <tr>
-                <td><code>normal-branch</code></td>
-                <td>일반 브랜치 처리</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ENGINEERING PRINCIPLES -->
-    <section id="principles">
-      <div class="wrap">
-        <div class="section-label">⚙️ 원칙</div>
-        <h2 class="section-title">Engineering Principles</h2>
-        <p class="section-desc">Architecture Decision Records (DESIGN.md)에서 정의한 핵심 설계 원칙</p>
-
-        <button class="collapsible-trigger" onclick="toggleCollapsible(event)">
-          모든 원칙 펼치기
-          <span class="collapsible-chevron">▼</span>
-        </button>
-        <div class="collapsible-body">
-          <div class="appendix-grid">
-            <div class="appendix-card">
-              <h4>1. Phase 기반 워크플로우</h4>
-              <p>Lazy load로 토큰 최소화, 체크포인트 기반 재개, Phase별 독립 수정</p>
-            </div>
-
-            <div class="appendix-card">
-              <h4>2. Hook 기반 안전 장치</h4>
-              <p>프롬프트 규칙 대신 Node.js PreToolUse Hook으로 우회 불가 차단 (exit code 2)</p>
-            </div>
-
-            <div class="appendix-card">
-              <h4>3. JSONL 로그 포맷</h4>
-              <p>Append-only, 한 줄 손상 격리, 스트림 처리 가능</p>
-            </div>
-
-            <div class="appendix-card">
-              <h4>4. 파일 기반 타이머</h4>
-              <p>Phase별 별도 프로세스 → 메모리 변수 대신 .timers/ 파일</p>
-            </div>
-
-            <div class="appendix-card">
-              <h4>5. Develop 브랜치 전략</h4>
-              <p>feature → develop → main 단계별 검증 (Git Flow)</p>
-            </div>
-
-            <div class="appendix-card">
-              <h4>6. 프로젝트 자동 감지</h4>
-              <p>git remote URL 기반 자동 식별 → DX 개선</p>
-            </div>
-
-            <div class="appendix-card">
-              <h4>7. 실패 메모리 3단계</h4>
-              <p>기록(JSONL) → 컨텍스트 주입 → CLAUDE.md 영구 규칙 승격 (3회 반복 시)</p>
-            </div>
-
-            <div class="appendix-card">
-              <h4>8. 외부 데이터 격리</h4>
-              <p>&lt;external_data&gt; 래퍼로 프롬프트 인젝션 방어</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects">
-      <div class="wrap">
-        <div class="section-label">📦 프로젝트</div>
-        <h2 class="section-title">6 Integration Projects</h2>
-        <p class="section-desc">naa와 연동되는 실제 프로젝트 및 시스템</p>
-
-        <div class="grid">
-          <div class="expand-card">
-            <div class="expand-header" onclick="toggleExpandCard(event)">
-              <div class="expand-left">
-                <div class="expand-icon">🔍</div>
-                <div>
-                  <div class="expand-name">Issue Analysis</div>
-                  <div class="expand-role">로그 분석 및 근본 원인 진단</div>
-                </div>
-              </div>
-              <span class="expand-chevron">▶</span>
-            </div>
-            <div class="expand-body">
-              <div class="expand-inner">
-                <div class="detail-group">
-                  <div class="detail-label">명령어</div>
-                  <div class="detail-text">/issue-analyze, /analyze-log, /distill-failures</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">통합</div>
-                  <div class="detail-text">FTP, Oracle DB, JSONL 로그 포맷</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">특징</div>
-                  <ul class="detail-list">
-                    <li>5-Why 근본 원인 분석</li>
-                    <li>14일 주기 자동 트리거</li>
-                    <li>실패 패턴 영구 규칙 승격</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="expand-card">
-            <div class="expand-header" onclick="toggleExpandCard(event)">
-              <div class="expand-left">
-                <div class="expand-icon">📝</div>
-                <div>
-                  <div class="expand-name">Code Review</div>
-                  <div class="expand-role">코드 품질 및 보안 검토</div>
-                </div>
-              </div>
-              <span class="expand-chevron">▶</span>
-            </div>
-            <div class="expand-body">
-              <div class="expand-inner">
-                <div class="detail-group">
-                  <div class="detail-label">명령어</div>
-                  <div class="detail-text">/code-review, /pr-review</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">모드</div>
-                  <div class="detail-text">Quick, Deep, Full</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">4관점 분석</div>
-                  <ul class="detail-list">
-                    <li>품질 (Quality)</li>
-                    <li>로직 (Logic)</li>
-                    <li>보안 (Security)</li>
-                    <li>성능 (Performance)</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="expand-card">
-            <div class="expand-header" onclick="toggleExpandCard(event)">
-              <div class="expand-left">
-                <div class="expand-icon">🌿</div>
-                <div>
-                  <div class="expand-name">Git Workflow</div>
-                  <div class="expand-role">Git Flow + 자동 버전 관리</div>
-                </div>
-              </div>
-              <span class="expand-chevron">▶</span>
-            </div>
-            <div class="expand-body">
-              <div class="expand-inner">
-                <div class="detail-group">
-                  <div class="detail-label">명령어</div>
-                  <div class="detail-text">/git-workflow</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">3단계 버전 관리</div>
-                  <div class="detail-text">Semantic Versioning (major.minor.patch)</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">브랜치 전략</div>
-                  <ul class="detail-list">
-                    <li>feature → develop → main</li>
-                    <li>Phase 1~4 오케스트레이션</li>
-                    <li>전체 프로젝트 자동 감지</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="expand-card">
-            <div class="expand-header" onclick="toggleExpandCard(event)">
-              <div class="expand-left">
-                <div class="expand-icon">✅</div>
-                <div>
-                  <div class="expand-name">Quality Audit</div>
-                  <div class="expand-role">형상 관리 및 PPQA 감사</div>
-                </div>
-              </div>
-              <span class="expand-chevron">▶</span>
-            </div>
-            <div class="expand-body">
-              <div class="expand-inner">
-                <div class="detail-group">
-                  <div class="detail-label">명령어</div>
-                  <div class="detail-text">/cm-audit, /ppqa-audit</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">CM 감사</div>
-                  <ul class="detail-list">
-                    <li>Git 태그 일관성</li>
-                    <li>버전 정합</li>
-                    <li>브랜치 검증</li>
-                  </ul>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">PPQA 감사</div>
-                  <ul class="detail-list">
-                    <li>커밋 컨벤션 검증</li>
-                    <li>ITSM 연계 확인</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="expand-card">
-            <div class="expand-header" onclick="toggleExpandCard(event)">
-              <div class="expand-left">
-                <div class="expand-icon">📊</div>
-                <div>
-                  <div class="expand-name">Monitoring & Reporting</div>
-                  <div class="expand-role">워크플로우 통계 및 실패 분석</div>
-                </div>
-              </div>
-              <span class="expand-chevron">▶</span>
-            </div>
-            <div class="expand-body">
-              <div class="expand-inner">
-                <div class="detail-group">
-                  <div class="detail-label">명령어</div>
-                  <div class="detail-text">/monitoring-report, /review-claudemd</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">모니터링</div>
-                  <ul class="detail-list">
-                    <li>워크플로우 통계</li>
-                    <li>실패 패턴 분석</li>
-                    <li>Eval 결과 집계</li>
-                  </ul>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">CLAUDE.md 검증</div>
-                  <ul class="detail-list">
-                    <li>버전 일관성</li>
-                    <li>규칙 검증</li>
-                    <li>에이전트 상태 감사</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="expand-card">
-            <div class="expand-header" onclick="toggleExpandCard(event)">
-              <div class="expand-left">
-                <div class="expand-icon">🔄</div>
-                <div>
-                  <div class="expand-name">Deployment & Handoff</div>
-                  <div class="expand-role">설치 자동화 및 컨텍스트 보존</div>
-                </div>
-              </div>
-              <span class="expand-chevron">▶</span>
-            </div>
-            <div class="expand-body">
-              <div class="expand-inner">
-                <div class="detail-group">
-                  <div class="detail-label">설치 시스템</div>
-                  <div class="detail-text"><code>install.bat</code> 3단계: backup → robocopy deploy → settings merge</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">검증</div>
-                  <div class="detail-text"><code>install-verify.js</code> 자동 무결성 검증</div>
-                </div>
-                <div class="detail-group">
-                  <div class="detail-label">명령어</div>
-                  <div class="detail-text">/handoff — HANDOFF.md 생성 및 세션 간 컨텍스트 보존</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- USE CASES -->
-    <section id="usecases">
-      <div class="wrap">
-        <div class="section-label">✨ 활용 사례</div>
-        <h2 class="section-title">Real-World Use Cases</h2>
-        <p class="section-desc">nepes-ai-agents를 현업에서 실제 활용한 사례. 반도체 설비 개발부터 알람 모니터링, 이슈 분석까지.</p>
-
-        <div class="usecase-grid">
-
-          <!-- Case 1: 신규 설비 YTAP 개발 -->
-          <div class="usecase-card">
-            <div class="usecase-header">
-              <div class="usecase-num c1">01</div>
-              <div>
-                <div class="usecase-title">신규 설비 YTAP 개발 자동화</div>
-                <div class="usecase-subtitle">Spec 분석 → YTAP 생성 → 실설비 자동화 테스트 → FTP 로그 분석 · 수정</div>
-              </div>
-            </div>
-            <div class="usecase-body">
-              <div class="usecase-tags">
-                <span class="usecase-tag">설비 개발</span>
-                <span class="usecase-tag">YTAP</span>
-                <span class="usecase-tag">SECS/GEM</span>
-                <span class="usecase-tag">FTP</span>
-                <span class="usecase-tag">/analyze-secsgem</span>
-              </div>
-              <div class="flow-steps">
-                <div class="flow-step active">
-                  <div class="flow-dot">📄</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">Spec 문서 분석</div>
-                    <div class="flow-step-desc">설비 SECS/GEM Spec PDF·Excel 업로드 → /analyze-secsgem으로 자동 파싱 및 메시지 구조 추출</div>
-                  </div>
-                </div>
-                <div class="flow-step active">
-                  <div class="flow-dot">🏗️</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">YTAP 자동 생성</div>
-                    <div class="flow-step-desc">분석 결과를 바탕으로 Architect 에이전트가 신규 설비 YTAP 코드 초안 생성</div>
-                  </div>
-                </div>
-                <div class="flow-step active">
-                  <div class="flow-dot">🧪</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">실설비 자동화 테스트</div>
-                    <div class="flow-step-desc">생성된 YTAP으로 실설비 대상 자동화 테스트 수행</div>
-                  </div>
-                </div>
-                <div class="flow-step active">
-                  <div class="flow-dot">🔍</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">FTP 로그 분석 → 즉시 수정</div>
-                    <div class="flow-step-desc">테스트 중 발생 문제에 대해 FTP 자동 접속, /analyze-log로 로그 분석 후 원인 추적 → 인라인 수정 반복</div>
-                  </div>
-                </div>
-              </div>
-              <div class="roi-box">
-                <div class="roi-title">⚖️ ROI 추정 (보수적)</div>
-                <div class="roi-items">
-                  <div class="roi-item">
-                    <span class="roi-label">YTAP 초안 작성 시간</span>
-                    <span class="roi-value">약 3일 → 1일</span>
-                  </div>
-                  <div class="roi-item">
-                    <span class="roi-label">디버깅 사이클당 소요</span>
-                    <span class="roi-value">2~3시간 → 30분</span>
-                  </div>
-                  <div class="roi-item">
-                    <span class="roi-label">설비 1대 기준 전체 절감</span>
-                    <span class="roi-value" style="color: var(--tag-audit);">약 30~40% 단축</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Case 2: PKG 전설비 알람 데이터 확인 -->
-          <div class="usecase-card">
-            <div class="usecase-header">
-              <div class="usecase-num c2">02</div>
-              <div>
-                <div class="usecase-title">PKG 전설비 알람 데이터 일괄 모니터링</div>
-                <div class="usecase-subtitle">Oracle DB MCP + 자연어 쿼리로 S5F1 알람 수신 여부 일괄 확인</div>
-              </div>
-            </div>
-            <div class="usecase-body">
-              <div class="usecase-tags">
-                <span class="usecase-tag">Oracle DB</span>
-                <span class="usecase-tag">MCP</span>
-                <span class="usecase-tag">S5F1</span>
-                <span class="usecase-tag">자연어 쿼리</span>
-                <span class="usecase-tag">알람 모니터링</span>
-              </div>
-              <div class="before-after">
-                <div class="ba-box ba-before">
-                  <div class="ba-label">⏱ Before</div>
-                  <div class="ba-text">설비마다 직접 접속하여 S5F1 로그 수동 확인<br>— 수십 대 순차 점검</div>
-                </div>
-                <div class="ba-box ba-after">
-                  <div class="ba-label">⚡ After</div>
-                  <div class="ba-text">MCP Oracle DB에 자연어로 한 번에 요청<br>— 전설비 결과 즉시 확인</div>
-                </div>
-              </div>
-              <div class="flow-steps">
-                <div class="flow-step active">
-                  <div class="flow-dot">💬</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">현업 자연어 요청</div>
-                    <div class="flow-step-desc">"PKG 전설비 알람 데이터 정상적으로 올라오는지 확인해줘"</div>
-                  </div>
-                </div>
-                <div class="flow-step active">
-                  <div class="flow-dot">🔌</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">MCP Oracle DB 연동</div>
-                    <div class="flow-step-desc">mcp-oracle 서버를 통해 읽기 전용 쿼리 자동 생성 및 실행</div>
-                  </div>
-                </div>
-                <div class="flow-step active">
-                  <div class="flow-dot">📊</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">결과 요약 보고</div>
-                    <div class="flow-step-desc">설비별 S5F1 알람 수신 여부 표 형태로 정리, 누락 설비 즉시 식별</div>
-                  </div>
-                </div>
-              </div>
-              <div class="roi-box">
-                <div class="roi-title">⚖️ ROI 추정 (보수적)</div>
-                <div class="roi-items">
-                  <div class="roi-item">
-                    <span class="roi-label">기존 수동 확인 소요</span>
-                    <span class="roi-value">설비당 ~5분 × 다수 설비</span>
-                  </div>
-                  <div class="roi-item">
-                    <span class="roi-label">자연어 쿼리 후 소요</span>
-                    <span class="roi-value">전설비 ~3분 이내</span>
-                  </div>
-                  <div class="roi-item">
-                    <span class="roi-label">반복 업무 기준 효과</span>
-                    <span class="roi-value" style="color: var(--tag-audit);">90%+ 시간 절감</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Case 3: SECS/GEM 로그 기반 이슈 분석 -->
-          <div class="usecase-card">
-            <div class="usecase-header">
-              <div class="usecase-num c3">03</div>
-              <div>
-                <div class="usecase-title">SECS/GEM 로그 기반 소프트웨어 이슈 분석</div>
-                <div class="usecase-subtitle">FTP 자동 접속 → 로그 직접 Read → Agent 분석 → Report</div>
-              </div>
-            </div>
-            <div class="usecase-body">
-              <div class="usecase-tags">
-                <span class="usecase-tag">FTP</span>
-                <span class="usecase-tag">SECS/GEM Log</span>
-                <span class="usecase-tag">RMS Log</span>
-                <span class="usecase-tag">/issue-analyze</span>
-                <span class="usecase-tag">5-Why</span>
-              </div>
-              <div class="flow-steps">
-                <div class="flow-step active">
-                  <div class="flow-dot">🚨</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">소프트웨어 이슈 발생</div>
-                    <div class="flow-step-desc">설비 이상 감지 또는 현업 이슈 접수</div>
-                  </div>
-                </div>
-                <div class="flow-step active">
-                  <div class="flow-dot">📡</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">FTP 자동 접속 · 로그 수집</div>
-                    <div class="flow-step-desc">설비 SECS/GEM 로그 + RMS Server RMS 로그를 FTP를 통해 직접 Read</div>
-                  </div>
-                </div>
-                <div class="flow-step active">
-                  <div class="flow-dot">🔬</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">멀티소스 로그 분석</div>
-                    <div class="flow-step-desc">/issue-analyze — Phase 0~4 단계별 분석, 5-Why 근본 원인 추적, 시간 범위 교차 비교</div>
-                  </div>
-                </div>
-                <div class="flow-step active">
-                  <div class="flow-dot">📋</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">이슈 리포트 생성</div>
-                    <div class="flow-step-desc">원인, 영향 범위, 재발 방지 조치 포함한 구조화 보고서 자동 생성</div>
-                  </div>
-                </div>
-              </div>
-              <div class="roi-box">
-                <div class="roi-title">⚖️ ROI 추정 (보수적)</div>
-                <div class="roi-items">
-                  <div class="roi-item">
-                    <span class="roi-label">기존 이슈 분석 소요</span>
-                    <span class="roi-value">2~4시간 (수동)</span>
-                  </div>
-                  <div class="roi-item">
-                    <span class="roi-label">Agent 분석 후 소요</span>
-                    <span class="roi-value">30분 이내</span>
-                  </div>
-                  <div class="roi-item">
-                    <span class="roi-label">분석 품질</span>
-                    <span class="roi-value" style="color: var(--tag-audit);">멀티소스 교차검증 포함</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-      <div class="wrap">
-        <div class="footer-inner">
-          <div style="font-weight: 600;">naa v1.36.3 <span style="font-size:11px; font-weight:600; padding:2px 8px; border-radius:5px; background: var(--accent-green); color: var(--tag-quality); margin-left:6px;">rev1</span></div>
-          <div class="footer-meta">
-            <span>Base Model: Claude Opus (최신 버전)</span>
-            <span>활용 사례 3건 추가</span>
-            <span>Generated: 2026-03-27</span>
-          </div>
-        </div>
-      </div>
-    </footer>
+    </div>
   </main>
 
+  <nav class="slide-nav" aria-label="Slide navigation">
+    <button onclick="prevSlide()" aria-label="Previous slide">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span class="slide-counter" id="slideCounter">1 / 12</span>
+    <button onclick="nextSlide()" aria-label="Next slide">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </nav>
+
   <script>
-    // Theme Toggle
-    function toggleTheme() {
-      const html = document.documentElement;
-      const current = html.getAttribute('data-theme') || 'light';
-      const next = current === 'light' ? 'dark' : 'light';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+    // === Menu ===
+    function toggleMenu() {
+      var dropdown = document.getElementById('vizMenuDropdown');
+      if (dropdown) dropdown.classList.toggle('open');
     }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.viz-menu')) {
+        var dropdown = document.getElementById('vizMenuDropdown');
+        if (dropdown) dropdown.classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var dropdown = document.getElementById('vizMenuDropdown');
+        if (dropdown) dropdown.classList.remove('open');
+      }
+    });
 
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-    document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
-
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
+    // === Theme ===
+    var savedTheme = localStorage.getItem('viz-theme');
+    var currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    function applyTheme(t) {
+      document.documentElement.className = 'theme-' + t;
+      document.getElementById('themeIcon').textContent = t === 'dark' ? '\uD83C\uDF19' : '\u2600\uFE0F';
+      document.getElementById('themeLabel').textContent = t === 'dark' ? 'Dark' : 'Light';
+      localStorage.setItem('viz-theme', t);
+      currentTheme = t;
+      if (typeof onThemeChange === 'function') onThemeChange();
     }
+    function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+    applyTheme(currentTheme);
 
-    // Filter Commands
-    function filterCards(category) {
-      const cards = document.querySelectorAll('.cmd-card');
-      cards.forEach(card => {
-        if (category === 'all' || card.dataset.category === category) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
+    // === Slide Navigation ===
+    var currentSlide = 0;
+    var slides = document.querySelectorAll('.slide');
+    var totalSlides = slides.length;
+    var slideCountersAnimated = {};
+
+    function goToSlide(n) {
+      if (n < 0) n = 0;
+      if (n >= totalSlides) n = totalSlides - 1;
+
+      // Remove active from previous slide
+      slides[currentSlide].classList.remove('active');
+
+      currentSlide = n;
+
+      // Add active to current slide (triggers sa animations)
+      slides[currentSlide].classList.add('active');
+
+      document.getElementById('slidesContainer').style.transform = 'translateX(-' + (currentSlide * 100) + 'vw)';
+      document.getElementById('slideCounter').textContent = (currentSlide + 1) + ' / ' + totalSlides;
+      document.getElementById('progressBar').style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
+
+      // Animate counters on this slide if not done yet
+      if (!slideCountersAnimated[currentSlide]) {
+        var counters = slides[currentSlide].querySelectorAll('[data-count]');
+        if (counters.length > 0) {
+          setTimeout(function() { animateCountersInSlide(currentSlide); }, 400);
+          slideCountersAnimated[currentSlide] = true;
         }
+      }
+
+      // Build charts for this slide if needed
+      buildChartsForSlide(currentSlide);
+    }
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    // Keyboard
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); nextSlide(); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    });
+
+    // Touch
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; });
+    document.addEventListener('touchend', function(e) {
+      var diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+    });
+
+    // Click
+    document.querySelector('.slides-wrapper').addEventListener('click', function(e) {
+      if (e.target.closest('.viz-menu') || e.target.closest('.slide-nav') || e.target.closest('button') || e.target.closest('a')) return;
+      var x = e.clientX / window.innerWidth;
+      x < 0.33 ? prevSlide() : nextSlide();
+    });
+
+    // Init first slide
+    slides[0].classList.add('active');
+    goToSlide(0);
+
+    // === Number Counter ===
+    function animateCountersInSlide(slideIdx) {
+      var els = slides[slideIdx].querySelectorAll('[data-count]');
+      els.forEach(function(el) {
+        if (el.dataset.counted) return;
+        el.dataset.counted = '1';
+        var target = parseFloat(el.dataset.count);
+        var prefix = el.dataset.prefix || '';
+        var suffix = el.dataset.suffix || '';
+        var start = performance.now();
+        var duration = 1400;
+        (function tick(now) {
+          var p = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 4);
+          el.textContent = prefix + Math.round(target * eased).toLocaleString() + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        })(start);
       });
     }
 
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        filterCards(e.target.dataset.filter);
-      });
-    });
+    // === Charts ===
+    var chartsBuiltForSlide = {};
 
-    // Expand Cards
-    function toggleExpandCard(e) {
-      e.currentTarget.closest('.expand-card').classList.toggle('open');
+    function resetCanvas(id) {
+      var old = document.getElementById(id);
+      if (!old) return null;
+      var parent = old.parentNode;
+      var canvas = document.createElement('canvas');
+      canvas.id = id;
+      canvas.setAttribute('role', 'img');
+      canvas.setAttribute('aria-label', old.getAttribute('aria-label') || 'Chart');
+      parent.replaceChild(canvas, old);
+      return canvas;
     }
 
-    // Collapsible
-    function toggleCollapsible(e) {
-      const trigger = e.target.closest('.collapsible-trigger');
-      trigger.classList.toggle('open');
-      const body = trigger.nextElementSibling;
-      body.classList.toggle('open');
+    function getChartColors() {
+      var isDark = document.documentElement.classList.contains('theme-dark');
+      return {
+        text: isDark ? '#EDEDED' : '#0f172a',
+        textSec: isDark ? '#888' : '#64748b',
+        grid: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)',
+        accent: isDark ? '#3b82f6' : '#2563eb',
+        accentSec: isDark ? '#8b5cf6' : '#7c3aed',
+        positive: isDark ? '#10b981' : '#059669',
+        negative: isDark ? '#f43f5e' : '#e11d48',
+        warning: isDark ? '#f59e0b' : '#d97706',
+        surface: isDark ? '#141414' : '#FFFFFF'
+      };
     }
 
-    // Mobile Menu
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-    hamburger.addEventListener('click', () => {
-      mobileMenu.classList.toggle('open');
-    });
+    function buildChartsForSlide(slideIdx) {
+      if (typeof Chart === 'undefined') return;
+      if (chartsBuiltForSlide[slideIdx]) return;
 
-    // Close mobile menu on link click
-    document.querySelectorAll('.mobile-menu a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-      });
-    });
+      var c = getChartColors();
+      Chart.defaults.color = c.text;
 
-    // Intersection Observer for fade-up effect
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
+      // Slide 4 (index 4): Command charts
+      if (slideIdx === 4) {
+        var ctx1 = resetCanvas('chartCmdBar');
+        if (ctx1) {
+          new Chart(ctx1, {
+            type: 'bar',
+            data: {
+              labels: ['개발', '운영', '감사', '유틸리티'],
+              datasets: [{
+                label: '커맨드 수',
+                data: [3, 3, 2, 5],
+                backgroundColor: [
+                  'rgba(59,130,246,0.7)', 'rgba(16,185,129,0.7)',
+                  'rgba(139,92,246,0.7)', 'rgba(245,158,11,0.7)'
+                ],
+                borderRadius: 6, borderSkipped: false
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: {
+                tooltip: { enabled: true, padding: 12, cornerRadius: 8 },
+                legend: { display: false }
+              },
+              scales: {
+                x: { ticks: { color: c.text, font: { size: 13 } }, grid: { display: false } },
+                y: { ticks: { color: c.textSec, stepSize: 1 }, grid: { color: c.grid } }
+              },
+              layout: { padding: 10 }
+            }
+          });
         }
-      });
-    }, { threshold: 0.1 });
+        var ctx2 = resetCanvas('chartCmdDoughnut');
+        if (ctx2) {
+          new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+              labels: ['개발', '운영', '감사', '유틸리티'],
+              datasets: [{
+                data: [3, 3, 2, 5],
+                backgroundColor: [
+                  'rgba(59,130,246,0.75)', 'rgba(16,185,129,0.75)',
+                  'rgba(139,92,246,0.75)', 'rgba(245,158,11,0.75)'
+                ],
+                borderWidth: 0, borderRadius: 4
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false, cutout: '60%',
+              plugins: {
+                tooltip: { enabled: true, padding: 12, cornerRadius: 8 },
+                legend: { position: 'bottom', labels: { color: c.text, padding: 14, font: { size: 12 } } }
+              },
+              layout: { padding: 10 }
+            }
+          });
+        }
+        chartsBuiltForSlide[slideIdx] = true;
+      }
 
-    document.querySelectorAll('section').forEach(section => {
-      section.classList.add('fade-up');
-      observer.observe(section);
-    });
+      // Slide 6 (index 6): Hook charts
+      if (slideIdx === 6) {
+        var ctx3 = resetCanvas('chartHookRadar');
+        if (ctx3) {
+          new Chart(ctx3, {
+            type: 'radar',
+            data: {
+              labels: ['SQL 차단', '명령어 차단', '파일 보호', '크기 검사', '자동 변환', '실패 로깅'],
+              datasets: [{
+                label: '보안 강도',
+                data: [9, 8, 7, 6, 5, 8],
+                borderColor: c.negative,
+                backgroundColor: 'rgba(244,63,94,0.12)',
+                borderWidth: 2, pointRadius: 4, pointBackgroundColor: c.negative
+              }, {
+                label: '자동화 수준',
+                data: [5, 4, 3, 7, 9, 7],
+                borderColor: c.accent,
+                backgroundColor: 'rgba(59,130,246,0.12)',
+                borderWidth: 2, pointRadius: 4, pointBackgroundColor: c.accent
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: {
+                tooltip: { enabled: true, padding: 12 },
+                legend: { position: 'bottom', labels: { color: c.text, padding: 14, font: { size: 12 } } }
+              },
+              scales: {
+                r: {
+                  ticks: { display: false, stepSize: 2 },
+                  grid: { color: c.grid },
+                  pointLabels: { color: c.textSec, font: { size: 11 } },
+                  angleLines: { color: c.grid }
+                }
+              }
+            }
+          });
+        }
+        var ctx4 = resetCanvas('chartHookTiming');
+        if (ctx4) {
+          new Chart(ctx4, {
+            type: 'bar',
+            data: {
+              labels: ['PreToolUse', 'PostToolUse', 'Utility'],
+              datasets: [{
+                label: 'Hook 수',
+                data: [4, 2, 4],
+                backgroundColor: [
+                  'rgba(244,63,94,0.6)', 'rgba(59,130,246,0.6)', 'rgba(16,185,129,0.6)'
+                ],
+                borderRadius: 8, borderSkipped: false, barThickness: 48
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+              plugins: {
+                tooltip: { enabled: true, padding: 12 },
+                legend: { display: false }
+              },
+              scales: {
+                x: { ticks: { color: c.textSec, stepSize: 1 }, grid: { color: c.grid } },
+                y: { ticks: { color: c.text, font: { size: 13, weight: '600' } }, grid: { display: false } }
+              },
+              layout: { padding: 10 }
+            }
+          });
+        }
+        chartsBuiltForSlide[slideIdx] = true;
+      }
+
+      // Slide 9 (index 9): Stats charts
+      if (slideIdx === 9) {
+        var ctx5 = resetCanvas('chartAgentStatus');
+        if (ctx5) {
+          new Chart(ctx5, {
+            type: 'doughnut',
+            data: {
+              labels: ['운영 중 (7)', '삭제/통합 (18)'],
+              datasets: [{
+                data: [7, 18],
+                backgroundColor: ['rgba(16,185,129,0.8)', 'rgba(100,116,139,0.25)'],
+                borderWidth: 0, borderRadius: 4
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false, cutout: '65%',
+              plugins: {
+                tooltip: { enabled: true, padding: 12 },
+                legend: { position: 'bottom', labels: { color: c.text, padding: 14, font: { size: 12 } } }
+              }
+            }
+          });
+        }
+        var ctx6 = resetCanvas('chartGrowth');
+        if (ctx6) {
+          new Chart(ctx6, {
+            type: 'line',
+            data: {
+              labels: ['v1', 'v4', 'v9', 'v11', 'v14', 'v22', 'v26', 'v1.29', 'v1.33', 'v1.36'],
+              datasets: [{
+                label: '누적 기능 수',
+                data: [1, 3, 5, 8, 10, 14, 16, 20, 24, 28],
+                borderColor: c.accent, backgroundColor: 'rgba(59,130,246,0.08)',
+                borderWidth: 2.5, fill: true, tension: 0.4,
+                pointRadius: 4, pointHoverRadius: 7, pointBackgroundColor: c.accent
+              }, {
+                label: '누적 Hook 수',
+                data: [0, 0, 1, 3, 3, 3, 5, 7, 8, 10],
+                borderColor: c.negative, backgroundColor: 'rgba(244,63,94,0.06)',
+                borderWidth: 2, fill: true, tension: 0.4,
+                pointRadius: 3, pointHoverRadius: 6, pointBackgroundColor: c.negative
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: {
+                tooltip: { enabled: true, mode: 'index', intersect: false, padding: 12 },
+                legend: { position: 'bottom', labels: { color: c.text, padding: 14, font: { size: 12 } } }
+              },
+              scales: {
+                x: { ticks: { color: c.textSec, font: { size: 11 } }, grid: { color: c.grid } },
+                y: { ticks: { color: c.textSec }, grid: { color: c.grid } }
+              },
+              layout: { padding: 10 }
+            }
+          });
+        }
+        var ctx7 = resetCanvas('chartDirPolar');
+        if (ctx7) {
+          new Chart(ctx7, {
+            type: 'polarArea',
+            data: {
+              labels: ['Commands', 'Agents', 'Hooks', 'Scripts', 'Skills', 'Evals'],
+              datasets: [{
+                data: [13, 9, 10, 4, 2, 7],
+                backgroundColor: [
+                  'rgba(59,130,246,0.6)', 'rgba(16,185,129,0.6)',
+                  'rgba(244,63,94,0.6)', 'rgba(245,158,11,0.6)',
+                  'rgba(139,92,246,0.6)', 'rgba(100,116,139,0.4)'
+                ],
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: {
+                tooltip: { enabled: true, padding: 12 },
+                legend: { position: 'right', labels: { color: c.text, padding: 10, font: { size: 11 } } }
+              },
+              scales: {
+                r: { ticks: { display: false }, grid: { color: c.grid } }
+              }
+            }
+          });
+        }
+        var ctx8 = resetCanvas('chartCapability');
+        if (ctx8) {
+          new Chart(ctx8, {
+            type: 'radar',
+            data: {
+              labels: ['코드 리뷰', 'Git 관리', '장애 분석', 'SCM 감사', '문서 자동화', '모니터링'],
+              datasets: [{
+                label: '기능 커버리지',
+                data: [9, 10, 8, 7, 6, 8],
+                borderColor: c.accentSec, backgroundColor: 'rgba(139,92,246,0.12)',
+                borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: c.accentSec
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: {
+                tooltip: { enabled: true, padding: 12 },
+                legend: { display: false }
+              },
+              scales: {
+                r: {
+                  min: 0, max: 10,
+                  ticks: { display: false, stepSize: 2 },
+                  grid: { color: c.grid },
+                  pointLabels: { color: c.text, font: { size: 12, weight: '500' } },
+                  angleLines: { color: c.grid }
+                }
+              }
+            }
+          });
+        }
+        chartsBuiltForSlide[slideIdx] = true;
+      }
+    }
+
+    function onThemeChange() {
+      // Reset all chart flags and rebuild current slide's charts
+      chartsBuiltForSlide = {};
+      buildChartsForSlide(currentSlide);
+    }
+
+    // === Download PNG ===
+    async function downloadImage() {
+      var menu = document.querySelector('.viz-menu');
+      menu.style.display = 'none';
+      try {
+        var url = await htmlToImage.toPng(document.body, {
+          quality: 1, pixelRatio: 2,
+          filter: function(n) { return !n.classList || !n.classList.contains('viz-menu'); }
+        });
+        var a = document.createElement('a'); a.href = url;
+        a.download = document.title.replace(/\s+/g, '-').toLowerCase() + '.png'; a.click();
+      } catch(e) { console.error('Download failed:', e); }
+      menu.style.display = '';
+    }
   </script>
 </body>
 </html>
