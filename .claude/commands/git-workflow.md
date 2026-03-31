@@ -1,79 +1,79 @@
-# Git 워크플로우 (통합)
+# Git Workflow (Unified)
 
-전 프로젝트 공용 Git 워크플로우. Git Flow 기반 전략(develop 브랜치)과 3-Level 버전 체계(MAJOR.MINOR.PATCH)를 사용한다.
-feature/bugfix 브랜치는 develop에서 생성하고 develop에 머지한다. main은 배포 시에만 사용하며, 사용자가 명시적으로 요청할 때만 머지한다.
+Shared Git workflow for all projects. Uses a Git Flow-based strategy (develop branch) and a 3-level versioning scheme (MAJOR.MINOR.PATCH).
+feature/bugfix branches are created from develop and merged into develop. main is used only for releases and is merged only when the user explicitly requests it.
 
-## 사용자 입력
+## User Input
 $ARGUMENTS
 
-## 프로젝트 자동 감지
+## Project Auto-detection
 
-`git remote get-url origin`에서 repo명을 추출하여 아래 설정 테이블에서 매칭한다.
-매칭 실패 시 사용자에게 프로젝트를 확인한 뒤 진행한다.
+Extract the repo name from `git remote get-url origin` and match it against the configuration table below.
+If matching fails, ask the user to confirm the project before proceeding.
 
-## 프로젝트 설정 테이블
+## Project Configuration Table
 
-| repo명 | 프로젝트명 | 메인 브랜치 | 소스 버전 파일 | Deep 리뷰 레이어 | diff 소스 경로 | 버전 파일 | CLAUDE.md 동기화 | README 자동갱신 | 코드 리뷰 | Draft PR |
-|--------|-----------|------------|--------------|----------------|--------------|----------|-----------------|----------------|----------|----------|
-| APP_RMSPAGE | APP_RMSPAGE | main | src/common/Version.java | Controller/Service/Repository | src/ | ./VERSION | N | N | Y | N |
-| Web_rmspage | WEB_RMSPAGE | main | (없음) | View/Composable/Store | src/ | ./VERSION | N | N | Y | N |
-| YTAP | YTAP | master | src/Common/Version/YTAPVersion.java | Controller/Service/Repository | src/ | ./VERSION | N | N | Y | N |
-| RMSSERVER | RMSSERVER | master | (없음) | Controller/Service/Repository | RMSWorkflow/ RMSScenario/ RMSRDL/ RMS2.1.16/ RMSConnectivity/ DCP_Base/ | ./VERSION | N | N | Y | N |
-| YTAP_MANAGER | YTAP_MANAGER | master | (없음) | Controller/Servlet/Service/Manager/Repository/DAO | src/ | ./VERSION | N | N | Y | N |
-| nepes-ai-agents | NEPES_AI_AGENTS | main | (없음) | (없음) | .claude/ | .claude/version.txt | Y | Y | N | Y |
+| Repo Name | Project Name | Main Branch | Source Version File | Deep Review Layers | diff Source Path | Version File | CLAUDE.md Sync | README Auto-update | Draft PR |
+|-----------|-------------|------------|--------------------|--------------------|-----------------|--------------|---------------|--------------------|----------|
+| APP_RMSPAGE | APP_RMSPAGE | main | src/common/Version.java | Controller/Service/Repository | src/ | ./VERSION | N | N | N |
+| Web_rmspage | WEB_RMSPAGE | main | (none) | View/Composable/Store | src/ | ./VERSION | N | N | N |
+| YTAP | YTAP | master | src/Common/Version/YTAPVersion.java | Controller/Service/Repository | src/ | ./VERSION | N | N | N |
+| RMSSERVER | RMSSERVER | master | (none) | Controller/Service/Repository | RMSWorkflow/ RMSScenario/ RMSRDL/ RMS2.1.16/ RMSConnectivity/ DCP_Base/ | ./VERSION | N | N | N |
+| YTAP_MANAGER | YTAP_MANAGER | master | (none) | Controller/Servlet/Service/Manager/Repository/DAO | src/ | ./VERSION | N | N | N |
+| nepes-ai-agents | NEPES_AI_AGENTS | main | (none) | (none) | .claude/ | .claude/version.txt | Y | Y | Y |
 
-## 사용자 입력 파싱
+## User Input Parsing
 
-$ARGUMENTS에서 버전 지정 여부를 확인한다.
-- 버전이 명시되면 → `USER_VERSION={지정값}` (Phase 3에서 자동 계산 스킵)
-- 버전 미지정 → `USER_VERSION=없음` (Phase 3에서 자동 계산)
+Check whether a version is specified in $ARGUMENTS.
+- If version is explicitly specified → `USER_VERSION={specified value}` (skip auto-calculation in Phase 3)
+- If version is not specified → `USER_VERSION=none` (auto-calculate in Phase 3)
 
-**버전이 지정되어도 모든 Phase를 반드시 실행한다.** 버전 지정은 Phase 3의 버전 계산만 오버라이드한다.
+**Even if a version is specified, all Phases must be executed.** Version specification only overrides version calculation in Phase 3.
 
-## 핵심 원칙
-1. **Phase 1 변경사항 분석 결과는 반드시 사용자 확인을 받는다** — 변경 파일 리스트를 사용자가 검토해야 한다.
-2. **버전 업데이트는 머지 직전 feature 브랜치에서만** — 커밋 단계에서 버전 파일을 건드리지 않는다.
-3. **변경사항이 없으면 즉시 종료** — 불필요한 빈 커밋을 만들지 않는다.
-4. **Push는 Claude가 직접 실행하지 않는다** — 사용자가 직접 수행한다.
-5. **버전 증가는 commit type 기준** — feat → MINOR, 나머지(fix/docs/refactor/chore/improve) → PATCH.
-6. **develop 브랜치가 기본 작업 브랜치** — feature/bugfix는 develop에서 생성하고 develop에 머지한다. main은 사용자가 명시적으로 요청할 때만 머지한다.
+## Core Principles
+1. **Phase 1 change analysis results must always be confirmed by the user** — the user must review the list of changed files.
+2. **Version updates only on the feature branch immediately before merging** — do not touch version files at the commit stage.
+3. **If there are no changes, abort immediately** — do not create unnecessary empty commits.
+4. **Push is never performed directly by Claude** — the user performs it directly.
+5. **Version increment is based on commit type** — feat → MINOR, others (fix/docs/refactor/chore/improve) → PATCH.
+6. **develop branch is the default working branch** — feature/bugfix branches are created from develop and merged into develop. main is merged only when the user explicitly requests it.
 
-## 워크플로우 재개 확인
+## Workflow Resume Check
 
-Phase 실행 전에 이전 체크포인트가 있는지 확인한다:
+Before executing Phases, check whether a previous checkpoint exists:
 
 ```bash
 node -e "const cp=require(process.env.USERPROFILE+'/.claude/hooks/checkpoint.js').loadCheckpoint('git-workflow'); console.log(cp ? JSON.stringify(cp) : 'null')"
 ```
 
-- **null** → 처음부터 시작 (Phase 1)
-- **체크포인트 존재** → 사용자에게 확인:
+- **null** → Start from the beginning (Phase 1)
+- **Checkpoint exists** → Ask the user:
   ```
-  ℹ️ 이전 워크플로우가 {phase}까지 진행된 기록이 있습니다. ({timestamp})
-  프로젝트: {data.project}, ITSM: {data.itsm}
+  ℹ️ A previous workflow was recorded up to {phase}. ({timestamp})
+  Project: {data.project}, ITSM: {data.itsm}
 
-  1. 이어서 진행 (다음 phase부터)
-  2. 처음부터 다시 시작
+  1. Resume (continue from the next phase)
+  2. Start over from the beginning
 
-  선택해주세요 (1/2):
+  Select (1/2):
   ```
-  - **1** → 체크포인트의 data를 이전 phase 출력으로 사용하여 다음 phase부터 재개
-  - **2** → `clearCheckpoint('git-workflow')` 실행 후 Phase 1부터 시작
+  - **1** → Use the checkpoint's data as the previous phase output and resume from the next phase
+  - **2** → Run `clearCheckpoint('git-workflow')` and start from Phase 1
 
-## 반복 실패 패턴 확인
+## Recurring Failure Pattern Check
 
-Phase 실행 전에 최근 반복 실패 패턴을 조회한다:
+Before executing Phases, query recent recurring failure patterns:
 
 ```bash
 node -e "const fr=require(process.env.USERPROFILE+'/.claude/hooks/failure-registry.js'); const ctx=fr.getContextForWorkflow('git-workflow'); if(ctx) console.log(ctx); else console.log('__NO_PATTERNS__');"
 ```
 
-- **`__NO_PATTERNS__`** → 그대로 진행
-- **패턴이 출력되면** → 해당 내용을 참고하여 동일 실패를 예방하며 진행
+- **`__NO_PATTERNS__`** → Proceed as-is
+- **If patterns are output** → Use the content as reference to prevent the same failures
 
-## 14일 자동 증류 체크
+## 14-Day Automatic Distillation Check
 
-Phase 실행 전에 마지막 distill 실행일을 확인한다:
+Before executing Phases, check the last distillation run date:
 
 ```bash
 node -e "
@@ -92,11 +92,11 @@ node -e "
 "
 ```
 
-- **`__DISTILL_NEEDED__`** → `/distill-failures`를 자동 실행한 뒤 워크플로우를 계속 진행한다
-- **`__DISTILL_OK__:{N}일`** → 그대로 진행
+- **`__DISTILL_NEEDED__`** → Automatically run `/distill-failures`, then continue the workflow
+- **`__DISTILL_OK__:{N}days`** → Proceed as-is
 
-## 워크플로우 실행 순서
+## Workflow Execution Order
 
-에이전트 폴더: `.claude/agents/git-workflow/`
-Phase 1(phase1-change-analysis.md) → 2(phase2-branch-commit.md) → 3(phase3-review-merge.md) → 4(phase4-cleanup.md) 순서로 실행.
-각 phase 파일을 해당 단계 시작 시에만 읽는다. 단계를 건너뛰지 않는다.
+Agent folder: `.claude/agents/git-workflow/`
+Execute in order: Phase 1(phase1-change-analysis.md) → 2(phase2-branch-commit.md) → 3(phase3-review-merge.md) → 4(phase4-cleanup.md).
+Read each phase file only when starting that step. Do not skip steps.

@@ -1,0 +1,7 @@
+{
+  "id": "review-reject-critical",
+  "description": "Critical 1 이상이면 Warning 수와 무관하게 REJECT",
+  "target": "review-judgment",
+  "input": { "criticalCount": 2, "warningCount": 1 },
+  "expected": { "judgment": "REJECT" }
+}

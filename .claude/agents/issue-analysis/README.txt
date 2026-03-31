@@ -1,91 +1,91 @@
 # Issue Analysis Agent
 
-로그, 에러 메시지, 증상 설명을 기반으로 이슈의 근본 원인을 분석하는 에이전트입니다.
+An agent that analyzes the root cause of issues based on logs, error messages, and symptom descriptions.
 
-## 사용 방법
+## Usage
 
 ```
-/project:issue-analyze {이슈 설명}
+/project:issue-analyze {issue description}
 ```
 
-### 사용 예시
+### Examples
 
 ```
 /project:issue-analyze
-운영 환경에서 특정 API 호출 시 간헐적으로 5초 이상 지연됩니다.
-로그는 .claude/agents/issue-analysis/logs/error-20250205.log 파일을 참고해주세요.
+Intermittent 5+ second delays occur on specific API calls in production.
+Please refer to logs at .claude/agents/issue-analysis/logs/error-20250205.log
 
-/project:issue-analyze PRS-04 어제 14시경 에러 발생
-(로그가 없으면 자동 다운로드 후 분석)
+/project:issue-analyze PRS-04 error occurred around 2pm yesterday
+(If no logs found, auto-downloads and analyzes)
 ```
 
-## 워크플로우
+## Workflow
 
 ```
-/project:issue-analyze {이슈 설명}
+/project:issue-analyze {issue description}
     │
     ▼
-Phase -1: 로그 확보 (조건부 — 로그가 없을 때만)
-    │  다운로드 경로 또는 수동 배치 경로에서 로그 확인
-    │  없으면: 대상/날짜/범위 확인 → fetch_log.py로 자동 다운로드
+Phase -1: Log Acquisition (conditional — only when logs are unavailable)
+    │  Check logs from download path or manual placement path
+    │  If missing: confirm target/date/scope → auto-download via fetch_log.py
     │
     ▼
-Phase 0: Log Pre-scan (로그 파일이 있을 때)
-    │  Grep 기반 에러/예외/경고 패턴 전수 스캔
-    │  에러 전수 목록 + 이상 징후 탐지
-    │  스캔 인덱스 파일 생성 (reports/{YYYYMMDD}-log-scan-index.md)
+Phase 0: Log Pre-scan (when log files are available)
+    │  Full grep-based scan for error/exception/warning patterns
+    │  Complete error list + anomaly detection
+    │  Create scan index file (reports/{YYYYMMDD}-log-scan-index.md)
     │
     ▼
-Phase 1: 이슈 접수 및 분류
-    │  이슈 유형 분류, 정보 충분성 점검
-    │  부족 시 사용자에게 질문
+Phase 1: Issue Intake and Triage
+    │  Classify issue type, check information sufficiency
+    │  Ask user if insufficient
     │
     ▼
-Phase 2: 심층 분석
-    │  [필수] 로그 전수 분석 (인덱스 기반)
-    │  [필수] 이상 징후 탐지 (에러가 아닌 비정상)
-    │  [필수] 코드/빌드 증거 수집
-    │  5-Why 분석, 최소 2개 가설 도출
+Phase 2: Deep Analysis
+    │  [Required] Complete log analysis (index-based)
+    │  [Required] Anomaly detection (non-error abnormalities)
+    │  [Required] Code/build evidence collection
+    │  5-Why analysis, derive minimum 2 hypotheses
     │
     ▼
-Phase 3: 독립 검증 (항상 실행)
-    │  분석 완전성 검증
-    │  가설 반박 시도 (Devil's Advocate)
-    │  누락 경로 탐색, 신뢰도 산출
+Phase 3: Independent Verification (always run)
+    │  Verify analysis completeness
+    │  Attempt hypothesis refutation (Devil's Advocate)
+    │  Explore missed paths, calculate confidence score
     │
     ▼
-Phase 4: 최종 리포트
-    │  근본 원인 + 에러 전수 내역 + 패턴 분석 + 해결 방안
-    │  리포트 파일 저장
+Phase 4: Final Report
+    │  Root cause + complete error list + pattern analysis + remediation
+    │  Save report file
     │
     ▼
-    완료
+    Done
 ```
 
-**설계 원칙**: 분석의 완벽도가 최우선. 프로세스 효율보다 깊이를 우선한다.
-SIMPLE 경로 없음 — 항상 전체 Phase를 실행한다.
+**Design Principle**: Analysis completeness is the top priority. Depth over process efficiency.
+No SIMPLE path — always run the full Phase sequence.
 
-## 로그 소스
+## Log Sources
 
-Phase 0은 두 가지 경로에서 로그를 스캔합니다:
+Phase 0 scans logs from two paths:
 
-1. **자동 다운로드 경로**: `$USERPROFILE/.claude/logs/{대상}/{YYYYMMDD}/` (analyze-log 또는 Phase -1에서 다운로드)
-2. **수동 배치 경로**: `logs/` 폴더에 직접 파일을 넣기
+1. **Auto-download path**: `$USERPROFILE/.claude/logs/{target}/{YYYYMMDD}/` (downloaded by analyze-log or Phase -1)
+2. **Manual placement path**: place files directly in the `logs/` folder
 
-**대용량 로그:**
-- 용량 제한 없이 로그 파일을 그대로 넣으면 됩니다.
-- Phase 0(Log Pre-scan)이 Grep 기반으로 자동 스캔하여 핵심 이벤트를 전수 추출합니다.
+**Large logs:**
+- Place log files as-is without size limits.
+- Phase 0 (Log Pre-scan) automatically scans with grep and extracts all key events.
 
-## 파일 구조
+## File Structure
 
 ```
 .claude/agents/issue-analysis/
-├── README.txt                 ← 이 파일
-├── phase0-log-scan.md         ← Log Pre-scan (에러 전수 추출)
-├── phase1-triage.md           ← 이슈 접수 및 분류
-├── phase2-analysis.md         ← 심층 분석 (로그 전수 + 이상 징후 + 코드/빌드)
-├── phase3-verification.md     ← 독립 검증 (Devil's Advocate)
-├── phase4-report.md           ← 최종 리포트 생성
-├── logs/                      ← 분석용 로그 보관 (입력)
-└── reports/                   ← 분석 리포트 및 중간결과 (출력)
+├── README.txt                 ← This file
+├── phase0-log-scan.md         ← Log Pre-scan (complete error extraction)
+├── phase1-triage.md           ← Issue intake and triage
+├── phase2-analysis.md         ← Deep analysis (full log + anomalies + code/build)
+├── phase3-verification.md     ← Independent verification (Devil's Advocate)
+├── phase4-report.md           ← Final report generation
+├── logs/                      ← Analysis log storage (input)
+└── reports/                   ← Analysis reports and intermediate results (output)
 ```

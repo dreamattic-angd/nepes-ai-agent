@@ -1,58 +1,58 @@
-# 커맨드 도움말
+# Command Help
 
-사용 가능한 커맨드 목록과 설명을 동적으로 생성하여 출력합니다.
+Dynamically generates and displays the list of available commands and their descriptions.
 
-## 실행 절차
+## Execution Procedure
 
-### 1단계: 버전 정보 읽기
+### Step 1: Read Version Information
 
-`.claude/version.txt`에서 현재 버전을 추출한다.
+Extract the current version from `.claude/version.txt`.
 
-### 2단계: 커맨드 파일 스캔
+### Step 2: Scan Command Files
 
-Glob 도구로 `.claude/commands/**/*.md` 패턴을 스캔하여 모든 커맨드 파일을 수집한다.
-**이 파일(help-cmd.md) 자신은 목록에서 제외한다.**
+Use the Glob tool to scan the `.claude/commands/**/*.md` pattern and collect all command files.
+**Exclude this file (help-cmd.md) from the list.**
 
-### 3단계: 각 커맨드 설명 추출
+### Step 3: Extract Description for Each Command
 
-수집된 각 `.md` 파일의 **첫 3줄만** Read(limit=3)로 읽어서 제목과 설명을 추출한다.
-- 1줄: `# 제목` → 커맨드 설명의 제목 부분
-- 2~3줄: 부가 설명 → 한 줄 요약으로 사용
+Read only the **first 3 lines** of each collected `.md` file using Read(limit=3) to extract the title and description.
+- Line 1: `# Title` → title part of the command description
+- Lines 2~3: supplementary description → used as a one-line summary
 
-### 4단계: 커맨드명 생성
+### Step 4: Generate Command Name
 
-파일 경로에서 커맨드명을 생성한다:
+Generate the command name from the file path:
 - `commands/analyze-log.md` → `/analyze-log`
-- `commands/sub-folder/example.md` → `/sub-folder:example` (하위 폴더는 `:`으로 구분)
+- `commands/sub-folder/example.md` → `/sub-folder:example` (subfolders separated by `:`)
 
-### 5단계: 분류 및 출력
+### Step 5: Categorize and Output
 
-커맨드를 아래 기준으로 분류한다:
-- `git-workflow`가 포함된 커맨드 → **Git 워크플로우** 그룹
-- 그 외 → **범용** 그룹
+Categorize commands by the following criteria:
+- Commands containing `git-workflow` → **Git Workflow** group
+- Others → **General** group
 
-아래 형식으로 출력한다:
+Output in the following format:
 
 ```
-📋 사용 가능한 커맨드 목록 ({총 개수}개)
+📋 Available Commands ({total count})
 
-버전: {현재 버전} | 경로: .claude/commands/
+Version: {current version} | Path: .claude/commands/
 
 ────────────────────────────────────────
-🔧 범용
+🔧 General
 ────────────────────────────────────────
 
-/{커맨드명}
-  {제목} — {한 줄 설명}
+/{command name}
+  {title} — {one-line description}
 
 ...
 
 ────────────────────────────────────────
-🌿 Git 워크플로우
+🌿 Git Workflow
 ────────────────────────────────────────
 
-/{커맨드명}
-  {프로젝트명} 전용 — {한 줄 설명}
+/{command name}
+  {project name} exclusive — {one-line description}
 
 ...
 ```

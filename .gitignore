@@ -23,11 +23,16 @@
 .claude/settings.local.json
 CLAUDE.local.md
 
+# log-analyzer 로컬 캐시 (사용 중 자동 생성, DB에서 최신 정보 조회)
+.claude/log-analyzer/eqp-info.json
+
 # workflow-automate 임시 산출물 (설계/리뷰/테스트)
 specs/
+.planning/
 
 # 작업 인수인계 문서 (개인 임시 파일, 루트만)
 /HANDOFF.md
+/HANDOFF_*.md
 
 # Windows NUL device artifact (bash에서 > NUL 사용 시 생성되는 파일)
 nul

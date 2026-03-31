@@ -1,0 +1,7 @@
+{
+  "id": "review-pass-few-warnings",
+  "description": "Critical 0, Warning 2이면 PASS",
+  "target": "review-judgment",
+  "input": { "criticalCount": 0, "warningCount": 2 },
+  "expected": { "judgment": "PASS" }
+}

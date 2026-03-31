@@ -1,60 +1,60 @@
-# CLAUDE.md 건강 점검
+# CLAUDE.md Health Check
 
-프로젝트의 CLAUDE.md가 최신 상태인지, 불필요한 내용이 없는지 점검합니다.
+Checks whether the project's CLAUDE.md is up to date and free of unnecessary content.
 
-## 점검 절차
+## Check Procedure
 
-### 1단계: 현재 상태 수집
+### Step 1: Collect Current State
 
-다음 파일들을 읽습니다:
-- `CLAUDE.md` (프로젝트 지침)
-- `.claude/version.txt` (버전 정보 및 에이전트 현황)
-- `.claude/commands/` 내 모든 커맨드 목록
+Read the following files:
+- `CLAUDE.md` (project guidelines)
+- `.claude/version.txt` (version info and agent status)
+- All command file list under `.claude/commands/`
 
-### 2단계: 체크리스트 점검
+### Step 2: Checklist Verification
 
-아래 항목을 순서대로 확인합니다:
+Verify the following items in order:
 
-| # | 점검 항목 | 확인 방법 |
-|---|----------|----------|
-| 1 | **버전 일치** | CLAUDE.md의 버전과 version.txt의 현재 버전이 동일한가? |
-| 2 | **폐기된 규칙** | 더 이상 사용하지 않는 에이전트/커맨드/설정을 참조하는 규칙이 있는가? |
-| 3 | **누락된 규칙** | 현재 운영 중인 에이전트/커맨드가 CLAUDE.md에 반영되어 있는가? |
-| 4 | **간결성** | 불필요하게 긴 설명, 중복된 내용이 있는가? (토큰 낭비) |
-| 5 | **정확성** | DB 접속 정보, 경로, 브랜치명 등이 최신인가? |
-| 6 | **에이전트 현황** | version.txt의 에이전트 목록이 실제 agents/ 폴더와 일치하는가? |
-| 7 | **모델 버전** | 현재 사용 중인 Claude 모델 패밀리가 변경되었는가? 변경 시 핵심 워크플로우 재검증 권고 |
-| 8 | **미검증 실패 가설** | failures.jsonl에 verified: false인 반복 패턴이 있는가? 있으면 사용자에게 검토를 요청한다 |
-| 9 | **만료 실패 레코드** | expires가 지난 실패 레코드가 있는가? 있으면 아카이브 처리를 제안한다 |
+| # | Check Item | Verification Method |
+|---|-----------|-------------------|
+| 1 | **Version match** | Does the version in CLAUDE.md match the current version in version.txt? |
+| 2 | **Deprecated rules** | Are there rules referencing agents/commands/settings that are no longer in use? |
+| 3 | **Missing rules** | Are currently active agents/commands reflected in CLAUDE.md? |
+| 4 | **Conciseness** | Are there unnecessarily long descriptions or duplicate content? (token waste) |
+| 5 | **Accuracy** | Are DB connection info, paths, branch names, etc. up to date? |
+| 6 | **Agent status** | Does the agent list in version.txt match the actual agents/ folder? |
+| 7 | **Model version** | Has the Claude model family in use changed? If so, recommend re-verifying key workflows |
+| 8 | **Unverified failure hypotheses** | Are there recurring patterns with verified: false in failures.jsonl? If so, request user review |
+| 9 | **Expired failure records** | Are there failure records past their expires date? If so, suggest archiving |
 
-### 3단계: 결과 출력
+### Step 3: Output Results
 
 ```markdown
-# 📋 CLAUDE.md 건강 점검 결과
+# 📋 CLAUDE.md Health Check Results
 
-**점검 일시**: {YYYY-MM-DD}
-**CLAUDE.md 버전**: {버전}
-**version.txt 버전**: {버전}
+**Check Date**: {YYYY-MM-DD}
+**CLAUDE.md Version**: {version}
+**version.txt Version**: {version}
 
-## 점검 결과
+## Check Results
 
-| # | 항목 | 상태 | 비고 |
-|---|------|------|------|
-| 1 | 버전 일치 | ✅/❌ | {설명} |
-| 2 | 폐기된 규칙 | ✅/❌ | {설명} |
-| 3 | 누락된 규칙 | ✅/❌ | {설명} |
-| 4 | 간결성 | ✅/⚠️ | {줄 수}, {토큰 추정} |
-| 5 | 정확성 | ✅/❌ | {설명} |
-| 6 | 에이전트 현황 | ✅/❌ | {설명} |
-| 7 | 미검증 실패 가설 | ✅/⚠️ | {미검증 N건, 만료 N건} |
+| # | Item | Status | Notes |
+|---|------|--------|-------|
+| 1 | Version match | ✅/❌ | {description} |
+| 2 | Deprecated rules | ✅/❌ | {description} |
+| 3 | Missing rules | ✅/❌ | {description} |
+| 4 | Conciseness | ✅/⚠️ | {line count}, {token estimate} |
+| 5 | Accuracy | ✅/❌ | {description} |
+| 6 | Agent status | ✅/❌ | {description} |
+| 7 | Unverified failure hypotheses | ✅/⚠️ | {N unverified, N expired} |
 
-## 개선 제안
+## Improvement Suggestions
 
-{구체적인 개선 제안 목록}
+{Specific list of improvement suggestions}
 ```
 
-## 참고
+## Notes
 
-- 이 점검은 월 1회 실행을 권장합니다
-- CLAUDE.md는 25줄 이하를 유지하는 것이 이상적입니다
-- 점검 결과를 바탕으로 수정이 필요하면 사용자에게 제안만 하고, 수정은 사용자 확인 후 진행합니다
+- Running this check monthly is recommended
+- Keeping CLAUDE.md at 25 lines or fewer is ideal
+- Based on the check results, only suggest modifications to the user — proceed with changes only after user confirmation

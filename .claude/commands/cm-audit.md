@@ -1,164 +1,164 @@
-# 형상 감사 (CM Audit)
+# Configuration Management Audit (CM Audit)
 
-프로젝트의 형상 감사(CM Audit)를 실행합니다.
-체크리스트 항목을 자동으로 점검하고 결과를 보고합니다.
+Runs a Configuration Management Audit (CM Audit) for the project.
+Automatically checks checklist items and reports the results.
 
-## 사용자 입력
+## User Input
 $ARGUMENTS
 
-## 프로젝트 설정 테이블
+## Project Configuration Table
 
-$ARGUMENTS에서 프로젝트명을 확인한다. 없으면 사용자에게 질문한다.
+Check the project name in $ARGUMENTS. If not provided, ask the user.
 
-| 프로젝트명 | 키워드 | 메인 브랜치 | 버전 소스 | 버전 추출 방법 |
-|-----------|--------|-----------|----------|--------------|
-| NEPES_AI_AGENTS | naa | main | .claude/version.txt + CLAUDE.md | "현재 버전: v{x.y.z}" 행에서 추출 |
-| APP_RMSPAGE | app-rmspage | develop | ./VERSION | 첫 줄의 첫 토큰 (예: "2.4.3 chore: ...") |
-| RMSSERVER | rmsserver | master | ./VERSION | 파일 전체 (버전 번호만 기록) |
-| YTAP | ytap | master | src/Common/Version/YTAPVersion.java | VERSION = "{x.y.z}" 상수에서 추출 |
-| YTAP_MANAGER | ytap-mgr | master | ./VERSION | 파일 전체 (버전 번호만 기록) |
+| Project Name | Keyword | Main Branch | Version Source | Version Extraction Method |
+|-------------|---------|------------|---------------|--------------------------|
+| NEPES_AI_AGENTS | naa | main | .claude/version.txt + CLAUDE.md | Extract from line "Current version: v{x.y.z}" |
+| APP_RMSPAGE | app-rmspage | develop | ./VERSION | First token of first line (e.g., "2.4.3 chore: ...") |
+| RMSSERVER | rmsserver | master | ./VERSION | Entire file (version number only) |
+| YTAP | ytap | master | src/Common/Version/YTAPVersion.java | Extract from constant VERSION = "{x.y.z}" |
+| YTAP_MANAGER | ytap-mgr | master | ./VERSION | Entire file (version number only) |
 
-## 수행 절차
+## Execution Procedure
 
-### 1단계: 태그 정합성 점검
+### Step 1: Tag Consistency Check
 
-아래 값을 수집하여 비교한다.
+Collect and compare the following values.
 
 ```bash
-# 최신 태그
+# Latest tag
 git describe --tags --abbrev=0
 
-# 버전 소스 파일에서 버전 추출 (프로젝트별 방법 참조)
+# Extract version from version source file (refer to per-project method)
 ```
 
-점검 항목:
-- [A1] 최신 태그 == 버전 소스 파일의 버전 (태그 "v" 접두사 고려하여 비교)
-- [A2] (NEPES_AI_AGENTS만) 최신 태그 == CLAUDE.md 첫 줄 버전
-- [A3] 최신 태그가 {메인 브랜치} 위에 존재하는가
+Check items:
+- [A1] Latest tag == version in version source file (account for "v" prefix in tag when comparing)
+- [A2] (NEPES_AI_AGENTS only) Latest tag == version on first line of CLAUDE.md
+- [A3] Does the latest tag exist on the {main branch}?
 
 ```bash
-# A3 확인
-git branch --contains $(git rev-list -n 1 $(git describe --tags --abbrev=0)) | grep {메인 브랜치}
+# Verify A3
+git branch --contains $(git rev-list -n 1 $(git describe --tags --abbrev=0)) | grep {main branch}
 ```
 
-### 2단계: 태그 유형 점검
+### Step 2: Tag Type Check
 
-최근 5개 태그의 유형과 메시지를 확인한다.
+Check the type and message of the 5 most recent tags.
 
 ```bash
 git for-each-ref refs/tags --sort=-creatordate --format='%(refname:short) | %(objecttype)' --count=5
 git tag -l --sort=-creatordate --format='%(refname:short) | %(contents:subject)' | head -5
 ```
 
-점검 항목:
-- [B1] 최근 태그가 모두 annotated 태그인가 (objecttype == tag)
-- [B2] 태그 메시지에 커밋 메시지 제목이 포함되어 있는가 (버전 번호만 있으면 NG)
+Check items:
+- [B1] Are all recent tags annotated tags? (objecttype == tag)
+- [B2] Does the tag message include the commit message subject? (version number only is NG)
 
-### 3단계: 브랜치 상태 점검
+### Step 3: Branch Status Check
 
 ```bash
 git branch
-git log {메인 브랜치} --oneline --no-merges --count=10
+git log {main branch} --oneline --no-merges --count=10
 ```
 
-점검 항목:
-- [C1] {메인 브랜치} 외에 불필요한 feature 브랜치가 남아 있지 않은가
-- [C2] {메인 브랜치}에 직접 커밋이 없는가 ("chore: bump version" 외의 직접 커밋이 없어야 함)
+Check items:
+- [C1] Are there no unnecessary feature branches remaining besides {main branch}?
+- [C2] Are there no direct commits to {main branch}? (no direct commits other than "chore: bump version")
 
-### 4단계: 변경 이력 정합성 점검 (NEPES_AI_AGENTS, APP_RMSPAGE만)
+### Step 4: Change History Consistency Check (NEPES_AI_AGENTS, APP_RMSPAGE only)
 
 ```bash
 git tag -l | wc -l
 ```
 
-버전 파일의 변경 이력 항목 수와 태그 수를 비교한다.
+Compare the number of change history entries in the version file with the number of tags.
 
-점검 항목:
-- [D1] 버전 파일 이력 항목 수와 태그 수가 일치하는가
-- [D2] 최신 이력 항목이 최신 태그 버전과 일치하는가
+Check items:
+- [D1] Does the number of version file history entries match the number of tags?
+- [D2] Does the latest history entry match the latest tag version?
 
-다른 프로젝트는 이 단계를 건너뛴다.
+Skip this step for other projects.
 
-### 5단계: 원격 동기화 점검
+### Step 5: Remote Synchronization Check
 
 ```bash
 git push origin --tags --dry-run 2>&1
 ```
 
-점검 항목:
-- [E1] 로컬 태그가 원격에 모두 push 되었는가
+Check items:
+- [E1] Have all local tags been pushed to remote?
 
-### 6단계: 연동 무결성 자동 검증 (NEPES_AI_AGENTS만)
+### Step 6: Integration Integrity Automated Verification (NEPES_AI_AGENTS only)
 
 ```bash
 node .claude/scripts/integrity-check.js
 ```
 
-점검 항목:
-- [F1] 스크립트 exit code가 0인가 (전체 PASS)
-- [F2] FAIL 항목이 있으면 상세 내용을 감사 결과에 포함
+Check items:
+- [F1] Is the script exit code 0? (all PASS)
+- [F2] If there are FAIL items, include details in the audit result
 
-**사용자가 상세 정보를 요청하면** `--verbose` 옵션으로 재실행한다.
+**If the user requests detailed information**, re-run with the `--verbose` option.
 
-다른 프로젝트는 이 단계를 건너뛴다.
+Skip this step for other projects.
 
-### 7단계: 결과 보고
+### Step 7: Results Report
 
-아래 마크다운 형식으로 코드블록 안에 출력한다. Loop에 복사하여 사용한다.
+Output in the following markdown format inside a code block. Copy to Loop for use.
 
 ````
 ```
-## 형상 감사 결과 ({프로젝트명})
+## Configuration Management Audit Results ({Project Name})
 
-**감사일:** {오늘 날짜}
+**Audit Date:** {today's date}
 
-### 1. 태그 정합성
+### 1. Tag Consistency
 
-| 항목 | 점검 내용 | 결과 | 상세 |
-|------|---------|------|------|
-| A1 | 태그-버전 파일 일치 | {OK/NG} | {상세} |
-| A2 | 태그-CLAUDE.md 일치 | {OK/NG/N/A} | {NAA만} |
-| A3 | 태그 위치 ({메인 브랜치}) | {OK/NG} | {상세} |
+| Item | Check Content | Result | Details |
+|------|-------------|--------|---------|
+| A1 | Tag-version file match | {OK/NG} | {details} |
+| A2 | Tag-CLAUDE.md match | {OK/NG/N/A} | {NAA only} |
+| A3 | Tag location ({main branch}) | {OK/NG} | {details} |
 
-### 2. 태그 유형
+### 2. Tag Type
 
-| 항목 | 점검 내용 | 결과 | 상세 |
-|------|---------|------|------|
-| B1 | annotated 태그 여부 | {OK/NG} | {상세} |
-| B2 | 태그 메시지 포함 | {OK/NG} | {상세} |
+| Item | Check Content | Result | Details |
+|------|-------------|--------|---------|
+| B1 | Annotated tag status | {OK/NG} | {details} |
+| B2 | Tag message included | {OK/NG} | {details} |
 
-### 3. 브랜치 상태
+### 3. Branch Status
 
-| 항목 | 점검 내용 | 결과 | 상세 |
-|------|---------|------|------|
-| C1 | 잔여 feature 브랜치 | {OK/NG} | {상세} |
-| C2 | {메인 브랜치} 직접 커밋 여부 | {OK/NG} | {상세} |
+| Item | Check Content | Result | Details |
+|------|-------------|--------|---------|
+| C1 | Remaining feature branches | {OK/NG} | {details} |
+| C2 | Direct commits to {main branch} | {OK/NG} | {details} |
 
-### 4. 변경 이력 정합성 (해당 프로젝트만)
+### 4. Change History Consistency (applicable projects only)
 
-| 항목 | 점검 내용 | 결과 | 상세 |
-|------|---------|------|------|
-| D1 | 이력-태그 수 일치 | {OK/NG/N/A} | {상세} |
-| D2 | 최신 이력-태그 일치 | {OK/NG/N/A} | {상세} |
+| Item | Check Content | Result | Details |
+|------|-------------|--------|---------|
+| D1 | History-tag count match | {OK/NG/N/A} | {details} |
+| D2 | Latest history-tag match | {OK/NG/N/A} | {details} |
 
-### 5. 원격 동기화
+### 5. Remote Synchronization
 
-| 항목 | 점검 내용 | 결과 | 상세 |
-|------|---------|------|------|
-| E1 | 태그 push 상태 | {OK/NG} | {상세} |
+| Item | Check Content | Result | Details |
+|------|-------------|--------|---------|
+| E1 | Tag push status | {OK/NG} | {details} |
 
-### 6. 연동 무결성 (NAA만)
+### 6. Integration Integrity (NAA only)
 
-| 항목 | 점검 내용 | 결과 | 상세 |
-|------|---------|------|------|
-| F1 | integrity-check 전체 PASS | {OK/NG/N/A} | {상세} |
+| Item | Check Content | Result | Details |
+|------|-------------|--------|---------|
+| F1 | integrity-check all PASS | {OK/NG/N/A} | {details} |
 
-### 종합: {전체 OK 수}/{전체 항목 수} 통과
+### Summary: {total OK count}/{total items} passed
 
-### NG 조치 필요 항목 (NG가 없으면 이 섹션 생략)
+### NG Action Required Items (omit this section if no NG)
 
-**[{항목 ID}]** {상세 내용 및 조치 방법}
+**[{Item ID}]** {details and remediation steps}
 ```
 ````
 
-NG 항목이 있으면 각 항목에 대해 조치 방법을 안내한다.
+If there are NG items, provide remediation guidance for each item.

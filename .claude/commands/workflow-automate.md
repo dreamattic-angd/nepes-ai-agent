@@ -1,229 +1,394 @@
 ---
-description: "설계→구현→리뷰→테스트 워크플로우를 자동 실행합니다. 입력 내용을 분석하여 모드(신규 기능/버그 수정/새 프로젝트)를 자동 판별합니다."
+description: "Automatically executes the design→implementation→review→test workflow. Analyzes the input to auto-determine the mode (new feature / bug fix / new project) and routes to lightweight or precision design based on complexity."
 ---
 
-**먼저 .claude/workflow-rules.md 파일을 Read 도구로 읽고 규칙을 숙지하라. 이후 아래를 실행하라.**
+**First, read the `.claude/workflow-rules.md` file using the Read tool and internalize the rules. Then execute the following.**
 
-입력: $ARGUMENTS
+Input: $ARGUMENTS
 
-당신은 **오케스트레이터**입니다. 직접 설계·코딩·리뷰·테스트하지 않습니다.
-각 Phase에서 전문 서브에이전트를 호출하고, 결과를 확인하며, 체크포인트에서 사용자 승인을 받습니다.
+You are the **orchestrator**. You do not directly design, code, review, or test.
+At each Phase, you invoke specialized sub-agents, verify their results, and obtain user approval at checkpoints.
 
 ---
 
-## Step 0: 모드 자동 판별
+## Step 0: Automatic Mode Determination
 
-입력($ARGUMENTS)을 분석하여 아래 3가지 모드 중 하나를 결정하라:
+Analyze the input ($ARGUMENTS) and determine one of the following 3 modes:
 
-### 판별 기준
+### Determination Criteria
 
-| 모드 | 키워드/패턴 | 예시 |
-|------|-----------|------|
-| **bugfix** | 버그, 수정, 오류, 에러, fix, 안됨, 깨짐, 실패, 이슈번호(#123) | "결제 금액이 0원으로 표시됨", "#42 로그인 실패" |
-| **project** | 만들어, 생성, 새 프로젝트, 새로, 처음부터, init, create, 앱 | "todo app 만들어줘", "블로그 플랫폼 생성" |
-| **feature** | 추가, 기능, 구현, 넣어, 개선, 연동, add, 붙여 | "로그인 기능 추가", "다크모드 구현해줘" |
+| Mode | Keywords/Patterns | Examples |
+|------|------------------|---------|
+| **bugfix** | bug, fix, error, broken, not working, failure, issue number (#123) | "Payment amount shows as 0", "#42 login failure" |
+| **project** | create, new project, from scratch, init, build app | "Create a todo app", "Generate a blog platform" |
+| **feature** | add, feature, implement, improve, integrate, attach | "Add login feature", "Implement dark mode" |
 
-### 판별 우선순위
-1. 이슈번호(#숫자)가 있으면 → **bugfix**
-2. 프로젝트 루트에 소스 코드가 없으면(빈 프로젝트) → **project**
-3. 수정/오류/버그 관련 키워드 → **bugfix**
-4. 생성/만들어 키워드 + 현재 소스 코드 없음 → **project**
-5. 그 외 → **feature**
+### Determination Priority
+1. If there is an issue number (#number) → **bugfix**
+2. If there is no source code in the project root (empty project) → **project**
+3. Fix/error/bug related keywords → **bugfix**
+4. Create/build keywords + no current source code → **project**
+5. Otherwise → **feature**
 
-### 애매한 경우
-판별이 불확실하면 사용자에게 확인:
+### Ambiguous Cases
+If determination is uncertain, ask the user:
 ```
-입력을 분석했습니다: "{$ARGUMENTS}"
+Analyzed your input: "{$ARGUMENTS}"
 
-아래 중 어떤 작업인가요?
-1. 🐛 버그 수정 — 기존 코드의 문제를 수정
-2. ✨ 신규 기능 — 기존 프로젝트에 기능 추가
-3. 🚀 새 프로젝트 — 처음부터 프로젝트 생성
-```
-
-### 모드 확정 출력
-```
-🔍 모드 판별: {bugfix / feature / project}
-📝 작업: {$ARGUMENTS 요약}
+Which type of task is this?
+1. 🐛 Bug fix — fix an issue in existing code
+2. ✨ New feature — add a feature to an existing project
+3. 🚀 New project — create a project from scratch
 ```
 
 ---
 
-## MODE: feature (신규 기능)
+## Step 0.5: Complexity Determination (Design Agent Routing)
 
-**작업명 추출:** 입력에서 기능명을 추출한다. (예: "로그인 기능 추가" → 기능명="로그인")
+After mode determination, analyze the input to determine **design complexity**.
+Route to lightweight design (architect) or precision design (software-develop-architect) based on complexity.
 
-### Phase 1: 설계 (architect)
+### Determination Criteria
+
+| Indicator | Small-scale (Lightweight) | Medium~Large-scale (Precision) |
+|-----------|--------------------------|-------------------------------|
+| Number of affected components | 1 | 2 or more |
+| External system integration | None | Yes (protocol/API/HW) |
+| New system | Modifying existing code | Developing new system |
+| DB/API design needed | Not needed | Needed |
+| User explicit keywords | — | "design doc", "architecture", "architect" |
+
+### Routing Rules
+
+1. **MODE: project** → always **precision** (software-develop-architect)
+2. **User explicitly mentions "design doc"/"architecture"/"architect"** → **precision**
+3. Any **one or more** medium~large-scale indicators → **precision**
+4. **All** small-scale conditions met → **lightweight** (architect)
+
+### Existing Design Document Detection
+
+Before entering Phase 1, check whether a design document already exists at the relevant specs/ path.
+
+- feature: check for `specs/features/{feature name}/design.md`
+- bugfix: check for `specs/bugs/{issue number}/analysis.md`
+- project: check for `specs/requirements.md` or `specs/architecture.md`, or `*design*.md` under `specs/features/{project name}/`
+
+If a design document exists:
+```
+📄 Existing design document found: {file path}
+
+1. ♻️ Use existing design document — skip Phase 1, proceed to Phase 2 (implementation)
+2. 🔄 Redesign — overwrite existing design document and redesign
+```
+Wait for user response before proceeding.
+
+### Complexity Confirmation Output
 
 ```
-Use subagent architect to design feature "{기능명}".
+🔍 Mode: {bugfix / feature / project}
+📐 Design complexity: {small-scale (lightweight) / medium~large-scale (precision)}
+📝 Task: {$ARGUMENTS summary}
+🏗️ Design agent: {architect / software-develop-architect}
+```
+
+---
+
+## Step 0.7: Requirements Probing (Conditional)
+
+Evaluate the information density of $ARGUMENTS **before entering Phase 1**.
+
+### Ambiguity Check (evaluate internally)
+
+| Item | Satisfied? |
+|------|-----------|
+| Tech stack or target environment identifiable | Yes / No |
+| Functional scope is clear (what is included / excluded) | Yes / No |
+| Integration targets identified (external systems, APIs, HW, etc.) | Yes / No |
+| Key constraints present (performance, security, scale, etc.) | Yes / No |
+
+**2 or more "No" → probing required**
+**1 or fewer "No" → skip probing, proceed to Phase 1 with original input**
+
+### Mode-Specific Questions (max 3, ask only for missing items)
+
+**MODE: feature**
+- Q. What is the tech stack / framework of the target project?
+- Q. Which existing feature or module does this integrate with?
+- Q. What is the expected interaction form? (UI / REST API / CLI / background job)
+
+**MODE: bugfix**
+- Q. Under what conditions does the bug occur? (steps to reproduce)
+- Q. What is the acceptable scope of the fix? (minimal patch only / refactoring allowed)
+- Q. In which environment does the issue occur? (dev / staging / prod)
+
+**MODE: project**
+- Q. What is the preferred tech stack?
+- Q. Who are the primary users and what is the core use case?
+- Q. List the top 3 must-have features.
+
+Output format:
+```
+Before starting the design, a few things need to be clarified.
+
+Q1. [question]
+Q2. [question]
+(up to Q3)
+```
+
+**Wait for user answers before proceeding.**
+
+### After Probing: Input Enrichment
+
+After receiving answers, construct an enriched requirements block and use it as `{REQUIREMENTS}` in all subsequent design agent calls:
+
+```
+[Original Request]
+{$ARGUMENTS}
+
+[Clarified via Probing]
+{probing Q&A summary}
+```
+
+Also add `PROBING_DONE: true` to the agent call prompt to signal that pre-interview was completed.
+
+**If probing was skipped:** use original `$ARGUMENTS` as `{REQUIREMENTS}`. Do not include `PROBING_DONE`.
+
+---
+
+## MODE: feature (New Feature)
+
+**Extract task name:** Extract the feature name from the input. (e.g., "Add login feature" → feature name="login")
+
+### Phase 1: Design
+
+**Lightweight design (architect):**
+```
+Use subagent architect to design feature "{feature name}".
 MODE: feature
-Output to: specs/features/{기능명}/design.md
+PROBING_DONE: true  ← include only if probing was completed in Step 0.7
+Output to: specs/features/{feature name}/design.md
+Requirements: {REQUIREMENTS}
 Analyze the current project structure and create a complete design document.
 ```
 
-자체 검증:
-- [ ] design.md 생성 확인
-- [ ] 완료 기준(EARS) 포함 확인
-- [ ] 구현 태스크 파일 단위 분해 확인
+**Precision design (software-develop-architect):**
+```
+Use subagent architect to design feature "{feature name}".
+MODE: feature
+PROBING_DONE: true  ← include only if probing was completed in Step 0.7
+Output to: specs/features/{feature name}/design.md
+Analyze the current project structure and create a comprehensive design document.
+Requirements: {REQUIREMENTS}
+```
+→ In this case, invoke the agent using the prompt in `.claude/agents/software-develop-architect.md`.
 
-→ CHECKPOINT-1 출력 → **사용자 응답 대기**
+Self-verification:
+- [ ] Confirm design.md created
+- [ ] Confirm completion criteria included (lightweight: EARS / precision: SMART)
+- [ ] Confirm implementation tasks broken down by file unit
+- [ ] (Precision only) Confirm FR/NFR tag linkage
+- [ ] (Precision only) Confirm Mermaid diagram included
 
-### Phase 2: 구현 + 리뷰 (y 후)
+After design completion, save the design.md path and completion criteria summary to `.planning/{YYYY-MM-DD}-{feature name}.md`.
+
+→ Output CHECKPOINT-1 → **Wait for user response**
+> ⚠️ **Hard gate**: Never proceed to Phase 2 (implementation) until the user provides an explicit "y" response.
+
+### Phase 2: Implementation + Review (after y)
 
 ```
-Use subagent developer to implement feature "{기능명}".
+Use subagent developer to implement feature "{feature name}".
 MODE: feature
-Reference: specs/features/{기능명}/design.md
+Reference: specs/features/{feature name}/design.md
 Follow the design document exactly. Do not deviate from the specified interfaces and scope.
 ```
 
-developer 완료 → 즉시 code-reviewer 호출:
+After developer completes → immediately invoke code-reviewer:
 
 ```
-Use subagent code-reviewer to review all modified files for feature "{기능명}".
-Reference: specs/features/{기능명}/design.md
+Use subagent code-reviewer to review all modified files for feature "{feature name}".
+Reference: specs/features/{feature name}/design.md
 Review the implementation against the design document. Focus on: design alignment, code quality, security, performance.
 ```
 
-→ CHECKPOINT-2 출력 → **사용자 응답 대기**
+→ Output CHECKPOINT-2 → **Wait for user response**
 
-**Critical 자동 재수행:** Critical이 1건이라도 있으면 사용자 입력 없이 developer → code-reviewer를 자동 재실행한다. PASS 또는 REVIEW_NEEDED이 될 때까지 반복한다.
+**Automatic Critical re-execution:** If there is even 1 Critical, automatically re-run developer → code-reviewer without user input. Repeat until PASS or REVIEW_NEEDED.
 
-n 시: developer → code-reviewer 재실행
+If n: re-run developer → code-reviewer
 
-### Phase 3: 테스트 (y 후)
+### Phase 3: Test (after y)
 
 ```
-Use subagent tester to write and run tests for feature "{기능명}".
+Use subagent tester to write and run tests for feature "{feature name}".
 MODE: feature
-Reference: specs/features/{기능명}/design.md
+Reference: specs/features/{feature name}/design.md
 Write tests based on completion criteria in the design document. Run all tests and report results.
 ```
 
-→ CHECKPOINT-3 출력 → **사용자 응답 대기**
+→ Output CHECKPOINT-3 → **Wait for user response**
 
-y 시: 워크플로우 완료. git commit은 수행하지 않는다 (사용자가 별도로 진행).
+If y: workflow complete. Do not perform git commit (user proceeds separately).
 
 ---
 
-## MODE: bugfix (버그 수정)
+## MODE: bugfix (Bug Fix)
 
-**이슈 파싱:** 입력에서 이슈번호와 설명을 분리한다.
-- "#123 결제 오류" → 이슈번호=123, 설명=결제 오류
-- "결제 금액이 0원" → 이슈번호=날짜(YYYYMMDD), 설명=전체 텍스트
+**Parse issue:** Separate the issue number and description from the input.
+- "#123 payment error" → issue number=123, description=payment error
+- "Payment amount is 0" → issue number=date(YYYYMMDD), description=full text
 
-### Phase 1: 분석 (architect)
+### Phase 1: Analysis
 
+**Lightweight analysis (architect):**
 ```
-Use subagent architect to analyze bug "{이슈}".
+Use subagent architect to analyze bug "{issue}".
 MODE: bugfix
-Output to: specs/bugs/{이슈번호}/analysis.md
+PROBING_DONE: true  ← include only if probing was completed in Step 0.7
+Output to: specs/bugs/{issue number}/analysis.md
+Requirements: {REQUIREMENTS}
 Investigate the root cause (not symptoms). Find the minimal fix with least side effects.
 ```
 
-자체 검증:
-- [ ] analysis.md 생성 확인
-- [ ] 근본 원인 파일명:라인번호 명시 확인
-- [ ] 수정 방향 최소 침습 확인
+**Precision analysis (software-develop-architect):**
+```
+Use subagent architect to analyze bug "{issue}".
+MODE: bugfix
+PROBING_DONE: true  ← include only if probing was completed in Step 0.7
+Output to: specs/bugs/{issue number}/analysis.md
+Investigate the root cause (not symptoms). Find the minimal fix with least side effects.
+Requirements: {REQUIREMENTS}
+```
+→ In this case, invoke the agent using the prompt in `.claude/agents/software-develop-architect.md`.
 
-→ CHECKPOINT-1 출력 → **사용자 응답 대기**
+Self-verification:
+- [ ] Confirm analysis.md created
+- [ ] Confirm root cause specified as filename:line number
+- [ ] Confirm fix direction is minimally invasive
 
-### Phase 2: 수정 + 리뷰 (y 후)
+After analysis completion, save the analysis.md path and root cause summary to `.planning/{YYYY-MM-DD}-bug-{issue number}.md`.
+
+→ Output CHECKPOINT-1 → **Wait for user response**
+> ⚠️ **Hard gate**: Never proceed to Phase 2 (fix) until the user provides an explicit "y" response.
+
+### Phase 2: Fix + Review (after y)
 
 ```
-Use subagent developer to fix bug "{이슈}".
+Use subagent developer to fix bug "{issue}".
 MODE: bugfix
-Reference: specs/bugs/{이슈번호}/analysis.md
+Reference: specs/bugs/{issue number}/analysis.md
 Apply the minimal fix described in the analysis. Do NOT modify anything outside the specified scope.
 ```
 
-developer 완료 → 즉시 code-reviewer 호출:
+After developer completes → immediately invoke code-reviewer:
 
 ```
-Use subagent code-reviewer to review the bug fix for "{이슈}".
-Reference: specs/bugs/{이슈번호}/analysis.md
+Use subagent code-reviewer to review the bug fix for "{issue}".
+Reference: specs/bugs/{issue number}/analysis.md
 Focus on: regression risk, side effects, minimal change principle.
 ```
 
-→ CHECKPOINT-2 출력 → **사용자 응답 대기**
+→ Output CHECKPOINT-2 → **Wait for user response**
 
-**Critical 자동 재수행:** Critical이 1건이라도 있으면 사용자 입력 없이 developer → code-reviewer를 자동 재실행한다. PASS 또는 REVIEW_NEEDED이 될 때까지 반복한다.
+**Automatic Critical re-execution:** If there is even 1 Critical, automatically re-run developer → code-reviewer without user input. Repeat until PASS or REVIEW_NEEDED.
 
-### Phase 3: 회귀 테스트 (y 후)
+### Phase 3: Regression Test (after y)
 
 ```
-Use subagent tester for regression testing of bug fix "{이슈}".
+Use subagent tester for regression testing of bug fix "{issue}".
 MODE: bugfix (regression)
-Reference: specs/bugs/{이슈번호}/analysis.md
+Reference: specs/bugs/{issue number}/analysis.md
 Verify: (1) the reported bug is fixed, (2) related features still work correctly.
 ```
 
-→ CHECKPOINT-3 출력 → **사용자 응답 대기**
+→ Output CHECKPOINT-3 → **Wait for user response**
 
-y 시: 워크플로우 완료. git commit은 수행하지 않는다 (사용자가 별도로 진행).
+If y: workflow complete. Do not perform git commit (user proceeds separately).
 
 ---
 
-## MODE: project (새 프로젝트)
+## MODE: project (New Project)
 
-**프로젝트명 추출:** 입력에서 프로젝트명을 추출한다. (예: "todo app 만들어줘" → 프로젝트명="todo-app")
+**Extract project name:** Extract the project name from the input. (e.g., "Create a todo app" → project name="todo-app")
 
-### Phase 1: 아키텍처 설계 (architect)
+> ⚠️ MODE: project always uses **precision design (software-develop-architect)**.
+
+### Phase 1: Architecture Design (software-develop-architect)
 
 ```
-Use subagent architect to design new project "{프로젝트명}".
+Use subagent architect to design new project "{project name}".
 MODE: project
-Output to: specs/requirements.md and specs/architecture.md
-Create complete requirements (MoSCoW) and architecture documents.
+PROBING_DONE: true  ← include only if probing was completed in Step 0.7
+Output to: specs/features/{project name}/{project name}_design_v1.0.md
+Additionally generate: specs/features/{project name}/requirements.md and specs/features/{project name}/architecture.md
+Requirements: {REQUIREMENTS}
 ```
+→ Invoke the agent using the prompt in `.claude/agents/software-develop-architect.md`.
 
-자체 검증:
-- [ ] requirements.md 생성 (Must/Should/Could/Won't)
-- [ ] architecture.md 생성 (기술 스택, 디렉토리, 컴포넌트)
-- [ ] Must 기능 구현 경로 명확
+Self-verification:
+- [ ] Confirm design document created
+- [ ] Confirm requirements.md created (Must/Should/Could/Won't)
+- [ ] Confirm architecture.md created (tech stack, directory, components)
+- [ ] Confirm FR/NFR tag linkage
+- [ ] Confirm Mermaid diagram included
+- [ ] Must feature implementation path is clear
 
-→ CHECKPOINT-1 출력 → **사용자 응답 대기**
+After architecture design completion, save the design document path and Must feature list to `.planning/{YYYY-MM-DD}-{project name}.md`.
 
-### Phase 2: 구현 + 리뷰 (y 후)
+→ Output CHECKPOINT-1 → **Wait for user response**
+> ⚠️ **Hard gate**: Never proceed to Phase 2 (implementation) until the user provides an explicit "y" response.
+
+### Phase 2: Implementation + Review (after y)
 
 ```
-Use subagent developer to implement new project "{프로젝트명}".
+Use subagent developer to implement new project "{project name}".
 MODE: project
-Reference: specs/architecture.md and specs/requirements.md
+Reference: specs/features/{project name}/architecture.md and specs/features/{project name}/requirements.md
 Steps:
 1. Create directory structure from architecture.md
 2. Generate project config files (package.json/pom.xml etc.)
-3. Save task list to specs/tasks.md (ordered by MoSCoW priority)
+3. Save task list to specs/features/{project name}/tasks.md (ordered by MoSCoW priority)
 4. Implement Must features first, then Should, then Could
 ```
 
-developer 완료 → 즉시 code-reviewer 호출:
+After developer completes → immediately invoke code-reviewer:
 
 ```
-Use subagent code-reviewer to review the entire new project "{프로젝트명}".
-Reference: specs/architecture.md
+Use subagent code-reviewer to review the entire new project "{project name}".
+Reference: specs/features/{project name}/architecture.md
 Focus on: architecture alignment, code quality, security basics, project structure.
 ```
 
-→ CHECKPOINT-2 출력 → **사용자 응답 대기**
+→ Output CHECKPOINT-2 → **Wait for user response**
 
-### Phase 3: 테스트 (y 후)
+### Phase 3: Test (after y)
 
 ```
-Use subagent tester to write and run a test suite for new project "{프로젝트명}".
+Use subagent tester to write and run a test suite for new project "{project name}".
 MODE: project
-Reference: specs/requirements.md
+Reference: specs/features/{project name}/requirements.md
 Coverage targets: Must features 100%, Should features 80%+.
 Write unit tests per component and integration tests for main user flows.
 ```
 
-→ CHECKPOINT-3 출력 → **사용자 응답 대기**
+→ Output CHECKPOINT-3 → **Wait for user response**
 
-y 시: 워크플로우 완료. git commit은 수행하지 않는다 (사용자가 별도로 진행).
+If y: workflow complete. Do not perform git commit (user proceeds separately).
 
 ---
 
-## 공통: "s" (상태) 처리
+## Common: "s" (Status) Handling
 
-사용자가 "s"를 입력하면 workflow-rules.md의 상태 출력 형식을 따라 현재 진행 현황 출력.
+If the user inputs "s", output the current progress status following the status output format in workflow-rules.md.
+Also display the design agent routing result:
+```
+📊 Status: {task name}
+📐 Design: {lightweight (architect) / precision (software-develop-architect)}
+
+| Phase | Assigned Agent | Status | Deliverable |
+|-------|---------------|--------|-------------|
+| Design | {architect / software-develop-architect} | ✅/🔄/⏳ | {filename} |
+| Implementation | developer | ✅/🔄/⏳ | {filename} |
+| Review | code-reviewer | ✅/🔄/⏳ | {filename} |
+| Test | tester | ✅/🔄/⏳ | {filename} |
+```

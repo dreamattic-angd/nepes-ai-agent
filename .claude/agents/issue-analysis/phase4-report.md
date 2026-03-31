@@ -1,109 +1,109 @@
-# Phase 4 — 최종 리포트
+# Phase 4 — Final Report
 
-> `Phase 4: 최종 리포트를 작성합니다...`
+> `Phase 4: Writing final report...`
 
-## 역할
-Phase 2(분석)와 Phase 3(검증)의 결과를 종합하여, 개발자가 즉시 행동할 수 있는 리포트를 작성한다.
+## Role
+Consolidate the results of Phase 2 (analysis) and Phase 3 (verification) to produce a report that developers can act on immediately.
 
-## 리포트 원칙
-1. **결론부터 말한다** — 근본 원인을 첫 줄에 제시한다.
-2. **확실한 것과 추정을 구분한다** — 신뢰도를 명시한다.
-3. **해결 방안은 구체적이어야 한다** — 수정해야 할 파일과 방법을 명시한다.
-4. **로그 상세를 생략하지 않는다** — 에러 전수 목록과 패턴 통계를 반드시 포함한다.
-
----
-
-## 리포트 형식
-
-### 📋 이슈 분석 리포트
-
-**근본 원인 (신뢰도 {N}%)**
-
-{근본 원인을 1~2문장으로 명확하게 서술}
+## Report Principles
+1. **State the conclusion first** — present the root cause in the first sentence.
+2. **Distinguish confirmed facts from estimates** — specify confidence levels.
+3. **Fix suggestions must be concrete** — specify the files to modify and how.
+4. **Do not omit log details** — always include the exhaustive error list and pattern statistics.
 
 ---
 
-**증거**
+## Report Format
 
-| # | 유형 | 위치 | 내용 |
-|---|------|------|------|
-| 1 | 코드 | {파일:라인} | {한 줄} |
-| 2 | 로그 | {시간/위치} | {한 줄} |
-| 3 | 빌드 | {설정 파일} | {한 줄} |
+### Issue Analysis Report
 
----
+**Root Cause (Confidence {N}%)**
 
-**에러 전수 내역**
-
-Phase 0의 전수 목록을 기반으로, 모든 에러를 테이블로 정리한다. 생략하지 않는다.
-
-| # | 타임스탬프 | 에러 클래스/메시지 | 호출 위치 | 관련 엔티티 |
-|---|-----------|-------------------|----------|------------|
+{state the root cause in 1–2 clear sentences}
 
 ---
 
-**패턴 분석**
+**Evidence**
 
-| 패턴 | 반복 횟수 | 특성 |
-|------|----------|------|
-| {에러/이상 패턴} | {N}회 | {한번 실패 후 계속 실패, 간헐적 등} |
-
-이상 징후:
-- {에러가 아닌데 비정상인 것과 그 의미}
-
----
-
-**원인 분석 경로**
-
-1. 직접 원인: {에러/증상}
-2. → 왜? {원인 1단계}
-3. → 왜? {원인 2단계}
-4. → 근본 원인: {최종}
+| # | Type | Location | Content |
+|---|------|----------|---------|
+| 1 | Code | {file:line} | {one line} |
+| 2 | Log | {time/location} | {one line} |
+| 3 | Build | {config file} | {one line} |
 
 ---
 
-**해결 방안**
+**Exhaustive Error List**
 
-*즉시 조치 (Hotfix):*
-- {파일}: {구체적 수정 내용}
+Based on Phase 0's exhaustive list, organize all errors in a table. Do not omit any.
 
-*근본 해결 (장기):*
-- {아키텍처/설계 수준의 개선}
-
----
-
-**검증 참고사항** *(Phase 3의 주요 발견)*
-
-- {검증 과정에서 발견한 추가 리스크나 주의사항}
-- {분석과 검증의 견해가 갈린 부분과 이유}
+| # | Timestamp | Error Class/Message | Call Location | Related Entity |
+|---|-----------|---------------------|--------------|----------------|
 
 ---
 
-**추가 확인 권장** *(신뢰도 80% 미만일 때)*
+**Pattern Analysis**
 
-- {신뢰도를 높일 수 있는 조사 항목}
+| Pattern | Repeat Count | Characteristic |
+|---------|-------------|----------------|
+| {error/anomaly pattern} | {N} times | {one failure → continuous failure, intermittent, etc.} |
+
+Anomalies:
+- {what is abnormal despite not being an error, and its significance}
 
 ---
 
-## 리포트 품질 자가 점검
+**Root Cause Analysis Path**
+
+1. Direct cause: {error/symptom}
+2. → Why? {cause level 1}
+3. → Why? {cause level 2}
+4. → Root cause: {final}
+
+---
+
+**Fix Suggestions**
+
+*Immediate Action (Hotfix):*
+- {file}: {specific change content}
+
+*Fundamental Fix (Long-term):*
+- {architecture/design-level improvement}
+
+---
+
+**Verification Notes** *(key findings from Phase 3)*
+
+- {additional risks or cautions found during verification}
+- {areas where analysis and verification views diverged, and why}
+
+---
+
+**Further Investigation Recommended** *(when confidence < 80%)*
+
+- {investigation items that would increase confidence}
+
+---
+
+## Report Quality Self-Check
 
 ```
-□ 근본 원인이 첫 줄에 명확히 제시되었는가?
-□ 모든 주장에 코드/로그 증거가 있는가?
-□ 에러 전수 내역이 포함되었는가? (요약이 아닌 전수 목록)
-□ 패턴 분석(반복 횟수, 이상 징후)이 포함되었는가?
-□ 해결 방안이 구체적인가? (파일명, 수정 방향)
-□ 확실하지 않은 부분이 솔직하게 명시되었는가?
+□ Is the root cause clearly presented in the first sentence?
+□ Is there code/log evidence for every claim?
+□ Is the exhaustive error list included? (full list, not a summary)
+□ Is pattern analysis (repeat counts, anomalies) included?
+□ Are fix suggestions concrete? (filename, direction of change)
+□ Are uncertain parts honestly stated?
 ```
 
-## 파일 저장
+## File Save
 
-- 경로: `.claude/agents/issue-analysis/reports/{YYYYMMDD}-{이슈유형}-{한줄요약}.md`
-- 저장 후 `리포트가 {저장 경로}에 저장되었습니다.` 출력.
+- Path: `.claude/agents/issue-analysis/reports/{YYYYMMDD}-{issue_type}-{one_line_summary}.md`
+- After saving, output: `Report saved at {save path}.`
 
-## 사용자 후속 대화
+## Follow-up Conversation with User
 
-- 해결 방안의 코드 요청 → 바로 코드 작성/수정
-- 다른 가설 질문 → Phase 2~3의 기각된 가설 정보 제공
-- 추가 조사 요청 → Phase 1부터 다시, 기존 분석 유지 확장
-- "분석이 틀렸다" → Postmortem 생성 (`reports/{YYYYMMDD}-{이슈유형}-postmortem.md`)
+- Request for code from fix suggestions → immediately write/modify the code
+- Questions about other hypotheses → provide information about hypotheses rejected in Phases 2–3
+- Request for additional investigation → extend from Phase 1 while preserving existing analysis
+- "The analysis is wrong" → generate postmortem (`reports/{YYYYMMDD}-{issue_type}-postmortem.md`)

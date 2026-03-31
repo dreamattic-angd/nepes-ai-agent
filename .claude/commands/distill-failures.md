@@ -1,25 +1,25 @@
-# 실패 패턴 증류
+# Failure Pattern Distillation
 
-반복 실패 패턴을 CLAUDE.md 영구 규칙으로 승격하고, 원본 로그를 정리한다.
+Promotes recurring failure patterns to permanent rules in CLAUDE.md and cleans up the original logs.
 
-## 자동 트리거
+## Automatic Trigger
 
-git-workflow 실행 시 마지막 증류 날짜를 자동으로 확인한다.
-**14일 이상 경과** 시 워크플로우 진입 전에 이 커맨드를 자동 실행한다.
-수동 실행도 가능: `/distill-failures`
+When git-workflow runs, it automatically checks the date of the last distillation.
+If **14 or more days have elapsed**, this command runs automatically before entering the workflow.
+Manual execution is also available: `/distill-failures`
 
-## 확증 편향 방지 원칙
+## Confirmation Bias Prevention Principles
 
-1. **verified: true인 패턴만 승격 가능** — 미검증 가설은 CLAUDE.md에 올라가지 않는다
-2. **사용자(인간) 검토 필수** — 자동 승격 없음. 조건이 정확한지, 지금도 유효한지 확인
-3. **만료된 레코드 자동 제외** — expires가 지난 패턴은 후보에서 제외
-4. **프로젝트별 격리** — 각 프로젝트의 실패/성공 기록은 project 필드로 구분, 교차 오염 방지
+1. **Only patterns with verified: true can be promoted** — unverified hypotheses never go into CLAUDE.md
+2. **User (human) review is required** — no automatic promotion. Verify that conditions are accurate and still valid
+3. **Expired records are automatically excluded** — patterns past their expires date are excluded from candidates
+4. **Project-level isolation** — failure/success records for each project are separated by the project field to prevent cross-contamination
 
-## 절차
+## Procedure
 
-### 0단계: 프로젝트 감지
+### Step 0: Project Detection
 
-현재 프로젝트를 감지한다. `git remote get-url origin`에서 repo명을 추출하여 프로젝트 식별자를 결정한다:
+Detect the current project. Extract the repo name from `git remote get-url origin` to determine the project identifier:
 - `nepes-ai-agents` → NEPES_AI_AGENTS
 - `RMSSERVER` → RMSSERVER
 - `YTAP` → YTAP
@@ -27,118 +27,137 @@ git-workflow 실행 시 마지막 증류 날짜를 자동으로 확인한다.
 - `Web_rmspage` → WEB_RMSPAGE
 - `YTAP_MANAGER` → YTAP_MANAGER
 
-감지된 프로젝트를 이후 모든 단계에서 필터로 사용한다.
+Use the detected project as a filter for all subsequent steps.
 
-### 1단계: 마지막 실행일 기록 확인 및 만료 아카이브
+### Step 1: Check Last Run Date and Archive Expired Records
 
-마지막 증류 실행일을 확인한다:
+Check the last distillation run date:
 
 ```bash
 node -e "const fs=require('fs'),p=require('path'),f=p.join(process.env.USERPROFILE||process.env.HOME,'.claude','logs','distill-last-run.json'); if(!fs.existsSync(f)){console.log('__NEVER_RUN__')}else{const d=JSON.parse(fs.readFileSync(f,'utf8')); console.log(JSON.stringify(d))}"
 ```
 
-- **`__NEVER_RUN__`** → 첫 실행. 진행
-- **데이터 있음** → 마지막 실행일로부터 경과일 계산. 14일 미만이면 "증류가 {N}일 전에 실행되었습니다. 건너뜁니다." 출력 후 종료 (단, 수동 실행 시에는 무시하고 계속 진행)
+- **`__NEVER_RUN__`** → First run. Proceed.
+- **Data present** → Calculate elapsed days from last run date. If fewer than 14 days, output "Distillation was run {N} days ago. Skipping." and exit. (Ignored for manual execution — always continue.)
 
-만료된 실패 레코드를 아카이브 처리한다:
+Archive expired failure records:
 
 ```bash
 node -e "const fl=require(process.env.USERPROFILE+'/.claude/hooks/failure-logger.js'); const r=fl.archiveExpired(); console.log(JSON.stringify(r));"
 ```
 
-### 2단계: 미검증 가설 검토 요청
+### Step 2: Request Review of Unverified Hypotheses
 
-현재 프로젝트의 미검증(verified: false) 패턴 목록을 출력하여 사용자 검토를 요청한다:
+Display the list of unverified (verified: false) patterns for the current project and request user review:
 
 ```bash
 node -e "const fr=require(process.env.USERPROFILE+'/.claude/hooks/failure-registry.js'); const u=fr.getUnverifiedPatterns({sinceDays:30, project:'{PROJECT}'}); if(u.length===0) console.log('__NO_UNVERIFIED__'); else console.log(JSON.stringify(u,null,2));"
 ```
 
-- **`__NO_UNVERIFIED__`** → "미검증 가설이 없습니다." 출력 후 3단계로 진행
-- **미검증 패턴이 있으면** → 표 형태로 보여주고 검증 여부를 확인한다:
+- **`__NO_UNVERIFIED__`** → Output "No unverified hypotheses." and proceed to Step 3
+- **If unverified patterns exist** → Display in table format and request verification:
 
 ```
-📋 [{PROJECT}] 미검증 실패 가설 (사용자 검토 필요)
+📋 [{PROJECT}] Unverified Failure Hypotheses (User Review Required)
 
-아래 패턴은 아직 가설 상태입니다. 각 항목의 조건이 정확한지, 교훈이 유효한지 확인해주세요.
+The following patterns are still hypotheses. Please verify whether each condition is accurate and the lesson is still valid.
 
-| # | 유형 | 반복 | 조건 | 교훈 | 검증? |
-|---|------|------|------|------|-------|
-| 1 | {type} | {count}회 | {condition 또는 '조건 미기록'} | {lesson 또는 cause} | Y/N |
+| # | Type | Count | Condition | Lesson | Verified? |
+|---|------|-------|-----------|--------|-----------|
+| 1 | {type} | {count}x | {condition or 'no condition recorded'} | {lesson or cause} | Y/N |
 
-검증할 패턴 번호를 선택하세요 (쉼표 구분, 'skip'으로 건너뛰기):
+Enter the pattern numbers to verify (comma-separated, 'skip' to skip):
 ```
 
-⛔ **반드시 사용자 응답을 기다린다.**
+⛔ **Always wait for user response.**
 
-- **`skip`** → 검증 없이 3단계로 진행
-- **번호 선택** → 선택된 패턴을 verified: true로 변경:
+- **`skip`** → Proceed to Step 3 without verification
+- **Number selection** → Change selected patterns to verified: true:
 
 ```bash
 node -e "const fl=require(process.env.USERPROFILE+'/.claude/hooks/failure-logger.js'); const r=fl.setVerified('{failureType}', '{subType}', true, '{PROJECT}'); console.log(JSON.stringify(r));"
 ```
 
-### 3단계: 증류 후보 조회
+### Step 3: Query Distillation Candidates
 
-현재 프로젝트에서 최근 30일간 3회 이상 반복 + verified: true인 패턴을 조회한다:
+Query patterns in the current project that are repeated 3 or more times in the last 30 days and have verified: true:
 
 ```bash
 node -e "const fr=require(process.env.USERPROFILE+'/.claude/hooks/failure-registry.js'); const c=fr.getDistillCandidates({project:'{PROJECT}'}); if(c.length===0) console.log('__NO_CANDIDATES__'); else console.log(JSON.stringify(c,null,2));"
 ```
 
-- **`__NO_CANDIDATES__`** → "증류할 패턴이 없습니다." 출력 후 5단계(실행일 기록)로 진행
-- **후보가 있으면** → 4단계로 진행
+- **`__NO_CANDIDATES__`** → Output "No patterns to distill." and proceed to Step 5 (record run date)
+- **If candidates exist** → Proceed to Step 4
 
-### 4단계: 사용자 확인 및 CLAUDE.md 승격
+### Step 4: User Confirmation and CLAUDE.md Promotion
 
-후보 패턴을 표 형태로 보여주고 승격 여부를 확인한다:
+Display candidate patterns in table format and confirm promotion:
 
 ```
-📋 [{PROJECT}] 증류 후보 패턴 (3회 이상 반복 + 검증됨)
+📋 [{PROJECT}] Distillation Candidate Patterns (3+ repetitions + verified)
 
-| # | 유형 | 반복 횟수 | 조건 | 교훈 | 예방 제안 |
-|---|------|----------|------|------|----------|
-| 1 | {failureType/subType} | {count}회 | {condition} | {lesson} | {suggestedPrevention} |
+| # | Type | Repetitions | Condition | Lesson | Prevention Suggestion |
+|---|------|------------|-----------|--------|----------------------|
+| 1 | {failureType/subType} | {count}x | {condition} | {lesson} | {suggestedPrevention} |
 
-승격할 패턴 번호를 선택하세요 (쉼표 구분, 'all' 또는 'none'):
+Enter the pattern numbers to promote (comma-separated, 'all' or 'none'):
 ```
 
-⛔ **반드시 사용자 응답을 기다린다.**
+⛔ **Always wait for user response.**
 
-- **`none`** → "증류를 건너뜁니다." 출력 후 5단계로 진행
-- **번호 또는 `all`** → 선택된 패턴을 CLAUDE.md에 추가:
+- **`none`** → Output "Skipping distillation." and proceed to Step 5
+- **Numbers or `all`** → Add selected patterns to CLAUDE.md:
 
 ```bash
 node -e "const fr=require(process.env.USERPROFILE+'/.claude/hooks/failure-registry.js'); const c=fr.getDistillCandidates({project:'{PROJECT}'}); const text=fr.formatDistillRules(c); console.log(text);"
 ```
 
-**프로젝트 CLAUDE.md** (저장소 내 `CLAUDE.md`)에서 `## 실패 방지 규칙` 섹션을 찾는다:
-- **섹션이 있으면** → 기존 규칙 아래에 새 규칙 추가 (중복 확인)
-- **섹션이 없으면** → 파일 끝에 새 섹션 생성
+In the **project CLAUDE.md** (repository's `CLAUDE.md`), find the `## Failure Prevention Rules` section:
+- **If section exists** → Add new rules below existing rules (check for duplicates)
+- **If section does not exist** → Create a new section at the end of the file
 
-규칙을 추가하기 전에 사용자에게 추가될 내용을 보여주고 확인을 받는다.
+Before adding rules, show the user the content to be added and get confirmation.
 
-승격된 패턴의 원본 레코드를 제거:
+Remove the original records of promoted patterns:
 
 ```bash
 node -e "const fr=require(process.env.USERPROFILE+'/.claude/hooks/failure-registry.js'); const r=fr.purgeDistilled('{failureType}', '{subType}', '{PROJECT}'); console.log(JSON.stringify(r));"
 ```
 
-### 5단계: 실행일 기록 및 결과 보고
+### Step 4.5: Eval Case Review (Optional)
 
-마지막 실행일을 기록한다:
+If any of the promoted patterns have **rules testable as pure functions**, suggest adding eval cases to the user.
+
+```
+📋 [{PROJECT}] Eval Case Review
+
+Among the promoted rules, the following types are useful to add as eval cases for regression prevention:
+- Version calculation rules → evals/git-workflow/ (target: version-calc)
+- Branch blocking rules → evals/git-workflow/ (target: branch-validation)
+- Review judgment rules → evals/code-review/ (target: review-judgment)
+
+Add eval cases? (Y/N/skip)
+```
+
+- **`Y`** → Create eval JSON cases matching the relevant patterns in the `evals/{workflow}/` directory
+- **`N` or `skip`** → Skip and proceed to Step 5
+- **No matching type** → Automatically skip this step
+
+### Step 5: Record Run Date and Report Results
+
+Record the last run date:
 
 ```bash
 node -e "const fs=require('fs'),p=require('path'),d=p.join(process.env.USERPROFILE||process.env.HOME,'.claude','logs'); if(!fs.existsSync(d))fs.mkdirSync(d,{recursive:true}); const f=p.join(d,'distill-last-run.json'); const prev=fs.existsSync(f)?JSON.parse(fs.readFileSync(f,'utf8')):{}; prev['{PROJECT}']=new Date().toISOString().slice(0,10); fs.writeFileSync(f,JSON.stringify(prev,null,2),'utf8'); console.log('saved:',prev['{PROJECT}']);"
 ```
 
 ```
-✅ [{PROJECT}] 실패 패턴 증류 완료
+✅ [{PROJECT}] Failure Pattern Distillation Complete
 
-만료 아카이브: {archived}건
-검증 처리: {verified}건
-승격된 패턴: {N}건
-- {failureType/subType}: {count}회 [조건: {condition}] → CLAUDE.md 규칙으로 승격
-정리된 로그: {total removed}건 삭제, {total kept}건 유지
-다음 자동 실행: {14일 후 날짜}
+Expired archived: {archived} items
+Verified: {verified} items
+Promoted patterns: {N} items
+- {failureType/subType}: {count}x [condition: {condition}] → Promoted to CLAUDE.md rule
+Cleaned up logs: {total removed} deleted, {total kept} retained
+Next automatic run: {date 14 days from now}
 ```

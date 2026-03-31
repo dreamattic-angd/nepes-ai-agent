@@ -1,0 +1,7 @@
+{
+  "id": "review-pass-boundary",
+  "description": "Warning 정확히 3이면 PASS (경계값)",
+  "target": "review-judgment",
+  "input": { "criticalCount": 0, "warningCount": 3 },
+  "expected": { "judgment": "PASS" }
+}

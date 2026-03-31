@@ -1,209 +1,231 @@
-# Phase 2 — 심층 분석
+# Phase 2 — Deep Analysis
 
-> `Phase 2: 심층 분석을 시작합니다...`
+> `Phase 2: Starting deep analysis...`
 
-## 역할
-에러가 보이는 지점이 아닌, 에러를 유발하는 근본 원인(root cause)을 찾는다.
+## Role
+Find the root cause that triggers the error — not merely the point where the error appears.
 
-## 절대 규칙
-1. **코드를 직접 읽지 않은 상태에서 원인을 단정하지 않는다.**
-2. **스택트레이스 체인 전체를 역추적한다.** "Caused by" 가장 깊은 원인부터.
-3. **최소 2개, 권장 3개의 가설을 도출한다.** 각 가설에 지지/반박 증거를 매핑한다.
-
----
-
-## 필수 분석 단계 (모두 수행, 건너뛰지 않는다)
-
-### A. 로그 전수 분석 (Phase 0 인덱스 기반)
-
-**Phase 0의 인덱스 파일(`reports/{YYYYMMDD}-log-scan-index.md`)을 반드시 먼저 읽는다.**
-
-1. **전수 목록 정밀 확인**: 인덱스의 에러 전수 목록을 기반으로, 필요한 원본 로그 구간을 Read(offset/limit)로 targeted read
-2. **반복 패턴 분석**: 같은 에러가 몇 번, 어떤 간격으로 반복되는가? 한번 실패 후 계속 실패하는가?
-3. **시간축 상관관계**: 에러들 간의 시간 선후 관계. A 에러 직후 B 에러가 따르는가?
-4. **에러 직전 정상 로그**: 에러 발생 바로 전에 어떤 정상 동작이 있었는가?
-
-### B. 이상 징후 탐지 (핵심)
-
-**에러가 아닌데 비정상인 것을 찾는다.** 이것이 자연어 분석 대비 구조화 분석의 최대 부가가치다.
-
-탐색 대상:
-- **성공인데 실패해야 하는 것**: "Success", "OK", "Complete" 로그인데 전후 맥락이 비정상
-- **값이 null/empty인데 진행되는 것**: 필수값이 없는데 에러 없이 넘어가는 로그
-- **빈도 이상**: 정상 로그인데 비정상적으로 많거나 적은 것
-- **순서 이상**: A 다음에 B가 와야 하는데 C가 오는 것
-- **프레임워크 결함 징후**: 프레임워크가 잘못된 상태를 "정상"으로 처리하는 것
-
-**예시**: `IBinaryCode is null` → `Success load` 패턴처럼, 필수 데이터가 없는데 "성공"을 반환하는 것은 프레임워크 방어 로직 부재를 의미한다.
-
-### C. 코드/빌드 증거 수집
-
-1. **진입점 식별**: 스택트레이스에서 최초 호출 지점 찾기
-2. **소스 코드 직접 확인**: 에러 발생 파일:라인을 Read로 직접 열어 확인. 전후 20줄 포함
-3. **의존 관계 추적**: import 문, 클래스 참조, 모듈 간 의존 확인
-4. **빌드/배포 아티팩트 확인**: JAR 구성, classpath, 빌드 설정 파일 (pom.xml, build.gradle, .idea/artifacts 등)
-5. **분기 조건 확인**: if/else, switch, Optional, null 체크에서 예상치 못한 경로
-
-### D. 5-Why 근본 원인 분석
-
-발견한 직접 원인에서 출발하여 "왜?"를 반복한다. **각 답을 코드/로그 증거로 뒷받침한다.**
-
-```
-왜1: 왜 이 에러가 발생했는가? → {증거 포함}
-왜2: 왜 그 상태가 되었는가? → {증거 포함}
-왜3: ... → 근본 원인
-```
+## Absolute Rules
+1. **Never assert a cause without directly reading the code.**
+2. **Trace the entire exception chain.** Start from the deepest "Caused by" root.
+3. **Derive a minimum of 2 hypotheses, recommended 3.** Map supporting and refuting evidence to each hypothesis.
 
 ---
 
-## 유형별 추가 체크리스트
+## Required Analysis Steps (all must be performed — do not skip)
 
-Phase 1에서 분류된 유형에 해당하는 것만 적용한다.
+### A. Exhaustive Log Analysis (based on Phase 0 index)
 
-**RUNTIME**: Exception 체인 분석, null 전파 경로, 클래스로딩/의존성, 메모리/리소스
-**PERF**: DB 쿼리(N+1, 인덱스), 루프 내 호출, 커넥션 풀, GC
-**LOGIC**: 값 추적(입력→출력), 조건 분기, 데이터 변환, 트랜잭션/동시성
-**INFRA**: 연결 설정, 환경별 차이, 네트워크/DNS, 최근 변경
-**DATA**: 정합성, 마이그레이션, 인코딩, 제약조건
+**Always read the Phase 0 index file (`reports/{YYYYMMDD}-log-scan-index.md`) first.**
+
+1. **Precise exhaustive list review**: Based on the error exhaustive list in the index, perform targeted reads of necessary original log sections using Read(offset/limit)
+2. **Recurring pattern analysis**: How many times, and at what interval, does the same error repeat? Does one failure lead to continuous failures?
+3. **Time-axis correlation**: Temporal sequence between errors. Does error B consistently follow error A?
+4. **Normal logs just before errors**: What normal operations occurred immediately before the error?
+
+### B. Anomaly Detection (key step)
+
+**Find what is abnormal despite not being an error.** This is the greatest added value of structured analysis over natural language analysis.
+
+Search targets:
+- **Success when it should fail**: "Success", "OK", "Complete" logs where surrounding context is abnormal
+- **Proceeding with null/empty values**: logs where required values are absent yet no error is raised
+- **Frequency anomalies**: normal logs appearing abnormally many or few times
+- **Sequence anomalies**: C appearing where B should follow A
+- **Framework defect indicators**: framework treating an incorrect state as "normal"
+
+**Example**: patterns like `IBinaryCode is null` → `Success load`, where "success" is returned despite missing required data, indicate an absence of defensive logic in the framework.
+
+### C. Code/Build Evidence Collection
+
+1. **Entry point identification**: find the initial call site in the stack trace
+2. **Direct source code verification**: use Read to open the file:line where the error occurs. Include ±20 lines of context
+3. **Dependency tracing**: verify import statements, class references, and inter-module dependencies
+4. **Build/deployment artifact verification**: JAR composition, classpath, build config files (pom.xml, build.gradle, .idea/artifacts, etc.)
+5. **Branch condition verification**: unexpected paths in if/else, switch, Optional, null checks
+
+### D. 5-Why Root Cause Analysis
+
+Starting from the direct cause found, repeatedly ask "why?". **Support each answer with code/log evidence.**
+
+```
+Why 1: Why did this error occur? → {include evidence}
+Why 2: Why did that state happen? → {include evidence}
+Why 3: ... → root cause
+```
 
 ---
 
-## 서브에이전트 병렬 활용 (Agent 도구)
+## Type-Specific Additional Checklist
 
-가설 도출 후, **Agent 도구를 사용하여 병렬 검증**을 수행한다. 확증 편향을 방지하기 위해 각 Agent는 독립적으로 증거를 탐색한다.
+Apply only the type classified in Phase 1.
 
-### 시나리오 1: 가설별 독립 검증 (가설 2개 이상일 때 필수)
-
-각 가설에 대해 독립 Agent를 **하나의 응답에서 동시 호출**한다.
-각 Agent의 `subagent_type`은 `"general-purpose"`를 사용한다.
-
-각 Agent 프롬프트:
-```
-당신은 이슈 분석의 가설 검증 전문가입니다. 연구/분석만 수행하고 파일을 수정하지 마세요.
-
-검증 대상 가설: "{가설 제목과 상세 설명}"
-
-[프로젝트 경로]: {project_absolute_path}
-[Phase 0 인덱스 파일]: {index_file_path} (있으면)
-[이슈 유형]: {issue_type}
-[관련 코드 경로]: {file_paths}
-[관련 로그 위치]: {log_locations}
-
-작업:
-1. Phase 0 인덱스 파일이 있으면 Read로 읽어 에러 전수 목록 파악
-2. 이 가설을 **지지하는 증거**를 코드와 로그에서 찾기:
-   - 관련 소스 파일을 Read로 직접 열어 확인
-   - Grep으로 관련 패턴 탐색
-3. 이 가설을 **반박하는 증거**도 적극 탐색:
-   - 같은 코드 경로에서 문제가 발생하지 않는 다른 상황
-   - 가설이 맞다면 관찰되어야 하지만 관찰되지 않는 현상
-4. 5-Why 체인을 코드/로그 증거로 뒷받침
-
-결과 형식 (반드시 이 형식으로 반환):
-[HYPOTHESIS_VERIFICATION: {가설 번호}]
-가설: {제목}
-지지 증거:
-  - [코드] {파일:라인} — {설명}
-  - [로그] {위치} — {설명}
-반박 증거:
-  - {틀릴 수 있는 이유와 근거}
-5-Why 체인: {왜1 → 왜2 → ... → 근본 원인}
-신뢰도: {N}% [{확정/높음/중간/낮음/미확인}]
-```
-
-### 시나리오 2: 로그 파일 병렬 스캔 (logs/ 내 파일 3개 이상일 때)
-
-각 로그 파일에 대해 독립 Agent를 동시 호출한다.
-
-각 Agent 프롬프트:
-```
-당신은 로그 분석 전문가입니다. 연구/분석만 수행하고 파일을 수정하지 마세요.
-
-[대상 파일]: {log_file_absolute_path}
-[탐색 패턴]: {grep_patterns_from_phase0}
-[이슈 유형]: {issue_type}
-
-작업:
-1. 대상 로그 파일에서 에러/예외 패턴을 Grep으로 전수 스캔
-2. 에러 직전/직후의 정상 로그 확인 (Grep -C 5)
-3. 이상 징후 탐색: 성공인데 실패해야 하는 것, 빈도 이상, 순서 이상
-4. 시간축 상관관계 기록
-
-결과 형식 (반드시 이 형식으로 반환):
-[LOG_SCAN: {파일명}]
-에러 목록:
-| # | 타임스탬프 | 줄번호 | 에러 클래스/메시지 | 호출 위치 |
-이상 징후:
-- {관찰 내용}
-시간 패턴:
-- {반복/집중 구간 등}
-```
-
-### 시나리오 3: 모듈별 코드 추적 (3개 이상 패키지/모듈에 걸칠 때)
-
-각 모듈에 대해 독립 Agent를 동시 호출한다.
-
-각 Agent 프롬프트:
-```
-당신은 코드 추적 전문가입니다. 연구/분석만 수행하고 파일을 수정하지 마세요.
-
-[프로젝트 경로]: {project_absolute_path}
-[대상 모듈/패키지]: {module_path}
-[추적 대상]: {class_or_method_name}
-[이슈 유형]: {issue_type}
-
-작업:
-1. 대상 모듈에서 추적 대상의 정의와 사용처를 Grep으로 탐색
-2. import 문, 클래스 참조, 메서드 호출 체인 확인
-3. 의존 관계 맵 작성
-4. 에러 전파 경로 또는 데이터 흐름 추적
-
-결과 형식 (반드시 이 형식으로 반환):
-[CODE_TRACE: {모듈명}]
-진입점: {파일:라인}
-호출 체인: {A → B → C}
-의존 관계: {목록}
-잠재 문제점: {발견사항}
-```
-
-### 결과 통합 (메인 세션)
-
-모든 Agent 결과를 수신한 후:
-1. 각 가설의 지지/반박 증거를 대조
-2. **모순되는 증거를 우선 검토** — 서로 다른 Agent가 상충하는 결론을 낸 경우 메인에서 직접 확인
-3. 가설별 최종 신뢰도 산출
-4. 이상 징후를 통합하여 Phase 3 입력으로 전달
-
-### 폴백
-
-- Agent 실패 시 해당 가설/파일/모듈을 메인 세션에서 순차 처리
-- Agent가 찾지 못한 증거가 있을 수 있으므로, **최종 판단은 반드시 메인에서**
+**RUNTIME**: Exception chain analysis, null propagation path, classloading/dependencies, memory/resources
+**PERF**: DB queries (N+1, index), calls inside loops, connection pool, GC
+**LOGIC**: Value tracing (input→output), conditional branches, data transformation, transactions/concurrency
+**INFRA**: Connection settings, environment differences, network/DNS, recent changes
+**DATA**: Integrity, migration, encoding, constraints
 
 ---
 
-## 가설 도출 형식
+## Sub-agent Parallel Utilization (Agent tool)
+
+After hypotheses are derived, use the **Agent tool to perform parallel verification**. To prevent confirmation bias, each Agent searches for evidence independently.
+
+### Scenario 1: Independent Verification per Hypothesis (required when 2 or more hypotheses)
+
+Call an independent Agent for each hypothesis **simultaneously in a single response**.
+Use `"general-purpose"` for each Agent's `subagent_type`.
+
+Each Agent prompt:
+```
+You are an expert in hypothesis verification for issue analysis. Perform research/analysis only — do not modify files.
+
+Hypothesis to verify: "{hypothesis title and detailed description}"
+
+[Project path]: {project_absolute_path}
+[Phase 0 index file]: {index_file_path} (if available)
+[Issue type]: {issue_type}
+[Related code paths]: {file_paths}
+[Related log locations]: {log_locations}
+
+Tasks:
+1. If a Phase 0 index file is available, use Read to read it and understand the exhaustive error list
+2. Find **supporting evidence** for this hypothesis in code and logs:
+   - Use Read to directly open and verify related source files
+   - Use Grep to explore related patterns
+3. Actively search for **refuting evidence** as well:
+   - Other situations where the same code path does not cause problems
+   - Phenomena that should be observed if the hypothesis is correct but are not
+4. Support the 5-Why chain with code/log evidence
+
+Result format (must return in this format):
+[HYPOTHESIS_VERIFICATION: {hypothesis number}]
+Hypothesis: {title}
+Supporting Evidence:
+  - [Code] {file:line} — {description}
+  - [Log] {location} — {description}
+Refuting Evidence:
+  - {reason and basis why it might be wrong}
+5-Why Chain: {why1 → why2 → ... → root cause}
+Confidence: {N}% [{confirmed/high/medium/low/unverified}]
+```
+
+### Scenario 2: Parallel Log File Scan (when 3 or more files in logs/)
+
+Call an independent Agent for each log file simultaneously.
+
+Each Agent prompt:
+```
+You are a log analysis expert. Perform research/analysis only — do not modify files.
+
+[Target file]: {log_file_absolute_path}
+[Search patterns]: {grep_patterns_from_phase0}
+[Issue type]: {issue_type}
+
+Tasks:
+1. Use Grep to exhaustively scan the target log file for error/exception patterns
+2. Check normal logs immediately before/after errors (Grep -C 5)
+3. Detect anomalies: success where failure is expected, frequency anomalies, sequence anomalies
+4. Record time-axis correlations
+
+Result format (must return in this format):
+[LOG_SCAN: {filename}]
+Error list:
+| # | Timestamp | Line | Error Class/Message | Call Location |
+Anomalies:
+- {observation}
+Time patterns:
+- {recurring intervals, concentrated periods, etc.}
+```
+
+### Scenario 3: Parallel Code Tracing Across Modules (when 3 or more packages/modules are involved)
+
+Call an independent Agent for each module simultaneously.
+
+Each Agent prompt:
+```
+You are a code tracing expert. Perform research/analysis only — do not modify files.
+
+[Project path]: {project_absolute_path}
+[Target module/package]: {module_path}
+[Trace target]: {class_or_method_name}
+[Issue type]: {issue_type}
+
+Tasks:
+1. Use Grep to explore the definition and usage of the trace target in the target module
+2. Verify import statements, class references, and method call chains
+3. Map dependency relationships
+4. Trace the error propagation path or data flow
+
+Result format (must return in this format):
+[CODE_TRACE: {module name}]
+Entry point: {file:line}
+Call chain: {A → B → C}
+Dependencies: {list}
+Potential issues: {findings}
+```
+
+### Result Integration (main session)
+
+After receiving all Agent results:
+1. Compare supporting and refuting evidence for each hypothesis
+2. **Prioritize contradictory evidence** — when different Agents reach conflicting conclusions, verify directly in main session
+3. Calculate final confidence for each hypothesis
+4. Consolidate anomalies and pass to Phase 3 as input
+
+### Fallback
+
+- When an Agent fails, process that hypothesis/file/module sequentially in the main session
+- Since Agents may have missed evidence, **final judgment must always be made in the main session**
+
+---
+
+## Self-Verification (mandatory before output)
+
+가설 출력 전에 아래 항목을 확인한다. 미충족 항목은 즉시 보완 후 재확인한다.
+
+**필수 분석 단계 완료 확인:**
+- [ ] A. 로그 전수 분석 완료 (Phase 0 인덱스 파일 기반, 모든 에러 항목 검토)
+- [ ] B. 이상 탐지 수행 (에러가 아닌 비정상 상태 포함)
+- [ ] C. 코드/빌드 증거 수집 (모든 주장에 `file:line` 직접 확인)
+- [ ] D. 5-Why 분석 완료 (각 "왜?" 단계에 코드/로그 근거 명시)
+
+**가설 품질 확인:**
+- [ ] 가설이 최소 2개 이상 도출됨
+- [ ] 각 가설에 Supporting Evidence와 Refuting Evidence 모두 존재
+- [ ] 5-Why 체인의 각 단계에 `[Code]` 또는 `[Log]` 근거 명시
+- [ ] 신뢰도가 가장 높은 가설이 60% 이상 (미달 시 추가 분석 필요)
+
+미충족 항목 처리:
+- A/B 미충족 → 해당 로그 분석 단계 재수행
+- C 미충족 → 해당 코드 파일 직접 Read 후 근거 보완
+- D 미충족 → 5-Why 체인 재작성
+- 가설 1개 이하 → 대안 가설 추가 탐색 수행
+
+## Hypothesis Output Format
 
 ```
 [ANALYSIS RESULT]
 
-이슈 유형: {TYPE}
-코드 추적 경로: {실제로 읽은 파일 목록과 핵심 라인}
+Issue Type: {TYPE}
+Code Trace Path: {list of files actually read and key lines}
 
-가설 1: {제목}
-  설명: {상세}
-  지지 증거:
-    - [코드] {파일:라인} - {이유}
-    - [로그] {내용} - {이유}
-  반박 증거:
-    - {틀릴 수 있는 이유}
-  5-Why 체인: {왜1 → 왜2 → ... → 근본 원인}
+Hypothesis 1: {title}
+  Description: {details}
+  Supporting Evidence:
+    - [Code] {file:line} - {reason}
+    - [Log] {content} - {reason}
+  Refuting Evidence:
+    - {reason why it might be wrong}
+  5-Why Chain: {why1 → why2 → ... → root cause}
 
-가설 2: {제목}
-  (동일 형식)
+Hypothesis 2: {title}
+  (same format)
 
-이상 징후 발견사항:
-  - {에러가 아닌데 비정상인 것과 그 의미}
+Anomaly Findings:
+  - {what is abnormal despite not being an error, and its significance}
 
-추가 확인 필요:
-  - {확인하지 못한 부분}
+Further Verification Needed:
+  - {items that could not be verified}
 ```

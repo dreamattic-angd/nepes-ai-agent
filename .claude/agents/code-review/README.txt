@@ -1,88 +1,88 @@
 # Code Review Agent
 
-병합 전 코드 리뷰를 자동화하는 에이전트입니다.
+An agent that automates code review before merging.
 
-## 사전 요구사항
+## Prerequisites
 - Claude Code
-- Node.js v18 이상 (Deep 모드의 Sequential Thinking MCP 자동 설치에 필요)
+- Node.js v18 or higher (required for Sequential Thinking MCP auto-install in Deep mode)
 
-## 사용 방법
+## Usage
 
 ```
 /project:code-review
-/project:code-review quick        # 빠른 리뷰 (Critical만)
-/project:code-review deep         # 다중 레이어 아키텍처 리뷰
+/project:code-review quick        # Quick review (Critical only)
+/project:code-review deep         # Multi-layer architecture review
 ```
 
-## 리뷰 모드
+## Review Modes
 
-| 모드  | 파일             | 용도                        | 소요 시간 |
-|-------|------------------|-----------------------------|-----------|
-| Full  | review-full.md   | 전체 리뷰 (4관점)           | ~15분     |
-| Quick | review-quick.md  | Critical만 스캔             | ~5분      |
-| Deep  | review-deep.md   | 다중 레이어 아키텍처 리뷰   | ~25분     |
+| Mode  | File             | Purpose                          | Duration |
+|-------|------------------|----------------------------------|----------|
+| Full  | review-full.md   | Full review (4 perspectives)     | ~15 min  |
+| Quick | review-quick.md  | Critical scan only               | ~5 min   |
+| Deep  | review-deep.md   | Multi-layer architecture review  | ~25 min  |
 
-## 워크플로우
+## Workflow
 
 ```
 /project:code-review
     │
     ▼
-[1단계] base-branch 결정
-    │  develop 있으면 develop, 없으면 main
+[Step 1] Determine base branch
+    │  Use develop if available, otherwise main
     │
     ▼
-[2단계] Diff 기반 변경사항 수집
+[Step 2] Collect diff-based changes
     │  git diff {base-branch} --name-only
-    │  변경된 코드만 리뷰 대상
+    │  Review only changed code
     │
     ▼
-[3단계] 4가지 관점 리뷰
-    │  품질 / 로직 / 보안 / 성능
+[Step 3] Review from 4 perspectives
+    │  Quality / Logic / Security / Performance
     │
     ▼
-[4단계] 판정
+[Step 4] Verdict
     │  PASS / REVIEW_NEEDED / REJECT
     │
     ▼
-[5단계] 리포트 생성
+[Step 5] Generate report
     │  reviews/YYYYMMDD_HHMMSS.log
     │
     ▼
-    완료
+    Done
 ```
 
-## 판정 기준
+## Verdict Criteria
 
-| 판정 | 조건 | 병합 가능 |
-|------|------|----------|
-| PASS | Critical 0건 AND Warning 3건 이하 | 자동 병합 |
-| REVIEW_NEEDED | Critical 0건 AND Warning 4건 이상 | 확인 후 병합 |
-| REJECT | Critical 1건 이상 | 수정 후 재리뷰 |
+| Verdict       | Condition                              | Mergeable         |
+|---------------|----------------------------------------|-------------------|
+| PASS          | Critical 0 AND Warning 3 or fewer      | Auto-merge        |
+| REVIEW_NEEDED | Critical 0 AND Warning 4 or more       | Merge after review|
+| REJECT        | Critical 1 or more                     | Fix then re-review|
 
-## 심각도
+## Severity Levels
 
-| 등급 | 아이콘 | 의미 |
-|------|--------|------|
-| Critical | 🔴 | 버그, 보안취약점, 즉시 수정 필수 |
-| Warning | 🟡 | 잠재적 문제, 수정 권장 |
-| Suggestion | 🟢 | 개선 가능, 선택적 수정 |
+| Level      | Icon | Meaning                                   |
+|------------|------|-------------------------------------------|
+| Critical   | 🔴   | Bug, security vulnerability, must fix now |
+| Warning    | 🟡   | Potential issue, fix recommended          |
+| Suggestion | 🟢   | Improvement possible, optional            |
 
-## 파일 구조
+## File Structure
 
 ```
 nepes-ai-agent/
-├── .mcp.json                          ← Sequential Thinking MCP (팀 공유)
+├── .mcp.json                          ← Sequential Thinking MCP (team shared)
 └── .claude/agents/code-review/
     ├── README.txt
     ├── review-full.md
     ├── review-quick.md
-    ├── review-deep.md                 ← 신규
+    ├── review-deep.md
     ├── review-summary.md
     └── reviews/
 ```
 
-## 로그 관리
+## Log Management
 
-- **자동 정리**: 30일 이상 또는 10개 초과 시 삭제
-- **반복 이슈**: `review-summary.md`에 Top 3 자동 집계
+- **Auto cleanup**: Delete logs older than 30 days or when count exceeds 10
+- **Recurring issues**: Top 3 automatically aggregated in `review-summary.md`

@@ -6,14 +6,26 @@
 
 ## Agent Architecture
 
-슬래시 커맨드(오케스트레이터)가 4개의 전문 서브에이전트를 순서대로 호출한다.
+슬래시 커맨드(오케스트레이터)가 5개의 전문 서브에이전트를 복잡도에 따라 호출한다.
 
 | 역할 | 에이전트 | 파일 | 책임 범위 |
 |------|---------|------|----------|
-| 설계 | architect | .claude/agents/architect.md | 설계 문서 작성. 코드 작성 금지 |
+| 경량 설계 | architect | .claude/agents/architect.md | 소규모 설계 문서 작성. 코드 작성 금지 |
+| 정밀 설계 | software-develop-architect | .claude/agents/software-develop-architect.md | 6 Phase 정밀 설계서 작성 (중~대규모). 코드 작성 금지 |
 | 구현 | developer | .claude/agents/developer.md | 설계 기반 코드 구현. 설계 변경 금지 |
 | 리뷰 | code-reviewer | .claude/agents/code-reviewer.md | 4관점 코드 리뷰. 코드 수정 금지 |
 | 테스트 | tester | .claude/agents/tester.md | 테스트 작성·실행. 프로덕션 최소 수정만 허용 |
+
+### 설계 에이전트 라우팅
+
+오케스트레이터는 Step 0.5에서 복잡도를 판별하여 설계 에이전트를 선택한다.
+
+| 조건 | 선택 에이전트 |
+|------|-------------|
+| MODE: project | 무조건 software-develop-architect |
+| 사용자가 "설계서"/"아키텍처" 명시 | software-develop-architect |
+| 다중 컴포넌트, 외부 연동, DB/API 설계 필요 | software-develop-architect |
+| 소규모 (단일 컴포넌트, 외부 연동 없음) | architect |
 
 **역할 분리 절대 원칙:**
 - 오케스트레이터(슬래시 커맨드)는 직접 설계·코딩·리뷰·테스트하지 않는다
@@ -129,10 +141,11 @@ PASS 또는 REVIEW_NEEDED이 될 때까지 반복한 후 아래 형식으로 출
 "s" 응답 시 현재 진행 현황 테이블 출력:
 ```
 📊 현황: {작업명}
+📐 설계: {경량(architect) / 정밀(software-develop-architect)}
 
 | Phase | 담당 에이전트 | 상태 | 산출물 |
 |-------|-------------|------|--------|
-| 설계 | architect | ✅/🔄/⏳ | {파일명} |
+| 설계 | {architect / software-develop-architect} | ✅/🔄/⏳ | {파일명} |
 | 구현 | developer | ✅/🔄/⏳ | {파일명} |
 | 리뷰 | code-reviewer | ✅/🔄/⏳ | {파일명} |
 | 테스트 | tester | ✅/🔄/⏳ | {파일명} |

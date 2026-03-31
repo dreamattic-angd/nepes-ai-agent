@@ -1,262 +1,261 @@
-## 3단계: 순차 읽기 및 분석
+## Step 3: Sequential Reading and Analysis
 
-### 3-1. 읽기 전략
+### 3-1. Reading Strategy
 
-분할된 파일(또는 원본)을 **순서대로** 읽되, 각 청크에서 아래 SECS/GEM 핵심 요소를 식별하고 기록합니다.
+Read split files (or originals) **in order**, identifying and recording the SECS/GEM core elements below from each chunk.
 
-**읽기 순서:**
-1. 목차(Table of Contents)가 있는 청크를 먼저 읽어 전체 구조를 파악
-2. 나머지 청크를 순서대로 읽으며 상세 분석
-3. 각 청크 분석 결과를 **누적 메모**에 기록
+**Reading order:**
+1. First read the chunk containing the Table of Contents to understand the overall structure
+2. Read the remaining chunks in order and perform detailed analysis
+3. Record each chunk's analysis results in the **cumulative memo**
 
-### 3-2. 누적 메모 형식
+### 3-2. Cumulative Memo Format
 
-각 청크를 읽을 때마다 아래 형식으로 메모를 누적하세요:
+Record the following memo cumulatively for each chunk:
 
 ```
-[CHUNK X 분석 메모]
-- 해당 범위: p.XX ~ p.XX
-- 식별된 항목:
-  - Stream/Function: SxFy 목록
-  - 변수: SVID, CEID, ECID 등
-  - 주요 시나리오: ...
-  - 특이사항: ...
+[CHUNK X Analysis Memo]
+- Range: p.XX ~ p.XX
+- Identified items:
+  - Stream/Function: list of SxFy
+  - Variables: SVID, CEID, ECID, etc.
+  - Key scenarios: ...
+  - Special notes: ...
 ```
 
 ---
 
-## 4단계: SECS/GEM 도메인 분석 체크리스트
+## Step 4: SECS/GEM Domain Analysis Checklist
 
-아래 항목들을 빠짐없이 분석하세요. 문서에 해당 항목이 존재하지 않으면 "문서에 미포함"으로 표기합니다.
+Analyze all items below without omission. Mark "Not included in document" when an item is absent.
 
-### 4-1. 문서 기본 정보
+### 4-1. Document Basic Information
 
-- [ ] 문서 제목, 버전, 날짜
-- [ ] 대상 장비명/모델명
-- [ ] SECS-II/HSMS 통신 설정 정보 (IP, Port, Device ID, T3~T8 타이머 등)
-- [ ] 적용 GEM 표준 버전 (E30, E37, E40 등)
+- [ ] Document title, version, date
+- [ ] Target equipment name/model name
+- [ ] SECS-II/HSMS communication settings (IP, Port, Device ID, T3–T8 timers, etc.)
+- [ ] Applied GEM standard version (E30, E37, E40, etc.)
 
-### 4-2. Communication & Control (통신 및 제어)
+### 4-2. Communication & Control
 
 - [ ] **Communication State Model** — ENABLED/DISABLED, HOST/EQUIPMENT INITIATED
-- [ ] **Control State Model** — ONLINE LOCAL / ONLINE REMOTE / OFFLINE 전환 조건
-- [ ] **Processing State Model** — IDLE / SETUP / READY / EXECUTING / PAUSE 등
-- [ ] 상태 전환 시 발생하는 이벤트(CEID)와 메시지(SxFy)
+- [ ] **Control State Model** — ONLINE LOCAL / ONLINE REMOTE / OFFLINE transition conditions
+- [ ] **Processing State Model** — IDLE / SETUP / READY / EXECUTING / PAUSE, etc.
+- [ ] Events (CEID) and messages (SxFy) triggered during state transitions
 
-### 4-3. Stream/Function 정의 (S/F)
+### 4-3. Stream/Function Definitions (S/F)
 
-이 항목이 문서의 핵심입니다. 각 Stream/Function에 대해:
+This section is the core of the document. For each Stream/Function:
 
-- [ ] **S/F 번호** (예: S1F1, S1F2, S2F41 등)
-- [ ] **메시지 이름** (예: Are You There Request)
-- [ ] **방향** — H→E (Host to Equipment) 또는 E→H (Equipment to Host)
-- [ ] **W-bit** — 응답 대기 여부 (W=Wait)
-- [ ] **메시지 구조** (SML 형식의 데이터 구조)
-- [ ] **각 데이터 항목의 타입과 의미** (예: ASCII, UINT4, LIST 등)
-- [ ] **멀티블록 지원 여부**
+- [ ] **S/F number** (e.g., S1F1, S1F2, S2F41, etc.)
+- [ ] **Message name** (e.g., Are You There Request)
+- [ ] **Direction** — H→E (Host to Equipment) or E→H (Equipment to Host)
+- [ ] **W-bit** — whether response is expected (W=Wait)
+- [ ] **Message structure** (data structure in SML format)
+- [ ] **Type and meaning of each data item** (e.g., ASCII, UINT4, LIST, etc.)
+- [ ] **Multi-block support**
 
-**분석 결과 형식:**
+**Analysis result format:**
 ```
-### SxFy — [메시지 이름]
-- 방향: H→E / E→H
+### SxFy — [Message Name]
+- Direction: H→E / E→H
 - W-bit: Yes / No
-- 용도: [한 줄 설명]
-- 데이터 구조:
+- Purpose: [one-line description]
+- Data structure:
   L,n
-    1. <항목명> <타입> [설명]
-    2. <항목명> <타입> [설명]
+    1. <item name> <type> [description]
+    2. <item name> <type> [description]
     ...
-- 관련 시나리오: [어떤 상황에서 사용되는지]
-- 비고: [특이사항]
+- Related scenarios: [in what situations is this used]
+- Notes: [special considerations]
 ```
 
-### 4-4. Data Variables (데이터 변수)
+### 4-4. Data Variables
 
-각 변수 유형별로 정리:
+Organize by variable type:
 
 #### Status Variables (SV) — SVID
-| SVID | 이름 | 타입 | 단위 | 설명 |
-|------|------|------|------|------|
+| SVID | Name | Type | Unit | Description |
+|------|------|------|------|-------------|
 
 #### Data Variables (DV) — DVNAME
-| VID | 이름 | 타입 | 단위 | 설명 | 관련 CEID |
-|-----|------|------|------|------|----------|
+| VID | Name | Type | Unit | Description | Related CEID |
+|-----|------|------|------|-------------|-------------|
 
 #### Equipment Constants (EC) — ECID
-| ECID | 이름 | 타입 | 기본값 | 범위 | 설명 |
-|------|------|------|--------|------|------|
+| ECID | Name | Type | Default | Range | Description |
+|------|------|------|---------|-------|-------------|
 
-### 4-5. Collection Events (수집 이벤트) — CEID
+### 4-5. Collection Events (CEID)
 
-| CEID | 이름 | 설명 | 관련 Report (RPTID) | 포함 변수 (VIDs) |
-|------|------|------|---------------------|-----------------|
+| CEID | Name | Description | Related Report (RPTID) | Included Variables (VIDs) |
+|------|------|-------------|----------------------|--------------------------|
 
-### 4-6. Alarms (알람)
+### 4-6. Alarms
 
-| ALID | 이름 | 심각도 (ALCD) | Set 조건 | Clear 조건 | 관련 CEID |
-|------|------|--------------|----------|-----------|----------|
+| ALID | Name | Severity (ALCD) | Set Condition | Clear Condition | Related CEID |
+|------|------|----------------|--------------|----------------|-------------|
 
-### 4-7. Remote Commands (원격 명령) — RCMD
+### 4-7. Remote Commands (RCMD)
 
-| RCMD | 이름 | 파라미터 (CPNAME/CPVAL) | 설명 | HCACK 코드 |
-|------|------|------------------------|------|-----------|
+| RCMD | Name | Parameters (CPNAME/CPVAL) | Description | HCACK Code |
+|------|------|--------------------------|-------------|-----------|
 
-### 4-8. Process Programs (레시피)
+### 4-8. Process Programs (Recipes)
 
-- [ ] PP 형식 (바이너리/ASCII)
-- [ ] PP 관련 S/F (S7F1~S7F26 등)
-- [ ] PPID 형식 및 길이 제한
-- [ ] Formatted Process Program (FPP) 지원 여부
+- [ ] PP format (binary/ASCII)
+- [ ] PP-related S/F (S7F1–S7F26, etc.)
+- [ ] PPID format and length limits
+- [ ] Formatted Process Program (FPP) support
 
-### 4-9. Scenarios (시나리오/시퀀스)
+### 4-9. Scenarios (scenarios/sequences)
 
-문서에 시나리오 다이어그램이 포함된 경우, 각 시나리오를:
+When scenario diagrams are included in the document, convert each scenario to a text sequence diagram:
 
 ```
-### 시나리오: [시나리오 이름]
-1. [주체] → [대상]: SxFy [설명]
-2. [주체] ← [대상]: SxFy [설명]
+### Scenario: [scenario name]
+1. [subject] → [target]: SxFy [description]
+2. [subject] ← [target]: SxFy [description]
 ...
-- 전제 조건: [...]
-- 결과: [...]
+- Prerequisites: [...]
+- Result: [...]
 ```
 
-형식으로 텍스트 시퀀스 다이어그램으로 변환하세요.
+### 4-10. Special Notes and Vendor Customizations
 
-### 4-10. 특이사항 및 벤더 커스터마이징
+- [ ] Vendor-specific messages deviating from the standard (S/F > S64 or non-standard structure)
+- [ ] Vendor-specific variables or events
+- [ ] Special handshake procedures
+- [ ] Other special implementation details
 
-- [ ] 표준에서 벗어난 벤더 고유 메시지 (S/F > S64 또는 비표준 구조)
-- [ ] 벤더 고유 변수 또는 이벤트
-- [ ] 특수 핸드셰이크 절차
-- [ ] 기타 특이 구현 사항
+### 4-C. Spec ↔ Excel Cross-Check (when Spec body + Excel are both available)
 
-### 4-C. Spec ↔ Excel 크로스 체크 (Spec 본문 + Excel이 있을 때)
+When both the Spec body (PDF or Word) and Excel are provided, cross-verify the following items.
+This step is a key step to **prevent confusion during host development by detecting data inconsistencies**.
 
-Spec 본문(PDF 또는 Word)과 Excel이 모두 제공된 경우, 아래 항목을 교차 검증하세요.
-이 단계는 **데이터 불일치를 발견하여 호스트 개발 시 혼선을 방지**하기 위한 핵심 단계입니다.
+> **Word files are treated the same as PDF.**
+> Where "PDF" appears below, the same applies to text extracted from Word.
+> When table structures are lost during Word extraction, mark that cross-check item with `[Word extraction limitation — verify original recommended]`.
 
-> **Word 파일은 PDF와 동일하게 취급합니다.**
-> 아래 "PDF"로 표기된 부분은 Word에서 추출된 텍스트에도 동일하게 적용됩니다.
-> Word에서 추출 시 표 구조가 손실된 경우, 해당 크로스 체크 항목에 `[Word 추출 한계 — 원본 확인 권장]`을 표시하세요.
+#### Cross-Check Items
 
-#### 크로스 체크 항목
+| # | Verification Item | Method | When Mismatch Found |
+|---|-----------------|--------|---------------------|
+| C-1 | **CEID match** | PDF CEID list vs Excel CEID sheet | Identify missing/added CEIDs |
+| C-2 | **SVID match** | PDF SV definitions vs Excel SVID sheet | Identify missing/added SVIDs |
+| C-3 | **DVID match** | PDF DV definitions vs Excel DVID sheet | Identify missing/added DVIDs |
+| C-4 | **ECID match** | PDF EC definitions vs Excel ECID sheet | Identify missing/added ECIDs |
+| C-5 | **ALID match** | PDF alarm definitions vs Excel ALID sheet | Identify missing/added ALIDs |
+| C-6 | **RCMD match** | PDF remote commands vs Excel RCMD sheet | Identify parameter differences |
+| C-7 | **CEID→DVID mapping** | PDF Report definitions vs Excel CEID VALID DVID | Identify mapping mismatches |
+| C-8 | **Data types** | PDF variable types vs Excel FORMAT column | Identify type mismatches |
 
-| # | 검증 항목 | 방법 | 불일치 시 |
-|---|----------|------|----------|
-| C-1 | **CEID 일치** | PDF의 CEID 목록 vs Excel CEID 시트 | 누락/추가된 CEID 식별 |
-| C-2 | **SVID 일치** | PDF의 SV 정의 vs Excel SVID 시트 | 누락/추가된 SVID 식별 |
-| C-3 | **DVID 일치** | PDF의 DV 정의 vs Excel DVID 시트 | 누락/추가된 DVID 식별 |
-| C-4 | **ECID 일치** | PDF의 EC 정의 vs Excel ECID 시트 | 누락/추가된 ECID 식별 |
-| C-5 | **ALID 일치** | PDF의 알람 정의 vs Excel ALID 시트 | 누락/추가된 ALID 식별 |
-| C-6 | **RCMD 일치** | PDF의 원격 명령 vs Excel RCMD 시트 | 파라미터 차이 식별 |
-| C-7 | **CEID→DVID 매핑** | PDF의 Report 정의 vs Excel CEID의 VALID DVID | 매핑 불일치 식별 |
-| C-8 | **데이터 타입** | PDF의 변수 타입 vs Excel의 FORMAT 컬럼 | 타입 불일치 식별 |
-
-#### 크로스 체크 결과 형식
+#### Cross-Check Result Format
 
 ```
-## PDF ↔ Excel 크로스 체크 결과
+## PDF ↔ Excel Cross-Check Results
 
-### 일치 항목
-- CEID: PDF 20개 = Excel 20개 (일치)
-- RCMD: PDF 8개 = Excel 8개 (일치)
+### Matching Items
+- CEID: PDF 20 = Excel 20 (match)
+- RCMD: PDF 8 = Excel 8 (match)
 
-### 불일치 항목
-- SVID: PDF에 165개, Excel에 170개 — Excel에만 있는 SVID: 3283, 3284, 3285, 3286, 3287
-  → 가능한 원인: PDF 작성 후 장비 업데이트로 변수 추가
-  → 권장 조치: 장비 업체에 확인
+### Mismatching Items
+- SVID: PDF 165, Excel 170 — SVIDs in Excel only: 3283, 3284, 3285, 3286, 3287
+  → Possible cause: Variables added after PDF was written due to equipment update
+  → Recommended action: Confirm with equipment vendor
 
-- ALID: PDF에 450개, Excel에 497개 — Excel이 47개 더 많음
-  → 권장 조치: Excel을 최신 기준으로 사용하되, 추가분 확인 필요
+- ALID: PDF 450, Excel 497 — Excel has 47 more
+  → Recommended action: Use Excel as the latest reference, but confirm the additions
 
-### CEID → DVID 매핑 검증
-| CEID | PDF 기준 DVID | Excel 기준 DVID | 일치 여부 |
-|------|--------------|----------------|----------|
+### CEID → DVID Mapping Verification
+| CEID | PDF-based DVID | Excel-based DVID | Match |
+|------|---------------|-----------------|-------|
 | 4 (LoadRequest) | 4013 | 4013 | OK |
 | 5 (LoadComplete) | 4005,4006,4013 | 4005,4006,4013 | OK |
 | ... | ... | ... | ... |
 ```
 
-> **원칙**: 불일치가 발견되면 "어느 쪽이 맞다"고 단정하지 말고, 양쪽 데이터를 모두 보여주고 장비 업체 확인을 권장하세요.
+> **Principle**: When mismatches are found, do not assert "which one is correct" — show data from both sides and recommend confirming with the equipment vendor.
 
-### 4-D. 장비 간 비교 분석 (2개 이상 장비가 있을 때)
+### 4-D. Cross-Equipment Comparison Analysis (when 2 or more equipment are present)
 
-서로 다른 장비(또는 같은 장비의 다른 버전) 간 SECS/GEM spec 차이를 분석합니다.
-이 단계는 **호스트 프로그램 수정 시 영향 범위를 파악**하기 위한 핵심 단계입니다.
+Analyze SECS/GEM spec differences between different equipment (or different versions of the same equipment).
+This step is a key step to **identify the impact scope when modifying the host program**.
 
-#### 비교 항목
+#### Comparison Items
 
-| # | 비교 항목 | 비교 방법 | 호스트 영향도 |
-|---|----------|----------|-------------|
-| D-1 | **지원 S/F 차이** | 양쪽의 S/F 목록 비교 → 한쪽에만 있는 S/F 식별 | 높음 — 새 S/F 구현 필요 |
-| D-2 | **S/F 메시지 구조 차이** | 동일 S/F의 데이터 구조(SML) 비교 | 높음 — 파싱 로직 수정 필요 |
-| D-3 | **CEID 차이** | CEID 번호·이름·매핑된 DVID 비교 | 중간 — 이벤트 핸들러 수정 |
-| D-4 | **SVID/DVID 차이** | 변수 ID·이름·타입·개수 비교 | 중간 — 변수 매핑 테이블 수정 |
-| D-5 | **ECID 차이** | EC ID·이름·개수 비교 | 낮음 — 설정 테이블 수정 |
-| D-6 | **ALID 차이** | 알람 ID·메시지·심각도 비교 | 중간 — 알람 처리 로직 수정 |
-| D-7 | **RCMD 차이** | 명령 이름·파라미터·SML 구조 비교 | 높음 — 원격 제어 로직 수정 |
-| D-8 | **State Model 차이** | 상태 전환 조건·이벤트 비교 | 높음 — 상태 관리 로직 수정 |
-| D-9 | **통신 설정 차이** | 포트, Device ID, 타이머 등 비교 | 낮음 — 통신 설정 변경 |
+| # | Comparison Item | Method | Host Impact |
+|---|----------------|--------|------------|
+| D-1 | **Supported S/F differences** | Compare S/F lists from both → identify S/F present in only one | High — new S/F implementation needed |
+| D-2 | **S/F message structure differences** | Compare data structures (SML) of the same S/F | High — parsing logic modification needed |
+| D-3 | **CEID differences** | Compare CEID numbers, names, mapped DVIDs | Medium — event handler modification |
+| D-4 | **SVID/DVID differences** | Compare variable IDs, names, types, counts | Medium — variable mapping table update |
+| D-5 | **ECID differences** | Compare EC IDs, names, counts | Low — settings table update |
+| D-6 | **ALID differences** | Compare alarm IDs, messages, severity | Medium — alarm handling logic update |
+| D-7 | **RCMD differences** | Compare command names, parameters, SML structures | High — remote control logic update |
+| D-8 | **State Model differences** | Compare state transition conditions and events | High — state management logic update |
+| D-9 | **Communication settings differences** | Compare port, Device ID, timers, etc. | Low — communication settings change |
 
-#### 비교 결과 형식
+#### Comparison Result Format
 
 ```markdown
-## 장비 비교 분석: [장비A] vs [장비B]
+## Equipment Comparison Analysis: [Equipment A] vs [Equipment B]
 
-### 요약
-- 비교 대상: PRS-03 (2025.08.15) vs PRS-04 (2025.12.12)
-- 전체 차이 항목: XX개
-- 호스트 영향도: 높음 X개, 중간 X개, 낮음 X개
+### Summary
+- Comparison targets: PRS-03 (2025.08.15) vs PRS-04 (2025.12.12)
+- Total difference items: XX
+- Host impact: High X, Medium X, Low X
 
-### 1. 지원 S/F 차이
-| S/F | PRS-03 | PRS-04 | 차이 유형 | 호스트 영향 |
-|-----|--------|--------|----------|-----------|
-| S2F49/50 | 미지원 | 지원 | 추가 | 신규 구현 필요 |
-| S14F1/2 | 지원 | 미지원 | 제거 | 호출 제거 또는 분기 처리 |
-| S2F41 | 구조A | 구조B | 변경 | 파라미터 수정 필요 |
+### 1. Supported S/F Differences
+| S/F | PRS-03 | PRS-04 | Difference Type | Host Impact |
+|-----|--------|--------|----------------|------------|
+| S2F49/50 | Not supported | Supported | Added | New implementation needed |
+| S14F1/2 | Supported | Not supported | Removed | Remove call or add branch |
+| S2F41 | Structure A | Structure B | Changed | Parameter modification needed |
 
-### 2. CEID 차이
-| 구분 | PRS-03 | PRS-04 | 비고 |
-|------|--------|--------|------|
-| 총 이벤트 수 | 18개 | 21개 | PRS-04에 3개 추가 |
-| 추가된 CEID | - | CEID 19, 20, 21 | 신규 이벤트 핸들러 필요 |
-| 제거된 CEID | - | - | 없음 |
-| DVID 매핑 변경 | - | CEID 7의 DVID에 5101~6606 추가 | 데이터 수집 범위 변경 |
+### 2. CEID Differences
+| Item | PRS-03 | PRS-04 | Notes |
+|------|--------|--------|-------|
+| Total events | 18 | 21 | 3 added in PRS-04 |
+| Added CEIDs | - | CEID 19, 20, 21 | New event handlers needed |
+| Removed CEIDs | - | - | None |
+| DVID mapping changes | - | DVIDs 5101~6606 added to CEID 7 | Data collection scope change |
 
-### 3. SVID 차이
-#### PRS-04에만 있는 SVID (신규)
-| SVID | 이름 | 설명 |
-|------|------|------|
+### 3. SVID Differences
+#### SVIDs only in PRS-04 (new)
+| SVID | Name | Description |
+|------|------|-------------|
 | 3283 | ... | ... |
 
-#### PRS-03에만 있는 SVID (제거)
-| SVID | 이름 | 설명 |
-|------|------|------|
-| (없음) | | |
+#### SVIDs only in PRS-03 (removed)
+| SVID | Name | Description |
+|------|------|-------------|
+| (none) | | |
 
-#### 양쪽 모두 있지만 내용이 다른 SVID
-| SVID | 항목 | PRS-03 | PRS-04 |
+#### SVIDs present in both but with different content
+| SVID | Item | PRS-03 | PRS-04 |
 |------|------|--------|--------|
-| 207 | 이름 | BATH STATE | BATH 1 STATE |
+| 207 | Name | BATH STATE | BATH 1 STATE |
 
-### 4. ALID 차이
-- PRS-03: XXX개 / PRS-04: XXX개
-- 추가된 알람: (목록)
-- 제거된 알람: (목록)
-- 메시지 변경: (목록)
+### 4. ALID Differences
+- PRS-03: XXX / PRS-04: XXX
+- Added alarms: (list)
+- Removed alarms: (list)
+- Message changes: (list)
 
-### 5. RCMD 차이
-(동일 형식으로 비교)
+### 5. RCMD Differences
+(same format for comparison)
 
-### 6. 호스트 수정 체크리스트
-| # | 수정 항목 | 영향도 | 상세 |
-|---|----------|--------|------|
-| 1 | S2F49/50 핸들러 신규 구현 | 높음 | PRS-04에서 새로 지원 |
-| 2 | CEID 19~21 이벤트 핸들러 추가 | 중간 | 신규 이벤트 3개 |
-| 3 | SVID 매핑 테이블 업데이트 | 중간 | 5개 변수 추가 |
+### 6. Host Modification Checklist
+| # | Modification Item | Impact | Details |
+|---|------------------|--------|---------|
+| 1 | Implement new S2F49/50 handler | High | Newly supported in PRS-04 |
+| 2 | Add CEID 19~21 event handlers | Medium | 3 new events |
+| 3 | Update SVID mapping table | Medium | 5 new variables |
 | ... | ... | ... | ... |
 ```
 
-> **핵심 원칙**: 비교 분석의 최종 목표는 **"호스트 프로그램에서 뭘 수정해야 하는가"**를 명확히 하는 것입니다.
-> 단순 차이 나열이 아닌, **호스트 영향도와 수정 체크리스트**를 반드시 포함하세요.
+> **Core principle**: The ultimate goal of comparison analysis is to clearly identify **"what needs to be modified in the host program"**.
+> Always include **host impact level and a modification checklist**, not just a list of differences.
+
 

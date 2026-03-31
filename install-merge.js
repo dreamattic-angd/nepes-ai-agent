@@ -53,9 +53,20 @@ processJsonFile('settings.json', (existing, deploy) => {
         if (!(key in deploy)) continue;
 
         if (key === 'hooks') {
-            // hooks는 이벤트 레벨(PreToolUse, Notification 등) 병합
-            // 사용자의 다른 이벤트 훅은 보존, 배포 이벤트만 추가/갱신
-            result.hooks = { ...(existing.hooks || {}), ...deploy.hooks };
+            // hooks는 항목 레벨 병합
+            // 이벤트별로 사용자 기존 훅을 유지하고, 배포 훅은 중복 없이 추가
+            const mergedHooks = { ...(existing.hooks || {}) };
+            for (const [event, deployHooks] of Object.entries(deploy.hooks)) {
+                const existingHooks = mergedHooks[event] || [];
+                const deployCommands = deployHooks.map(h => h.hooks && h.hooks[0] && h.hooks[0].command).filter(Boolean);
+                // 배포 훅과 command가 겹치는 기존 항목은 제거 후 배포 훅으로 교체
+                const kept = existingHooks.filter(h => {
+                    const cmd = h.hooks && h.hooks[0] && h.hooks[0].command;
+                    return !cmd || !deployCommands.includes(cmd);
+                });
+                mergedHooks[event] = [...kept, ...deployHooks];
+            }
+            result.hooks = mergedHooks;
         } else {
             result[key] = deploy[key];
         }

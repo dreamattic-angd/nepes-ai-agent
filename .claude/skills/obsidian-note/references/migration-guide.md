@@ -1,78 +1,78 @@
-# 콘텐츠 마이그레이션 가이드 (Loop → Obsidian)
+# Content Migration Guide (Loop → Obsidian)
 
-Microsoft Loop 또는 기타 소스에서 Obsidian vault로 콘텐츠를 이전할 때 적용합니다.
-
----
-
-## 1. 입력 형태별 처리
-
-### 스크린샷/캡처 이미지
-1. 이미지에서 텍스트, 표, 구조를 읽어냄
-2. 마크다운으로 변환
-3. design-guide.md 규칙 적용
-
-### 텍스트 복사-붙여넣기
-1. Loop 특유의 서식 제거 (불필요한 태그, 깨진 구조)
-2. 마크다운 표준으로 재구성
-3. design-guide.md 규칙 적용
+Apply this guide when migrating content from Microsoft Loop or other sources to an Obsidian vault.
 
 ---
 
-## 2. Loop → Obsidian 변환 규칙
+## 1. Processing by Input Type
 
-### 표 변환
-Loop 표 → 마크다운 표로 변환:
+### Screenshot / Captured Image
+1. Read text, tables, and structure from the image
+2. Convert to Markdown
+3. Apply design-guide.md rules
+
+### Text Copy-Paste
+1. Remove Loop-specific formatting (unnecessary tags, broken structure)
+2. Restructure to Markdown standard
+3. Apply design-guide.md rules
+
+---
+
+## 2. Loop → Obsidian Conversion Rules
+
+### Table Conversion
+Convert Loop tables → Markdown tables:
 ```markdown
-| 열1 | 열2 | 열3 |
+| Col1 | Col2 | Col3 |
 |---|---|---|
-| 값1 | 값2 | 값3 |
+| Val1 | Val2 | Val3 |
 ```
-- Loop의 정렬 아이콘(`≡`), "새로 만들기" 버튼 등 UI 요소 제거
-- 행 번호 컬럼이 있으면 제거 (마크다운에서 불필요)
+- Remove Loop UI elements (sort icon `≡`, "Create New" button, etc.)
+- Remove row number columns (unnecessary in Markdown)
 
-### 제목/소제목
-- Loop의 `■ 제목` → `## 제목` (H2)
-- Loop의 들여쓰기 구조 → 마크다운 리스트 또는 하위 제목으로 변환
+### Headings / Subheadings
+- Loop `■ Heading` → `## Heading` (H2)
+- Loop indented structure → convert to Markdown list or sub-headings
 
-### 강조 표현
-- Loop의 굵은 텍스트 → `**텍스트**`
-- Loop의 코드 스타일 → `` `코드` ``
+### Emphasis
+- Loop bold text → `**text**`
+- Loop code style → `` `code` ``
 
-### 불필요한 요소 제거
-- "새로 만들기" 버튼
-- 정렬/필터 UI 아이콘
-- Loop 전용 위젯 (체크리스트 위젯 → 마크다운 체크박스 `- [ ]`)
+### Removing Unnecessary Elements
+- "Create New" buttons
+- Sort/filter UI icons
+- Loop-specific widgets (checklist widget → Markdown checkbox `- [ ]`)
 
 ---
 
-## 3. 문서 구조 표준화
+## 3. Document Structure Standardization
 
-### 필수 섹션 (CMMI 문서의 경우)
+### Required Sections (for CMMI documents)
 ```markdown
-# {문서 제목}
+# {Document Title}
 
-> [!note] {프로젝트명}
+> [!note] {Project Name}
 
-## 개정 이력
+## Revision History
 
-| 버전 | 일자 | 작성자 | 변경 내용 |
+| Version | Date | Author | Changes |
 |---|---|---|---|
-| 1.0 | {날짜} | {작성자} | 최초 작성 |
+| 1.0 | {date} | {author} | Initial creation |
 
 ---
 
-## {본문 섹션들}
+## {Body Sections}
 
-(design-guide.md 규칙에 따라 작성)
+(Written according to design-guide.md rules)
 ```
 
 ---
 
-## 4. 검증 체크리스트
+## 4. Verification Checklist
 
-변환 완료 후 확인:
-- [ ] 원본의 모든 텍스트가 포함되었는가
-- [ ] 표 구조가 정확히 변환되었는가
-- [ ] Loop UI 요소가 모두 제거되었는가
-- [ ] design-guide.md 규칙이 적용되었는가 (Callout, 구분선, 강조)
-- [ ] 내부 링크가 필요한 곳에 추가되었는가
+Verify after conversion:
+- [ ] All text from the source is included
+- [ ] Table structure is correctly converted
+- [ ] All Loop UI elements are removed
+- [ ] design-guide.md rules are applied (Callout, dividers, emphasis)
+- [ ] Internal links are added where needed

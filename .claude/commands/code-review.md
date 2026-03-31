@@ -1,44 +1,44 @@
 # Code Review
 
-코드 리뷰를 실행합니다. 변경된 코드만 분석하여 품질, 로직, 보안, 성능 관점에서 검토합니다.
+Runs a code review. Analyzes only changed code and reviews it from the perspectives of quality, logic, security, and performance.
 
-## 사용자 입력
+## User Input
 $ARGUMENTS
 
-## 실행 절차
+## Execution Procedure
 
-### 1단계: 리뷰 모드 결정
+### Step 1: Determine Review Mode
 
-사용자 입력에 따라 리뷰 모드를 결정합니다:
-- `quick`, `빠른`, `간단히` → Quick 모드 (`.claude/agents/code-review/review-quick.md`)
-- `deep`, `깊게`, `아키텍처` → Deep 모드 (`.claude/agents/code-review/review-deep.md`)
-- 그 외 → Full 모드 (`.claude/agents/code-review/review-full.md`)
+Determine the review mode based on user input:
+- `quick`, `fast`, `simple` → Quick mode (`.claude/agents/code-review/review-quick.md`)
+- `deep`, `thorough`, `architecture` → Deep mode (`.claude/agents/code-review/review-deep.md`)
+- Other → Full mode (`.claude/agents/code-review/review-full.md`)
 
-**Full 모드 자동 → Deep 전환 조건** (명시적 지시 없어도 자동 전환):
-- 변경 파일 8개 이상
-- Controller / Service / Repository 3개 레이어 이상 동시 변경
+**Automatic Full → Deep upgrade conditions** (auto-upgrade without explicit instruction):
+- 8 or more changed files
+- Simultaneous changes across 3 or more layers: Controller / Service / Repository
 
-### 2단계: 지침 로드
+### Step 2: Load Guidelines
 
-해당 모드의 지침 파일을 읽고 수행합니다.
+Read the guidelines file for the selected mode and proceed accordingly.
 
-### 3단계: 리뷰 실행
+### Step 3: Execute Review
 
-지침에 따라 리뷰를 수행합니다:
-1. base-branch 결정 (develop 있으면 develop, 없으면 main)
-2. `git diff {base-branch}`로 변경사항 수집
-3. 4가지 관점 리뷰 (Full) 또는 Critical만 스캔 (Quick)
-4. 판정 및 리포트 생성
+Perform the review according to the guidelines:
+1. Determine base-branch (use develop if present, otherwise main)
+2. Collect changes with `git diff {base-branch}`
+3. Review from 4 perspectives (Full) or scan Critical only (Quick)
+4. Issue verdict and generate report
 
-### 4단계: 결과 저장
+### Step 4: Save Results
 
-리뷰 결과를 `.claude/agents/code-review/reviews/YYYYMMDD_HHMMSS.log`에 저장합니다.
+Save review results to `.claude/agents/code-review/reviews/YYYYMMDD_HHMMSS.log`.
 
-## 사용 예시
+## Usage Examples
 
 ```
-/code-review              # 전체 리뷰 (Full 모드)
-/code-review quick        # 빠른 리뷰 (Critical만)
-/code-review deep         # Deep 리뷰 (Sequential Thinking 기반)
-/code-review src/Main.java # 특정 파일 리뷰
+/code-review              # Full review (Full mode)
+/code-review quick        # Quick review (Critical only)
+/code-review deep         # Deep review (Sequential Thinking based)
+/code-review src/Main.java # Review specific file
 ```

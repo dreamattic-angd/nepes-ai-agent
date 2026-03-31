@@ -1,163 +1,163 @@
-# AI 활용 인사이트 보고서 생성 지침
+# AI Utilization Insight Report Generation Guidelines
 
-## 보고 컨텍스트
+## Report Context
 
-- 보고 대상: 결재 승인권자 (팀장~부서장급, 기술 세부 사항보다 비용 대비 가치를 중시)
-- 보고 주기: 월 1회 (Max Plan 월간 결재 근거)
-- 보고자: AI장비파트 엔지니어 (FDC/EES/RMS/YTAP 등 반도체 장비 IT 시스템 담당)
-- 보고서 형식: Markdown (.md) 파일
-
----
-
-## 분석 프레임워크 (5축)
-
-### A) 활용 영역 분류
-- 각 세션을 [개발/분석·디버깅/문서·보고서/설계·아키텍처/자동화·워크플로우/학습·역량강화] 중 하나로 분류
-- 영역별 건수, 비중(%) 산출
-
-### B) 생산성 임팩트 추정
-- 각 업무별 "AI 없이 수행 시 예상 소요 시간" vs "AI 활용 실제 소요 시간" 추정
-- 총 절감 시간, 평균 절감률 산출
-- 추정 근거를 명시 (예: "SECS/GEM 스펙 분석 — 수동 7~10시간 → AI 활용 20분, 95% 절감")
-
-### C) 접근 방식 패턴 분석
-- 사용자가 AI를 활용할 때 보이는 전략적 패턴을 식별
-- 예: 프롬프트 체계화(버전 관리), 에이전트 전문화, 멀티 페이즈 검증, 반복 자동화 등
-- 각 패턴이 결과물 품질에 미치는 영향 설명
-
-### D) 역량 진화 궤적
-- 해당 기간에 새롭게 시도하거나 발전시킨 AI 활용 기법
-- 이전 대비 어떤 성장이 있었는지 (있다면)
-
-### E) 비즈니스 가치 환산
-- 시간 절감을 비용으로 환산 (엔지니어 시급 기준 추정치 활용)
-- Max Plan 비용 대비 ROI 산출
-- 정성적 가치: 품질 향상, 리스크 감소, 지식 체계화 등
+- Report audience: Approval authority (team lead to department head level; values cost-effectiveness over technical details)
+- Report frequency: Once a month (basis for monthly Max Plan approval)
+- Report author: AI Equipment Team engineer (responsible for semiconductor equipment IT systems: FDC/EES/RMS/YTAP, etc.)
+- Report format: Markdown (.md) file
 
 ---
 
-## 보고서 출력 형식
+## Analysis Framework (5 Axes)
 
-파일명 규칙:
-- `AI_활용_인사이트_보고서_{YYYYMMDD}_{YYYYMMDD}.md`
-- 출력 경로: `~/.claude/skills/ai-insight/reports/`
+### A) Usage Domain Classification
+- Classify each session into one of: [Development / Analysis-Debugging / Documentation-Reports / Design-Architecture / Automation-Workflow / Learning-Capability]
+- Calculate count and percentage (%) per domain
 
-### 보고서 구조
+### B) Productivity Impact Estimation
+- Estimate "time required without AI" vs "actual time with AI" for each task
+- Calculate total time saved and average reduction rate
+- State the estimation basis (e.g., "SECS/GEM spec analysis — manual 7~10 hours → AI-assisted 20 min, 95% reduction")
+
+### C) Approach Pattern Analysis
+- Identify strategic patterns in how the user applies AI
+- Examples: prompt systematization (version control), agent specialization, multi-phase verification, repetitive automation
+- Explain the impact of each pattern on output quality
+
+### D) Capability Evolution Trajectory
+- New AI techniques tried or developed during the period
+- What growth occurred compared to previous periods (if any)
+
+### E) Business Value Conversion
+- Convert time savings to cost (using estimated engineer hourly rate)
+- Calculate ROI against Max Plan cost
+- Qualitative value: quality improvement, risk reduction, knowledge systematization, etc.
+
+---
+
+## Report Output Format
+
+Filename rule:
+- `AI_Insight_Report_{YYYYMMDD}_{YYYYMMDD}.md`
+- Output path: `~/.claude/skills/ai-insight/reports/`
+
+### Report Structure
 
 ```markdown
-# AI 활용 인사이트 보고서
-> 분석 기간: YYYY.MM.DD ~ YYYY.MM.DD | 보고자: {{보고자명}} | 소속: {{소속}}
+# AI Utilization Insight Report
+> Analysis Period: YYYY.MM.DD ~ YYYY.MM.DD | Author: {{author}} | Department: {{department}}
 
 ---
 
 ## Executive Summary
 
-### 이번 분석 기간 한눈에 보기
-| 지표 | 수치 |
-|------|------|
-| 분석 기간 | YYYY.MM.DD ~ YYYY.MM.DD |
-| AI 활용 업무 건수 | N건 (Claude Code X건 + Desktop Agent Y건 + Desktop 일반 Z건) |
-| 총 시간 절감 (추정) | ~N시간 |
-| 평균 생산성 향상률 | N% |
-| Max Plan 비용 | $X |
-| 추정 ROI | N배 |
+### This Analysis Period at a Glance
+| Metric | Value |
+|--------|-------|
+| Analysis Period | YYYY.MM.DD ~ YYYY.MM.DD |
+| AI-assisted Tasks | N tasks (Claude Code X + Desktop Agent Y + Desktop General Z) |
+| Total Time Saved (estimated) | ~N hours |
+| Average Productivity Improvement | N% |
+| Max Plan Cost | $X |
+| Estimated ROI | Nx |
 
-### 핵심 성과 3가지
-1. **[성과1 제목]**: 1~2문장 요약
-2. **[성과2 제목]**: 1~2문장 요약
-3. **[성과3 제목]**: 1~2문장 요약
+### 3 Key Achievements
+1. **[Achievement 1 Title]**: 1–2 sentence summary
+2. **[Achievement 2 Title]**: 1–2 sentence summary
+3. **[Achievement 3 Title]**: 1–2 sentence summary
 
-### AI 활용 접근 철학
-(사용자의 대화 패턴에서 추출한 AI 활용 철학을 2~3문장으로 요약)
+### AI Utilization Philosophy
+(2–3 sentences summarizing the AI usage philosophy extracted from the user's conversation patterns)
 
-### 결재 의견
-(Max Plan 지속 사용의 타당성을 3문장 이내로 정리)
+### Approval Opinion
+(Summarize the rationale for continuing Max Plan in 3 sentences or fewer)
 
 ---
 
-## 부록: 상세 분석
+## Appendix: Detailed Analysis
 
-### A. 활용 영역별 분석
-(영역별 건수, 비중 차트(텍스트 막대), 주요 사례)
+### A. Analysis by Usage Domain
+(Count and percentage per domain with text bar chart, key examples)
 
-### B. 주요 업무별 상세
-(분석 기간 중 가장 임팩트가 큰 업무 3~5건의 상세 분석)
+### B. Key Task Details
+(Detailed analysis of the 3–5 highest-impact tasks during the analysis period)
 
-| 업무 | 영역 | AI 활용 방식 | 절감 시간 | 핵심 성과 |
-|------|------|-------------|----------|----------|
+| Task | Domain | AI Approach | Time Saved | Key Outcome |
+|------|--------|-------------|------------|-------------|
 | ... | ... | ... | ... | ... |
 
-### C. AI 활용 접근 방식 패턴
-(식별된 패턴별 설명과 효과)
+### C. AI Utilization Approach Patterns
+(Description and effect of each identified pattern)
 
-### D. 역량 진화 궤적
-(해당 기간의 새로운 시도, 성장 포인트)
+### D. Capability Evolution Trajectory
+(New attempts and growth points during the period)
 
-### E. ROI 상세 산출
-(비용 대비 가치 상세 계산)
+### E. ROI Detailed Calculation
+(Detailed cost-vs-value calculation)
 
-### F. 다음 기간 전망
-(현재 진행 중인 AI 활용 과제, 예상 효과)
+### F. Outlook for Next Period
+(Ongoing AI utilization tasks, expected impact)
 ```
 
 ---
 
-## 작성 원칙
+## Writing Principles
 
-### 1. 뇌과학 기반 설득 구조
-- 앵커링 효과: Executive Summary 첫 테이블에서 ROI 수치를 먼저 노출
-- 구체성 편향: "생산성 향상" 대신 "SECS/GEM 스펙 분석 7시간→20분" 같은 구체적 사례 사용
-- 손실 회피: "이 도구가 없었다면 발생했을 비효율"을 암시
-- 피크-엔드 법칙: 가장 인상적인 성과를 처음과 마지막에 배치
-- 인지 유창성: 짧은 문장, 명확한 수치, 직관적 표 사용으로 읽기 쉽게
+### 1. Neuroscience-based Persuasion Structure
+- Anchoring effect: expose ROI figures first in the Executive Summary table
+- Specificity bias: use concrete examples like "SECS/GEM spec analysis 7 hours → 20 min, 95% reduction" instead of "productivity improved"
+- Loss aversion: imply the inefficiency that would have occurred without this tool
+- Peak-end rule: place the most impressive achievement at the beginning and end
+- Cognitive fluency: use short sentences, clear numbers, and intuitive tables for easy reading
 
-### 2. 데이터 정직성
-- 추정치는 반드시 "~" 또는 "추정" 표기
-- 과장 금지. 합리적 범위 내에서 보수적으로 추정
-- 확인 불가능한 수치는 제외
+### 2. Data Honesty
+- Always mark estimates with "~" or "(estimated)"
+- No exaggeration. Use conservative estimates within reasonable bounds
+- Exclude figures that cannot be verified
 
-### 3. 톤
-- 경영진 보고 톤: 간결하고 전문적
-- Executive Summary는 1페이지 이내
-- 부록은 관심 있는 사람만 읽는다는 전제로 상세하게
+### 3. Tone
+- Management report tone: concise and professional
+- Executive Summary within one page
+- Appendix written in detail on the assumption that only interested readers will read it
 
-### 4. 변수 처리
-- 대화 이력에서 파악 불가능한 정보는 `{{변수명}}` 으로 표시하여 사용자가 채울 수 있도록 처리
-- Max Plan 비용은 최신 가격 확인 후 적용 (기본값: $100/월)
-
----
-
-## 안티패턴
-
-- BAD: "AI를 다양하게 활용하여 업무 효율이 향상되었습니다"
-- GOOD: "SECS/GEM 스펙 분석 에이전트를 개발하여 장비별 분석 소요 시간을 7~10시간에서 약 20분으로 단축 (약 95% 절감)"
-
-- BAD: "프롬프트 엔지니어링 역량이 성장했습니다"
-- GOOD: "프롬프트 설계 프레임워크를 v8→v9→v10으로 체계화하며, XML 구조적 마크업·뇌과학 기반 최적화 등 3가지 핵심 기법을 추가"
-
-- BAD: ROI를 과장하여 10,000% 같은 비현실적 수치 제시
-- GOOD: 보수적 추정 기반으로 근거와 함께 제시, 불확실한 부분 명시
+### 4. Variable Handling
+- Mark information that cannot be determined from conversation history as `{{variable_name}}` so the user can fill it in
+- Apply the latest Max Plan price (default: $100/month)
 
 ---
 
-## 제약 사항
+## Anti-patterns
 
-- 업무 외 대화 내용은 절대 포함하지 않는다
-- 대화 원문을 그대로 인용하지 않는다 (분석·요약만)
-- 개인정보(이름 외)나 회사 기밀 기술 세부사항은 일반화하여 표현한다
-- 분석 불가능한 항목은 "데이터 부족"으로 표기하고, 억측으로 채우지 않는다
+- BAD: "Utilized AI in various ways to improve work efficiency"
+- GOOD: "Developed a SECS/GEM spec analysis agent, reducing per-equipment analysis time from 7–10 hours to approximately 20 minutes (approximately 95% reduction)"
+
+- BAD: "Prompt engineering skills have grown"
+- GOOD: "Systematized prompt design framework from v8→v9→v10, adding 3 core techniques including XML structural markup and neuroscience-based optimization"
+
+- BAD: Present unrealistic figures such as 10,000% ROI
+- GOOD: Present conservatively estimated figures with clear rationale, stating uncertain portions explicitly
 
 ---
 
-## 데이터 소스 표기
+## Constraints
 
-보고서 하단에 반드시 데이터 소스를 명시:
+- Never include non-work-related conversation content
+- Never quote conversation text verbatim (analysis and summary only)
+- Generalize personal information (other than names) and confidential technical details
+- Mark unanalyzable items as "insufficient data"; never fill them with speculation
+
+---
+
+## Data Source Notation
+
+Always include data source notation at the bottom of the report:
 
 ```markdown
-*본 보고서는 Claude Code CLI 대화 이력(N건), Claude Desktop Agent 모드 이력(M건){, Claude Desktop 일반 채팅 이력(K건)}을 기반으로 작성되었습니다. 절감 시간 및 ROI는 추정치이며 실제 수치와 차이가 있을 수 있습니다.*
+*This report was generated based on Claude Code CLI conversation history (N sessions), Claude Desktop Agent mode history (M sessions){, Claude Desktop general chat history (K sessions)}. Time savings and ROI are estimates and may differ from actual figures.*
 ```
 
-Desktop 일반 채팅 이력이 미포함된 경우:
+When Desktop general chat history is not included:
 ```markdown
-*참고: Claude Desktop 일반 채팅(비-Code 모드) 이력은 포함되지 않았습니다. 포함 시 업무 건수와 절감 시간이 증가할 수 있습니다.*
+*Note: Claude Desktop general chat (non-Code mode) history was not included. Including it may increase task count and time savings.*
 ```

@@ -1,192 +1,192 @@
-## 5단계: 분석 결과 보고서 생성
+## Step 5: Generate Analysis Result Report
 
-### 5-0. 분석 결과 자체 검증 (CoVe — Chain of Verification)
+### 5-0. Analysis Result Self-Verification (CoVe — Chain of Verification)
 
-> **왜 이 단계가 필요한가?**
-> 분석 과정에서 PDF 추출 오류, 페이지 누락, 데이터 오인식이 발생할 수 있습니다.
-> 보고서를 생성하기 **전에** 핵심 데이터의 정확성을 스스로 검증하면,
-> 보고서 신뢰도가 크게 향상됩니다.
+> **Why is this step needed?**
+> PDF extraction errors, page omissions, and data misrecognition can occur during the analysis process.
+> Verifying the accuracy of key data **before** generating the report
+> significantly improves the report's reliability.
 
-**검증 프로세스 (내부적으로 실행):**
-
-```
-[1단계: 핵심 수치 식별]
-보고서에 포함될 핵심 수치를 나열:
-- 지원 S/F 총 개수
-- CEID 총 개수 및 목록
-- SVID/DVID/ECID 총 개수
-- ALID 총 개수
-- RCMD 총 개수
-
-[2단계: 교차 검증]
-각 수치를 아래 방법으로 재확인:
-- PDF에서 추출한 수 vs Excel에서 추출한 수 → 일치 여부
-- 4단계 체크리스트 메모 vs 실제 추출 데이터 → 누락 여부
-- CEID→DVID 매핑에서 참조하는 DVID가 실제로 존재하는지
-
-[3단계: 불일치 처리]
-- 불일치 발견 시: 보고서의 크로스 체크 섹션에 명시
-- 검증 불가 시: 표시 후 "원본 확인 권장" 부기
-- 검증 통과 시: 해당 수치를 보고서에 확정 반영
-```
-
-### 5-1. 보고서 초안 작성 및 자가 개선 (Self-Critique & Refine)
-
-> **왜 이 단계가 필요한가?**
-> "생성"과 "평가"를 분리하면 각각의 품질이 향상됩니다.
-> 보고서 초안을 한 번 작성한 후, 비판적으로 검토하고 개선하면
-> 최종 보고서 품질이 30~50% 향상됩니다.
-
-**자가 개선 프로세스:**
+**Verification process (executed internally):**
 
 ```
-[1단계: 초안 작성]
-아래 보고서 구조에 따라 최선의 초안을 작성하세요.
+[Step 1: Identify key figures]
+List key figures to include in the report:
+- Total supported S/F count
+- Total CEID count and list
+- Total SVID/DVID/ECID count
+- Total ALID count
+- Total RCMD count
 
-[2단계: 3가지 렌즈로 비평]
-작성한 초안을 아래 관점에서 검토하세요:
+[Step 2: Cross-verify]
+Re-verify each figure using the following methods:
+- Count extracted from PDF vs count extracted from Excel → check for match
+- Step 4 checklist memos vs actual extracted data → check for omissions
+- Verify that DVIDs referenced in CEID→DVID mapping actually exist
 
-| 검토 렌즈 | 검토 질문 |
-|----------|----------|
-| 완결성 | 4단계 체크리스트의 모든 항목이 보고서에 반영되었는가? 누락된 섹션은 없는가? |
-| 실용성 | 호스트 개발자가 이 보고서만 보고 구현을 시작할 수 있는가? 모호한 설명은 없는가? |
-| 정확성 | 5-0단계(CoVe)에서 검증한 수치와 보고서 수치가 일치하는가? |
-
-[3단계: 개선 및 최종본]
-비평에서 발견한 약점을 보완하여 최종 보고서를 생성하세요.
+[Step 3: Handle mismatches]
+- When a mismatch is found: state it explicitly in the cross-check section of the report
+- When verification is not possible: mark and add "verify original recommended" note
+- When verification passes: finalize the figure for inclusion in the report
 ```
 
-> **주의**: 이 프로세스는 내부적으로 실행합니다. 사용자에게 초안/비평 과정을 보여주지 않고, **최종본만** 저장하세요.
+### 5-1. Draft Writing and Self-Improvement (Self-Critique & Refine)
 
-모든 청크 분석이 완료되면, 아래 구조로 **종합 분석 보고서**를 마크다운 파일로 생성합니다.
+> **Why is this step needed?**
+> Separating "generation" and "evaluation" improves the quality of each.
+> Writing a draft first, then critically reviewing and improving it,
+> improves the final report quality by 30–50%.
 
-### 보고서 파일명 규칙
-```
-[장비명]_SECSGEM_Analysis_[날짜].md
-```
-
-### 보고서 저장 위치
-
-> **모든 보고서는 `.claude/agents/secsgem-analysis/analysis-reports/` 폴더에 저장하세요.**
-> 프로젝트 루트에 직접 생성하지 마세요.
+**Self-improvement process:**
 
 ```
-프로젝트 루트/
+[Step 1: Write draft]
+Write the best draft following the report structure below.
+
+[Step 2: Critique with 3 lenses]
+Review the written draft from the following perspectives:
+
+| Review Lens | Review Question |
+|------------|----------------|
+| Completeness | Are all items from the step 4 checklist reflected in the report? Are any sections missing? |
+| Practicality | Can a host developer start implementation using only this report? Are there any vague descriptions? |
+| Accuracy | Do the figures in the report match those verified in step 5-0 (CoVe)? |
+
+[Step 3: Improve and finalize]
+Improve the final report by addressing the weaknesses found in the critique.
+```
+
+> **Note**: Execute this process internally. Do not show the user the draft/critique process — save **the final version only**.
+
+After all chunk analyses are complete, generate a **comprehensive analysis report** as a markdown file following the structure below.
+
+### Report Filename Format
+```
+[equipment_name]_SECSGEM_Analysis_[date].md
+```
+
+### Report Save Location
+
+> **Save all reports to `.claude/agents/secsgem-analysis/analysis-reports/`.**
+> Do not create directly in the project root.
+
+```
+project root/
 └── .claude/
     ├── commands/
-    │   └── analyze-secsgem.md          ← 커맨드 (오케스트레이터)
+    │   └── analyze-secsgem.md          ← command (orchestrator)
     └── agents/
         └── secsgem-analysis/
-            ├── README.txt              ← 설치 가이드
-            ├── guide.md                ← 지침서 (이 파일)
-            ├── secsgem-specs/          ← 원본 문서 전용 (입력)
-            │   └── 원본.pdf / .doc / .docx / .xls
-            └── analysis-reports/       ← 보고서 + 산출물 출력 (자동 생성)
+            ├── README.txt              ← installation guide
+            ├── guide.md                ← guide (this file)
+            ├── secsgem-specs/          ← original documents only (input)
+            │   └── original.pdf / .doc / .docx / .xls
+            └── analysis-reports/       ← report + artifacts output (auto-created)
                 ├── PRS03_SECSGEM_Analysis.md
                 ├── PRS04_SECSGEM_Analysis.md
                 ├── PRS03_vs_PRS04_Comparison.md
-                └── extract/            ← 중간 산출물
-                    ├── 원본_chunks/    ← PDF 분할
-                    └── 원본_extracted/ ← 텍스트 추출
+                └── extract/            ← intermediate artifacts
+                    ├── original_chunks/    ← PDF split
+                    └── original_extracted/ ← text extraction
 ```
 
-> `analysis-reports/` 폴더가 없으면 자동으로 생성하세요.
+> Auto-create the `analysis-reports/` folder if it does not exist.
 
-### 보고서 구조
+### Report Structure
 
 ```markdown
-# [장비명] SECS/GEM Specification 분석 보고서
+# [Equipment Name] SECS/GEM Specification Analysis Report
 
-## 1. 문서 개요
-- 문서명:
-- 버전:
-- 날짜:
-- 대상 장비:
-- 분석 입력 파일: PDF / Word / Excel / 조합
+## 1. Document Overview
+- Document name:
+- Version:
+- Date:
+- Target equipment:
+- Analysis input files: PDF / Word / Excel / combination
 
-## 2. 통신 설정 요약
-(4-1 결과)
+## 2. Communication Settings Summary
+(step 4-1 results)
 
-## 3. State Model 요약
-(4-2 결과 — 가능하면 ASCII 상태 다이어그램 포함)
+## 3. State Model Summary
+(step 4-2 results — include ASCII state diagram if possible)
 
-## 4. Stream/Function 목록 및 상세
-(4-3 결과)
+## 4. Stream/Function List and Details
+(step 4-3 results)
 
-### 4.1 지원 S/F 전체 목록 (요약 테이블)
-| S/F | 이름 | 방향 | W-bit | 용도 요약 |
-|-----|------|------|-------|----------|
+### 4.1 Supported S/F Complete List (summary table)
+| S/F | Name | Direction | W-bit | Purpose Summary |
+|-----|------|-----------|-------|----------------|
 
-### 4.2 각 S/F 상세 정의
-(개별 S/F 상세)
+### 4.2 Individual S/F Detailed Definitions
+(individual S/F details)
 
-## 5. 변수 정의
-(4-4 결과 — PDF/Word/Excel 모두에서 수집한 통합 결과)
+## 5. Variable Definitions
+(step 4-4 results — integrated from PDF/Word/Excel)
 
 ### 5.1 Status Variables (SVID)
 ### 5.2 Data Variables (DVID)
 ### 5.3 Equipment Constants (ECID)
 
 ## 6. Collection Events
-(4-5 결과 — CEID → DVID 매핑 포함)
+(step 4-5 results — including CEID → DVID mapping)
 
 ## 7. Alarms
-(4-6 결과 — Excel ALID 시트 기준 전체 목록 + 심각도 분포)
+(step 4-6 results — complete list based on Excel ALID sheet + severity distribution)
 
 ## 8. Remote Commands
-(4-7 결과 — Excel RCMD 시트의 SML 구조 포함)
+(step 4-7 results — including SML structures from Excel RCMD sheet)
 
 ## 9. Process Programs
-(4-8 결과)
+(step 4-8 results)
 
-## 10. 주요 시나리오
-(4-9 결과)
+## 10. Key Scenarios
+(step 4-9 results)
 
-## 11. 특이사항 및 주의점
-(4-10 결과)
+## 11. Special Notes and Precautions
+(step 4-10 results)
 
-## 12. Spec ↔ Excel 크로스 체크 결과
-(4-C 결과 — Spec 본문(PDF/Word) + Excel 모두 있을 때만)
+## 12. Spec ↔ Excel Cross-Check Results
+(step 4-C results — only when both Spec body (PDF/Word) + Excel are available)
 
-## 13. 부록: 빠른 참조 (Quick Reference)
-- 자주 사용하는 S/F 요약
-- CEID → Report → Variable 매핑 요약
-- RCMD 명령어 + 파라미터 요약
-- 호스트 구현 시 필수 체크리스트
+## 13. Appendix: Quick Reference
+- Frequently used S/F summary
+- CEID → Report → Variable mapping summary
+- RCMD command + parameter summary
+- Essential checklist for host implementation
 ```
 
-### 비교 분석 보고서 (2개 이상 장비 비교 시 별도 생성)
+### Comparison Analysis Report (generated separately when comparing 2 or more equipment)
 
-비교 분석 모드에서는 개별 장비 보고서에 **추가로** 비교 보고서를 생성합니다.
+In comparison analysis mode, generate a comparison report **in addition to** the individual equipment reports.
 
-**비교 보고서 파일명 규칙:**
+**Comparison report filename format:**
 ```
-[장비A]_vs_[장비B]_Comparison_[날짜].md
+[equipment_A]_vs_[equipment_B]_Comparison_[date].md
 ```
 
-**비교 보고서 구조:**
+**Comparison report structure:**
 ```markdown
-# [장비A] vs [장비B] SECS/GEM 비교 분석 보고서
+# [Equipment A] vs [Equipment B] SECS/GEM Comparison Analysis Report
 
-## 1. 비교 개요
-- 비교 대상 및 문서 버전
-- 비교 수행 일시
+## 1. Comparison Overview
+- Comparison targets and document versions
+- Comparison date
 
-## 2. 요약 대시보드
-- 전체 차이 항목 수
-- 호스트 영향도별 분류
-- 핵심 변경 사항 Top 5
+## 2. Summary Dashboard
+- Total difference item count
+- Classification by host impact level
+- Top 5 key changes
 
-## 3. 상세 비교 (4-D 결과)
-(항목별 상세 비교 테이블)
+## 3. Detailed Comparison (step 4-D results)
+(detailed comparison tables per item)
 
-## 4. 호스트 수정 체크리스트
-(우선순위별 수정 필요 항목 정리)
+## 4. Host Modification Checklist
+(modification-needed items organized by priority)
 
-## 5. 권장 조치
-- 즉시 수정 필요 항목
-- 확인 후 수정 항목
-- 장비 업체 문의 필요 항목
+## 5. Recommended Actions
+- Items requiring immediate modification
+- Items requiring confirmation before modification
+- Items requiring vendor inquiry
 ```
 
 ---

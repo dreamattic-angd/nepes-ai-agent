@@ -1,4 +1,5 @@
 {
+  "model": "claude-sonnet-4-6",
   "permissions": {
     "allow": [
       "Bash(*)",
@@ -72,6 +73,23 @@
           {
             "type": "command",
             "command": "node \"%USERPROFILE%/.claude/hooks/auto-crlf.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"%USERPROFILE%/.claude/hooks/check-output-convention.js\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"%USERPROFILE%/.claude/hooks/context-monitor.js\""
           }
         ]
       }

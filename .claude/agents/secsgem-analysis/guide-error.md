@@ -1,158 +1,158 @@
-## 6단계: 에러 처리 및 폴백
+## Step 6: Error Handling and Fallback
 
-### 상황별 대처
+### Handling by Situation
 
-| 상황 | 대처 |
-|------|------|
-| pypdf 설치 안 됨 | `pip install pypdf pdfplumber --break-system-packages` 실행 |
-| pandas 설치 안 됨 | `pip install pandas openpyxl --break-system-packages` 실행 |
-| PDF 암호화됨 | 사용자에게 비밀번호 요청 → `PdfReader(path, password=pwd)` |
-| 텍스트 추출 실패 (스캔 PDF) | OCR 시도: `pip install pytesseract pdf2image` → 이미지 변환 후 OCR |
-| 분할 후에도 청크가 너무 큼 | 페이지 수를 줄여서 재분할 (25 → 15 → 10) |
-| 테이블 구조가 깨짐 | pdfplumber의 `extract_tables()` 설정 조정 또는 수동 정리 알림 |
-| 이미지 내 텍스트 (도면, 다이어그램) | OCR로 텍스트 추출 시도, 실패 시 사용자에게 해당 페이지 번호와 함께 수동 확인 요청 |
-| **.xls 파일 읽기 실패** | `libreoffice --headless --convert-to xlsx` 로 변환 후 재시도. libreoffice 없으면 `pip install xlrd --break-system-packages` |
-| **Excel 헤더 행 탐지 실패** | 첫 10행을 출력하여 주석행(`;`, `//`)을 건너뛰고 실제 헤더 위치를 찾기 |
-| **Excel 시트명이 예상과 다름** | 시트 목록을 출력하고, 내용 기반으로 각 시트의 역할을 판별 |
-| **.doc 파일 antiword 실패** | `where antiword` 확인 → 없으면 olefile 시도: `pip install olefile --break-system-packages` → 그래도 안 되면 libreoffice 변환 |
-| **.doc 한글 깨짐** | `antiword <file> \| iconv -f EUC-KR -t UTF-8`로 인코딩 변환 시도. CP949도 시도 |
-| **.doc 표 구조 손실** | antiword는 표를 정확히 추출하지 못함 → 보고서에 `[.doc 표 구조 손실 가능 — 원본 확인 필요]` 표시 후 계속 진행 |
-| **.docx python-docx 실패** | `pip install python-docx --break-system-packages` 실행. 여전히 실패하면 libreoffice 변환 |
-| **.docx 파일 손상** | `python -c "from docx import Document; Document('<path>')"` 테스트 → 실패 시 libreoffice로 txt 변환 시도 |
-| **Word 텍스트 추출 결과가 빈 파일** | 다음 우선순위 도구로 재시도. 모두 실패하면 사용자에게 PDF 변환 요청 |
+| Situation | Action |
+|-----------|--------|
+| pypdf not installed | Run `pip install pypdf pdfplumber --break-system-packages` |
+| pandas not installed | Run `pip install pandas openpyxl --break-system-packages` |
+| PDF encrypted | Ask user for password → `PdfReader(path, password=pwd)` |
+| Text extraction failed (scanned PDF) | Attempt OCR: `pip install pytesseract pdf2image` → convert to images then OCR |
+| Chunk still too large after splitting | Reduce page count and re-split (25 → 15 → 10) |
+| Table structure broken | Adjust `extract_tables()` settings in pdfplumber or notify user of manual cleanup |
+| Image-based text (diagrams, drawings) | Attempt OCR for text extraction; if failed, ask user for manual check with page numbers |
+| **.xls read failure** | Convert with `libreoffice --headless --convert-to xlsx` and retry. If no libreoffice, `pip install xlrd --break-system-packages` |
+| **Excel header row detection failure** | Print first 10 rows and skip comment rows (`;`, `//`) to find actual header position |
+| **Excel sheet name differs from expected** | Print sheet list and determine each sheet's role based on content |
+| **.doc antiword failure** | Check `where antiword` → if absent, try olefile: `pip install olefile --break-system-packages` → if still failing, use libreoffice conversion |
+| **.doc Korean character corruption** | Try `antiword <file> \| iconv -f EUC-KR -t UTF-8` for encoding conversion. Also try CP949 |
+| **.doc table structure loss** | antiword cannot accurately extract tables → mark `[.doc table structure may be lost — verify original]` in report and continue |
+| **.docx python-docx failure** | Run `pip install python-docx --break-system-packages`. If still failing, use libreoffice conversion |
+| **.docx file corrupted** | Test with `python -c "from docx import Document; Document('<path>')"` → if failed, try libreoffice txt conversion |
+| **Word text extraction result is empty** | Retry with next priority tool. If all fail, ask user for PDF conversion |
 
-### 서브에이전트 병렬 활용 (Agent 도구 — 대용량 분석 시)
+### Sub-agent Parallel Utilization (Agent tool — for large-scale analysis)
 
-분석 대상이 대규모인 경우, **Agent 도구를 사용하여 병렬 처리**한다.
-각 Agent의 `subagent_type`은 `"general-purpose"`를 사용한다.
+For large-scale analysis targets, use the **Agent tool for parallel processing**.
+Use `"general-purpose"` for each Agent's `subagent_type`.
 
-#### 시나리오 A: PDF/Word 100페이지 초과 — 챕터별 병렬 분석
+#### Scenario A: PDF/Word Exceeds 100 Pages — Chapter-by-chapter Parallel Analysis
 
-**트리거**: PDF 분할(2단계) 또는 Word 텍스트 추출(1-W단계) 완료 후, 총 페이지가 100을 초과하면 활성화.
+**Trigger**: Activated after PDF splitting (step 2) or Word text extraction (step 1-W) completes, when total pages exceed 100.
 
-메인 세션이 먼저 수행:
-1. PDF 청크 파일 또는 Word 추출 파일 목록 확보
-2. 목차/섹션 구조를 기반으로 챕터 범위를 결정
+The main session first:
+1. Obtains the list of PDF chunk files or Word extracted files
+2. Determines chapter ranges based on the table of contents/section structure
 
-각 챕터에 대해 Agent를 **하나의 응답에서 동시 호출**한다.
+Call Agents **simultaneously in a single response** for each chapter.
 
-각 Agent 프롬프트:
+Each Agent prompt:
 ```
-당신은 SECS/GEM Specification 분석 전문가입니다. 연구/분석만 수행하고 파일을 수정하지 마세요.
+You are a SECS/GEM Specification analysis expert. Perform research/analysis only — do not modify files.
 
-[분석 범위]: {chunk_file_path} (페이지 {start}~{end})
-[장비명]: {equipment_name}
+[Analysis range]: {chunk_file_path} (pages {start}–{end})
+[Equipment name]: {equipment_name}
 
-작업:
-1. 지정된 청크 파일을 Read로 읽기 (텍스트 추출 완료 파일인 경우) 또는 Python(pypdf/pdfplumber)으로 읽기
-2. 아래 항목을 추출:
-   - Stream/Function 정의 (SxFy)
-   - 각 S/F의 구조: Item 목록, 데이터 타입, 방향(H→E / E→H)
-   - CEID, ALID, VID 참조
-   - State Model 정보 (해당 범위에 있을 경우)
-   - 시나리오/시퀀스 다이어그램 (텍스트로 추출 가능한 것)
-3. 이미지 기반 내용은 "[p.{N}] 이미지 기반 — 수동 확인 필요" 표시
+Tasks:
+1. Use Read to read the specified chunk file (if it is a text-extracted file) or read with Python (pypdf/pdfplumber)
+2. Extract the following items:
+   - Stream/Function definitions (SxFy)
+   - Structure of each S/F: item list, data types, direction (H→E / E→H)
+   - CEID, ALID, VID references
+   - State Model information (if present in this range)
+   - Scenarios/sequence diagrams (those extractable as text)
+3. Mark image-based content as "[p.{N}] Image-based — manual verification needed"
 
-결과 형식 (반드시 이 형식으로 반환):
-[CHUNK_ANALYSIS: 페이지 {start}-{end}]
-Stream/Function 목록:
-| S/F | 방향 | 설명 | 주요 Item |
-|-----|------|------|----------|
-CEID 참조: {목록}
-ALID 참조: {목록}
-VID 참조: {목록}
-State Model: {있으면 기술, 없으면 "해당 없음"}
-수동 확인 필요: {항목}
-```
-
-#### 시나리오 B: 다중 파일 비교 분석 — 장비별 병렬 분석
-
-**트리거**: 비교 분석 모드이고 2개 이상 장비 그룹이 존재할 때.
-
-각 장비 그룹에 대해 Agent를 **하나의 응답에서 동시 호출**한다.
-
-각 Agent 프롬프트:
-```
-당신은 SECS/GEM Specification 분석 전문가입니다. 연구/분석만 수행하고 파일을 수정하지 마세요.
-
-[장비명]: {equipment_name}
-[PDF/Word 파일]: {spec_file_path}
-[Excel 파일]: {vid_list_path} (있으면)
-
-작업:
-1. PDF/Word 파일을 Python으로 텍스트 추출
-2. 4단계 통합 분석 체크리스트 수행:
-   - S/F 정의 완전성
-   - VID 분류 (SVID, DVID, ECID, CEID, ALID, RCMD)
-   - State Model 유무
-   - 시나리오 정리
-3. Excel이 있으면 Spec ↔ Excel 크로스 체크 수행
-4. 분석 결과를 구조화하여 반환
-
-결과 형식 (반드시 이 형식으로 반환):
-[EQUIPMENT_ANALYSIS: {장비명}]
-S/F 목록:
-| S/F | 방향 | 설명 | 완전성 |
-VID 분류:
-| 유형 | 개수 | 누락 의심 |
-State Model: {유무 및 요약}
-시나리오: {목록}
-크로스 체크 결과: {불일치 항목}
+Result format (must return in this format):
+[CHUNK_ANALYSIS: pages {start}-{end}]
+Stream/Function list:
+| S/F | Direction | Description | Key Items |
+|-----|-----------|-------------|----------|
+CEID references: {list}
+ALID references: {list}
+VID references: {list}
+State Model: {describe if present, "not applicable" otherwise}
+Manual verification needed: {items}
 ```
 
-메인 세션이 각 장비 분석 결과를 수신한 후:
-1. 4-D 비교 분석 수행 (장비 간 차이점)
-2. 비교 보고서 생성
+#### Scenario B: Multi-file Comparison Analysis — Parallel Analysis per Equipment
 
-#### 시나리오 C: Excel 시트 6개 이상 — 시트별 병렬 파싱
+**Trigger**: When in comparison analysis mode and 2 or more equipment groups exist.
 
-**트리거**: Excel 시트 목록 확인 후 6개 이상일 때.
+Call Agents **simultaneously in a single response** for each equipment group.
 
-각 시트에 대해 Agent를 **하나의 응답에서 동시 호출**한다.
-
-각 Agent 프롬프트:
+Each Agent prompt:
 ```
-당신은 SECS/GEM VID List Excel 파싱 전문가입니다. 연구/분석만 수행하고 파일을 수정하지 마세요.
+You are a SECS/GEM Specification analysis expert. Perform research/analysis only — do not modify files.
 
-[Excel 파일]: {excel_file_path}
-[대상 시트]: "{sheet_name}"
+[Equipment name]: {equipment_name}
+[PDF/Word file]: {spec_file_path}
+[Excel file]: {vid_list_path} (if available)
 
-작업:
-1. Python pandas로 지정된 시트만 읽기:
+Tasks:
+1. Extract text from PDF/Word file using Python
+2. Perform step 4 integrated analysis checklist:
+   - S/F definition completeness
+   - VID classification (SVID, DVID, ECID, CEID, ALID, RCMD)
+   - Presence of State Model
+   - Organize scenarios
+3. If Excel is available, perform Spec ↔ Excel cross-check
+4. Return analysis results in structured format
+
+Result format (must return in this format):
+[EQUIPMENT_ANALYSIS: {equipment name}]
+S/F list:
+| S/F | Direction | Description | Completeness |
+VID classification:
+| Type | Count | Suspected missing |
+State Model: {present/absent and summary}
+Scenarios: {list}
+Cross-check result: {mismatch items}
+```
+
+After the main session receives each equipment analysis result:
+1. Perform step 4-D comparison analysis (differences between equipment)
+2. Generate comparison report
+
+#### Scenario C: 6 or More Excel Sheets — Parallel Sheet Parsing
+
+**Trigger**: When 6 or more sheets are found after checking Excel sheet list.
+
+Call Agents **simultaneously in a single response** for each sheet.
+
+Each Agent prompt:
+```
+You are a SECS/GEM VID List Excel parsing expert. Perform research/analysis only — do not modify files.
+
+[Excel file]: {excel_file_path}
+[Target sheet]: "{sheet_name}"
+
+Tasks:
+1. Read the specified sheet only with Python pandas:
    pd.read_excel("{excel_file_path}", sheet_name="{sheet_name}")
-2. 헤더 행 탐지 (주석행 건너뛰기)
-3. 컬럼 매핑: ID, Name, Format, Unit, Description 등
-4. 데이터 정규화 및 정리
+2. Detect header row (skip comment rows)
+3. Map columns: ID, Name, Format, Unit, Description, etc.
+4. Normalize and clean data
 
-결과 형식 (반드시 이 형식으로 반환):
+Result format (must return in this format):
 [SHEET_PARSED: {sheet_name}]
-VID 유형: {SVID/DVID/ECID/CEID/ALID/RCMD/기타}
-레코드 수: {N}
+VID type: {SVID/DVID/ECID/CEID/ALID/RCMD/other}
+Record count: {N}
 | ID | Name | Format | Unit | Description |
 |-------|------|--------|------|-------------|
-(전체 데이터 또는 상위 50건 + 총 건수)
-파싱 이슈: {있으면 기술}
+(full data or top 50 entries + total count)
+Parsing issues: {describe if any}
 ```
 
-#### 결과 통합 (전체 시나리오 공통)
+#### Result Integration (common to all scenarios)
 
-1. 모든 Agent 결과를 수신 대기
-2. 결과에서 `[CHUNK_ANALYSIS]`, `[EQUIPMENT_ANALYSIS]`, `[SHEET_PARSED]` 태그로 파싱
-3. Agent 간 데이터 불일치 발생 시: 원본 파일에서 메인 세션이 직접 재확인
-4. 통합 결과를 5단계(보고서 생성)에 전달
+1. Wait to receive all Agent results
+2. Parse results using `[CHUNK_ANALYSIS]`, `[EQUIPMENT_ANALYSIS]`, `[SHEET_PARSED]` tags
+3. When data inconsistencies occur between Agents: verify directly from the original file in the main session
+4. Pass integrated results to step 5 (report generation)
 
-#### 폴백
+#### Fallback
 
-- Agent 실패 시 해당 챕터/장비/시트를 메인 세션에서 순차 처리
-- 실패한 범위를 리포트에 `[서브에이전트 실패 — 메인 세션에서 재처리]` 표시
+- When an Agent fails, process that chapter/equipment/sheet sequentially in the main session
+- Mark failed ranges in the report as `[Sub-agent failed — reprocessed in main session]`
 
 ---
 
-### 사용자에게 확인 요청이 필요한 경우
+### When User Confirmation is Needed
 
-아래 상황에서는 분석을 중단하지 말고, **해당 부분을 표시**한 뒤 계속 진행하세요:
+In the following situations, do not stop analysis — **mark the relevant part** and continue:
 
-- 이미지/다이어그램 내용을 텍스트로 추출할 수 없는 경우 → `[p.XX] 이미지 기반 내용 — 수동 확인 필요`
-- 데이터 구조가 불명확한 경우 → `[p.XX] 데이터 구조 해석 불확실 — 원본 확인 권장`
-- 벤더 고유 코드의 의미가 불분명한 경우 → `[p.XX] 벤더 고유 항목 — 장비 업체 확인 권장`
+- When image/diagram content cannot be extracted as text → `[p.XX] Image-based content — manual verification needed`
+- When data structure is unclear → `[p.XX] Data structure interpretation uncertain — verify original recommended`
+- When vendor-specific code meaning is unclear → `[p.XX] Vendor-specific item — confirm with equipment vendor recommended`
 

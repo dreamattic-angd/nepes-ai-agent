@@ -1,0 +1,7 @@
+{
+  "id": "review-needed-boundary",
+  "description": "Warning 정확히 4이면 REVIEW_NEEDED (경계값)",
+  "target": "review-judgment",
+  "input": { "criticalCount": 0, "warningCount": 4 },
+  "expected": { "judgment": "REVIEW_NEEDED" }
+}

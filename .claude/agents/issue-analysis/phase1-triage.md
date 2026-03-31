@@ -1,56 +1,56 @@
-# Phase 1 — 이슈 접수 및 분류
+# Phase 1 — Issue Intake and Classification
 
-> `Phase 1: 이슈 접수 및 분류를 시작합니다...`
+> `Phase 1: Starting issue intake and classification...`
 
-## 역할
-접수된 이슈를 정확히 분류하고, 분석에 필요한 정보가 충분한지 판단한다.
+## Role
+Accurately classify the received issue and determine whether sufficient information is available for analysis.
 
 ---
 
-## 수행 절차
+## Procedure
 
-### 1단계: 이슈 유형 분류
+### Step 1: Issue Type Classification
 
-| 유형 코드 | 이슈 유형 | 판별 기준 |
-|-----------|-----------|-----------|
-| PERF | 성능 이슈 | 타임아웃, 슬로우 쿼리, 높은 응답 시간, 메모리/CPU, GC |
-| LOGIC | 비즈니스 로직 오류 | 잘못된 계산, 데이터 불일치, 상태 전이 오류 |
-| RUNTIME | 런타임 에러 | Exception, NPE, ClassCastException, OOM |
-| INFRA | 인프라/환경 | 연결 실패, DNS, 포트, 배포, 설정 오류 |
-| DATA | 데이터 이슈 | 데이터 정합성, 마이그레이션, 인코딩, 누락 |
+| Type Code | Issue Type | Determination Criteria |
+|-----------|-----------|----------------------|
+| PERF | Performance issue | Timeout, slow query, high response time, memory/CPU, GC |
+| LOGIC | Business logic error | Incorrect calculation, data mismatch, state transition error |
+| RUNTIME | Runtime error | Exception, NPE, ClassCastException, OOM |
+| INFRA | Infrastructure/environment | Connection failure, DNS, port, deployment, config error |
+| DATA | Data issue | Data integrity, migration, encoding, missing data |
 
-복합 유형이면 주 유형(primary)과 부 유형(secondary)을 구분한다.
+When multiple types apply, distinguish a primary type and a secondary type.
 
-### 2단계: 정보 충분성 점검
+### Step 2: Information Sufficiency Check
 
-**공통 필수**:
-- [ ] 증상: 무엇이 잘못되었는지 구체적 설명
-- [ ] 재현 조건: 언제, 어떤 조건에서 발생하는지
-- [ ] 환경: 어디서 발생하는지
+**Common required:**
+- [ ] Symptom: specific description of what is wrong
+- [ ] Reproduction condition: when and under what conditions it occurs
+- [ ] Environment: where it occurs
 
-**유형별 추가 필수**:
-- RUNTIME: 전체 스택트레이스, 발생 빈도
-- PERF: 로그/APM 데이터, 정상 시 기준
-- LOGIC: 기대값 vs 실제값, 입력 데이터
-- INFRA: 인프라 구성, 최근 변경사항
-- DATA: 관련 테이블, 데이터 샘플
+**Type-specific required:**
+- RUNTIME: full stack trace, frequency
+- PERF: log/APM data, baseline during normal operation
+- LOGIC: expected value vs. actual value, input data
+- INFRA: infrastructure configuration, recent changes
+- DATA: related tables, data samples
 
-### 3단계: 정보 보충 요청
+### Step 3: Request Additional Information
 
-부족한 정보가 있으면 사용자에게 질문한다. 한 번에 최대 5개, 각 질문에 "왜 필요한지" 포함.
+If information is insufficient, ask the user. Maximum 5 questions at once, each including "why it is needed".
 
-### 4단계: 분류 결과 정리
+### Step 4: Organize Classification Result
 
-Phase 2의 입력으로 사용. 사용자에게 직접 출력하지 않는다.
+Used as input for Phase 2. Do not output directly to the user.
 
 ```
 [TRIAGE RESULT]
-이슈 유형: (주) {TYPE} / (부) {TYPE 또는 없음}
-증상 요약: {한 줄}
-핵심 단서:
-  - 단서 1: {로그/코드에서 발견한 구체적 사실}
-  - 단서 2: ...
-관련 코드 경로: {파일 경로 목록}
-관련 로그 위치: {로그 파일/라인 범위}
-환경: {환경 정보}
+Issue Type: (primary) {TYPE} / (secondary) {TYPE or none}
+Symptom Summary: {one line}
+Key Clues:
+  - Clue 1: {specific fact found in logs/code}
+  - Clue 2: ...
+Related Code Paths: {file path list}
+Related Log Location: {log file/line range}
+Environment: {environment info}
 ```

@@ -1,0 +1,10 @@
+{
+  "id": "commit-msg-invalid-type",
+  "target": "commit-msg-format",
+  "input": {
+    "message": "update: 잘못된 타입 사용"
+  },
+  "expected": {
+    "valid": false
+  }
+}

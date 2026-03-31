@@ -1,244 +1,319 @@
-# Phase 1 — 변경사항 분석
+# Phase 1 — Change Analysis
 
-## 안전 게이트 (절대 건너뛰지 않는다)
-- ⛔ 차단 브랜치 감지 시 즉시 종료 (2단계)
-- ⛔ ITSM 번호 입력 시 반드시 사용자 응답 대기 (5단계)
-- ⛔ 변경사항 요약 출력 후 반드시 사용자 확인(Y) 대기 (6단계)
+## Safety Gates (never skip)
+- ⛔ Immediately stop when a blocked branch is detected (step 2)
+- ⛔ Always wait for user response when an ITSM number is entered (step 5)
+- ⛔ Always wait for user confirmation (Y) after outputting the change summary (step 6)
+- ⛔ Stop immediately on REJECT verdict in code review (step 7) — never proceed to Phase 2
 
-## 역할
-변경된 파일을 분석하여 commit type을 분류하고, ITSM 티켓을 확인한 뒤, 사용자에게 요약을 보여준다.
+## Role
+Analyze changed files, classify the commit type, verify the ITSM ticket, and show the user a summary.
 
-## 수행 절차
+## Procedure
 
-### 1단계: 변경 파일 확인
+### Step 1: Check Changed Files
 
 ```bash
 git status
 ```
 
-변경사항이 없으면 아래를 출력하고 **즉시 종료**한다:
+If there are no changes, output the following and **stop immediately**:
 ```
-변경된 파일이 없습니다. 워크플로우를 종료합니다.
+No changed files. Ending workflow.
 ```
 
-### 1.5단계: 연동 무결성 자동 검증
+### Step 1.5: Automatic Integration Integrity Verification
 
-변경사항이 있으면 커밋 전에 프로젝트 무결성을 자동 검증한다.
-사용자 확인 없이 자동 실행하며, 결과를 안내 메시지로 출력한다.
+If there are changes, automatically verify project integrity before committing.
+Run automatically without user confirmation and output results as an info message.
 
 ```bash
 node .claude/scripts/integrity-check.js
 ```
 
-- **exit code 0 (PASS)** → 결과를 한 줄로 요약 출력 후 2단계로 진행:
+- **exit code 0 (PASS)** → output a one-line summary and proceed to step 2:
   ```
-  ✅ 연동 무결성 검증: PASS (4/4)
+  ✅ Integration integrity check: PASS (4/4)
   ```
-- **exit code 1 (FAIL)** → 스크립트 출력을 그대로 보여주고 사용자에게 확인:
+- **exit code 1 (FAIL)** → show script output and ask user:
   ```
-  ⚠️ 연동 무결성 검증에서 문제가 발견되었습니다:
-  {스크립트 출력}
+  ⚠️ Issues found during integration integrity check:
+  {script output}
 
-  문제를 무시하고 계속 진행할까요? (Y/N)
+  Continue ignoring the issue? (Y/N)
   ```
-  - Y → 2단계로 진행 (사용자 판단으로 무시)
-  - N → 워크플로우 종료 (문제 해결 후 재실행)
-- **스크립트 실행 자체 실패** (파일 없음, 런타임 에러 등) → 경고 출력 후 사용자에게 확인:
+  - Y → proceed to step 2 (user chose to ignore)
+  - N → end workflow (fix the issue and re-run)
+- **Script execution failure** (file not found, runtime error, etc.) → show warning and ask user:
   ```
-  ⚠️ 연동 무결성 검증 스크립트를 실행할 수 없습니다:
-  {에러 메시지}
+  ⚠️ Unable to run the integration integrity check script:
+  {error message}
 
-  검증을 건너뛰고 계속 진행할까요? (Y/N)
+  Skip the check and continue? (Y/N)
   ```
-  - Y → 2단계로 진행 (검증 스킵)
-  - N → 워크플로우 종료 (스크립트 문제 해결 후 재실행)
+  - Y → proceed to step 2 (skip check)
+  - N → end workflow (fix the script issue and re-run)
 
-**사용자가 상세 정보를 요청하면** `--verbose` 옵션으로 재실행하고, 결과를 항목별 테이블로 정리하여 보여준다.
+**If the user requests details**, re-run with `--verbose` and show results in a per-item table.
 
-### 2단계: 현재 브랜치 확인
+### Step 2: Check Current Branch
 
 ```bash
 git branch --show-current
 ```
 
-**차단 브랜치 목록:**
-아래 브랜치에서 실행된 경우, 사용자 선택지 없이 즉시 종료한다.
+**Blocked branch list:**
+When running on any of the branches below, stop immediately without offering options to the user.
 
-| 차단 브랜치 |
-|------------|
+| Blocked Branch |
+|---------------|
 | 12'_2025_NEW_EQPs |
 
 ```
-⛔ '{브랜치명}'은(는) 보호 브랜치입니다. 이 브랜치에서는 git-workflow를 실행할 수 없습니다.
-워크플로우를 종료하고, 사용자의 원래 요청을 Claude Code 기본 동작으로 수행합니다.
+⛔ '{branch name}' is a protected branch. git-workflow cannot run on this branch.
+Ending workflow and processing the user's original request with Claude Code default behavior.
 ```
 
-워크플로우 종료 후 **Claude Code 기본 git 동작**(워크플로우의 브랜치 전략·버전 체계·태깅 규칙 적용 없이)으로 사용자의 원래 요청을 이어서 처리한다.
+After ending the workflow, process the user's original request using **Claude Code default git behavior** (without applying the workflow's branch strategy, versioning scheme, or tagging rules).
 
-**차단 브랜치가 아닌 경우 아래 분기를 따른다:**
+**When not a blocked branch, follow the branches below:**
 
-#### develop 브랜치 자동 준비
+#### Automatic develop Branch Setup
 
-{MAIN_BRANCH} 또는 develop에 있을 때, develop 브랜치를 자동으로 준비한다.
-사용자 확인 없이 자동 실행하며, 수행한 작업을 안내 메시지로 출력한다.
+When on {MAIN_BRANCH} or develop, automatically prepare the develop branch.
+Run automatically without user confirmation and output performed actions as an info message.
 
 ```bash
-# develop 존재 확인
+# Check if develop exists
 git branch --list develop
 ```
 
-- **develop이 없는 경우** → {MAIN_BRANCH}에서 자동 생성:
+- **develop does not exist** → create from {MAIN_BRANCH}:
   ```bash
   git checkout -b develop
   ```
   ```
-  ℹ️ develop 브랜치가 없어 {MAIN_BRANCH}에서 새로 생성했습니다.
+  ℹ️ develop branch did not exist — created from {MAIN_BRANCH}.
   ```
 
-- **develop이 있고 {MAIN_BRANCH}에 있는 경우** → develop으로 이동 후 동기화 확인:
+- **develop exists and on {MAIN_BRANCH}** → switch to develop and check sync:
   ```bash
   git checkout develop
-  # develop이 main보다 뒤처져 있는지 확인
+  # Check if develop is behind main
   git log develop..{MAIN_BRANCH} --oneline
   ```
-  - 뒤처진 커밋이 있으면 → {MAIN_BRANCH}를 develop에 머지하여 동기화:
+  - If behind → merge {MAIN_BRANCH} into develop to sync:
     ```bash
     git merge {MAIN_BRANCH} --no-ff -m "merge: sync {MAIN_BRANCH} into develop"
     ```
     ```
-    ℹ️ develop이 {MAIN_BRANCH}보다 뒤처져 있어 동기화했습니다.
+    ℹ️ develop was behind {MAIN_BRANCH} — synchronized.
     ```
-  - 동일하면 → 그대로 사용
+  - If equal → proceed as-is
 
-- **이미 develop에 있는 경우** → 그대로 진행
+- **Already on develop** → proceed as-is
 
-#### 브랜치 분기
+#### Branch Routing
 
-- develop에 있으면 → 정상 (Phase 2에서 feature 브랜치를 생성한다)
-- 이미 feature/bugfix 브랜치에 있으면 → 사용자에게 확인:
+- On develop → normal (create feature branch in Phase 2)
+- Already on a feature/bugfix branch → ask user:
   ```
-  현재 '{브랜치명}' 브랜치에 있습니다.
-  1. 이 브랜치에서 계속 작업 (새 브랜치 안 만듦)
-  2. develop으로 돌아가서 새 브랜치 생성
+  Currently on '{branch name}'.
+  1. Continue on this branch (no new branch)
+  2. Return to develop and create a new branch
 
-  선택해주세요 (1/2):
+  Select (1/2):
   ```
-- 그 외 브랜치에 있으면 → 경고:
+- On any other branch → warn:
   ```
-  ⚠️ 현재 '{브랜치명}' 브랜치에 있습니다.
-  1. 이 브랜치에서 계속 작업
-  2. develop으로 돌아가서 새 브랜치 생성
+  ⚠️ Currently on '{branch name}'.
+  1. Continue on this branch
+  2. Return to develop and create a new branch
 
-  선택해주세요 (1/2):
+  Select (1/2):
   ```
 
-### 3단계: commit type 자동 분류
+### Step 3: Automatic Commit Type Classification
 
-변경된 파일과 내용을 분석하여 commit type을 판별한다.
+Analyze changed files and their content to determine the commit type.
 
-| type | 조건 |
-|------|------|
-| feat | 새 기능 추가 |
-| fix | 버그 수정 |
-| improve | 기존 기능 개선 (Phase 내용 수정, 설정 개선 등) |
-| refactor | 리팩토링 (기능 변경 없이 코드 개선) |
-| docs | 문서 수정 |
-| chore | 빌드, 설정, 기타 |
+| type | Condition |
+|------|-----------|
+| feat | New feature added |
+| fix | Bug fixed |
+| improve | Existing feature improved (phase content updates, config improvements, etc.) |
+| refactor | Refactoring (code improvements without functional changes) |
+| docs | Documentation updated |
+| chore | Build, config, or other |
 
-### 4단계: 영향 에이전트 식별 (NEPES_AI_AGENTS만)
+### Step 4: Identify Affected Agents (NEPES_AI_AGENTS only)
 
-프로젝트가 NEPES_AI_AGENTS일 때만 수행한다. 다른 프로젝트는 이 단계를 건너뛴다.
+Perform this step only when the project is NEPES_AI_AGENTS. Skip for other projects.
 
-변경 파일 경로에서 에이전트명/커맨드명을 추출한다:
-- `.claude/agents/{name}/` → `{name}` (에이전트)
-- `.claude/agents/{group}/{name}/` → `{group}/{name}` (에이전트)
-- `.claude/commands/{name}.md` → `{name}` (커맨드)
-- `.claude/commands/{group}/{name}.md` → `{group}/{name}` (커맨드)
+Extract agent/command names from the changed file paths:
+- `.claude/agents/{name}/` → `{name}` (agent)
+- `.claude/agents/{group}/{name}/` → `{group}/{name}` (agent)
+- `.claude/commands/{name}.md` → `{name}` (command)
+- `.claude/commands/{group}/{name}.md` → `{group}/{name}` (command)
 
-### 5단계: ITSM 티켓 번호 확인
+### Step 5: Confirm ITSM Ticket Number
 
-**A. 동일 대화에서 ITSM 등록이 선행된 경우:**
+**A. When ITSM registration was performed earlier in the same conversation:**
 
-등록 응답의 `requestId`를 자동 제시하고 사용자 확인을 받는다.
+Present the `requestId` from the registration response and ask for user confirmation.
 
 ```
-직전 ITSM 등록에서 #ITSM-{requestId}를 확인했습니다.
-이 번호를 사용할까요? (Y/직접 번호 입력/n)
+ITSM #{requestId} was found from the previous ITSM registration.
+Use this number? (Y/enter directly/n)
 ```
 
 - **Y** → `ITSM_NUMBER={requestId}`
-- **직접 번호 입력** → `ITSM_NUMBER={입력값}`
-- **"n"** → 아래 B 케이스의 "n" 처리와 동일
+- **Enter directly** → `ITSM_NUMBER={entered value}`
+- **"n"** → same as the "n" handling in case B below
 
-⛔ **이 단계에서 반드시 멈추고 사용자 응답을 기다린다.**
-`$ARGUMENTS`로 전달된 ITSM 번호는 "사용자가 확인한 것"이 아니다.
-반드시 제시 후 사용자의 명시적 응답(Y/번호/n)을 받아야 한다.
+⛔ **Stop at this step and wait for user response.**
+An ITSM number passed via `$ARGUMENTS` is not "confirmed by the user."
+Always present the number and wait for explicit user response (Y/number/n).
 
-**B. ITSM 등록이 선행되지 않은 경우:**
+**B. When no prior ITSM registration was performed:**
 
-사용자에게 ITSM 티켓 번호를 입력받는다.
+Ask the user to enter the ITSM ticket number.
 
 ```
-ITSM 티켓 번호를 입력해주세요:
-  - 번호 입력 (예: 3207)
-  - 없으면 "n" 입력
+Please enter the ITSM ticket number:
+  - Enter number (e.g., 3207)
+  - Enter "n" if none
 ```
 
-- **번호 입력** → `ITSM_NUMBER`로 사용
-- **"n" 입력** → 아래 경고를 표시하고 사용자 최종 확인:
+- **Number entered** → use as `ITSM_NUMBER`
+- **"n" entered** → show the warning below and ask for final confirmation:
   ```
-  ⚠️ ITSM 번호 없이 진행하면 추적성이 확보되지 않습니다.
-  ITSM 번호 없이 진행하시겠습니까? (Y/N)
+  ⚠️ Proceeding without an ITSM number will result in no traceability.
+  Proceed without an ITSM number? (Y/N)
   ```
-  - Y → `ITSM_NUMBER=없음` (커밋/머지 메시지에서 ITSM 참조 생략)
-  - N → 워크플로우 중단 (ITSM 등록 후 재실행)
+  - Y → `ITSM_NUMBER=none` (omit ITSM reference in commit/merge messages)
+  - N → stop workflow (register in ITSM and re-run)
 
-### 6단계: 사용자에게 변경사항 요약 출력
+### Step 6: Output Change Summary to User
 
-아래 형식으로 보여주고 확인을 받는다:
+Show in the format below and wait for confirmation:
 
 ```
-📋 변경사항 분석 결과
+📋 Change Analysis Result
 
-[프로젝트] {PROJECT_NAME}
-[ITSM] #ITSM-{번호} / 없음
+[Project] {PROJECT_NAME}
+[ITSM] #ITSM-{number} / none
 [commit type] feat / fix / improve / ...
-[사유] {왜 해당 type인지 한 줄}
-[영향 에이전트] {에이전트 목록} ← NEPES_AI_AGENTS일 때만 표시
+[Reason] {one line explaining why this type was chosen}
+[Affected Agents] {agent list} ← shown only for NEPES_AI_AGENTS
 
-[변경 파일]
-  수정: src/Main.java
-  추가: src/NewFeature.java
-  삭제: (없음)
+[Changed Files]
+  Modified: src/Main.java
+  Added: src/NewFeature.java
+  Deleted: (none)
 
-계속 진행할까요? (Y/N)
+Proceed? (Y/N)
 ```
 
-⛔ **이 단계에서 반드시 멈추고 사용자 응답을 기다린다.**
-변경 파일 리스트는 사용자가 반드시 확인해야 하는 항목이다.
-사용자가 Y를 입력할 때까지 절대 Phase 2로 진행하지 않는다.
+> ⚠️ **This step is the last point to finalize the scope of changes.**
+> If additional related changes were discovered during analysis (missing files, related config, etc.),
+> include them in the list now before entering Y.
+> Changes after merge completion can only be handled via a new /git-workflow.
 
-사용자가 "N"이면 워크플로우를 종료한다.
-사용자가 commit type에 동의하지 않으면 사용자 의견을 우선한다.
+⛔ **Stop at this step and wait for user response.**
+The changed file list must be confirmed by the user.
+Never proceed to Phase 2 until the user enters Y.
 
-## Phase 1 출력 (Phase 2 입력으로 전달)
+If the user enters "N", end the workflow.
+If the user disagrees with the commit type, defer to the user's preference.
+
+### Step 7: Code Review (pre-commit)
+
+Automatically determine whether a code review is needed based on the commit type and changed files. **Do not ask the user — decide and act immediately.**
+
+#### Review Necessity Judgment Criteria
+
+| Condition | Decision |
+|-----------|----------|
+| commit type is `feat` or `fix` | ✅ Review required |
+| commit type is `improve` or `refactor` and changed files include `.js`, `.ts`, `.py`, `.java`, `.sh` source files | ✅ Review required |
+| commit type is `docs`, `chore` | ⏭️ Skip (no executable code changed) |
+| commit type is `improve` or `refactor` and changed files are only `.md`, `.txt`, `.json`, `.yaml`, `.yml` config/docs | ⏭️ Skip (no executable code changed) |
+
+- **Skip** → output info message and proceed to Phase 1 Output:
+  ```
+  ℹ️ Code review skipped (commit type: {type}, no executable code changes detected).
+  ```
+- **Review required** → run automatically using the steps below (no user confirmation needed)
+
+#### 7-1. Get Changes to Review
+
+```bash
+# Unstaged changes
+git diff
+
+# Staged changes
+git diff --cached
+```
+
+Use the combined output as the review target.
+
+#### 7-2. Load and Execute Review
+
+Load `.claude/agents/code-review/review-full.md` and execute the review.
+
+- `+` lines (added/modified): **review target**
+- `-` lines (deleted): check deletion impact
+- Context lines: reference only
+
+#### 7-3. Branch Based on Verdict
+
+| Verdict | Condition | Next Step |
+|---------|-----------|-----------|
+| ✅ PASS | 0 Critical AND Warning ≤ 3 | → proceed to Phase 1 Output |
+| ⚠️ REVIEW_NEEDED | 0 Critical AND Warning ≥ 4 | → ask user confirmation, then proceed |
+| ❌ REJECT | Critical ≥ 1 | → stop workflow, request fixes |
+
+**When REVIEW_NEEDED, ask user:**
+```
+⚠️ {N} Warning(s) found.
+
+Key Warnings:
+1. {file}:{line} - {description}
+
+Proceed with commit anyway? (Y/N)
+```
+
+**When REJECT:**
+```
+❌ {N} Critical issue(s) found — cannot commit.
+
+Items requiring immediate fix:
+1. {file}:{line} - {description}
+
+Fix the issues and re-run /git-workflow.
+```
+
+---
+
+## Phase 1 Output (passed as input to Phase 2)
 
 ```
 [CHANGE ANALYSIS]
-프로젝트: {PROJECT_NAME}
-ITSM 번호: #ITSM-{번호} / 없음
+Project: {PROJECT_NAME}
+ITSM Number: #ITSM-{number} / none
 commit type: feat / fix / improve / ...
-영향 에이전트: {에이전트 목록} ← NEPES_AI_AGENTS일 때만
-변경 파일 목록: {파일 목록}
-변경 요약: {한 줄 설명}
-현재 브랜치: {브랜치명}
-브랜치 전략: 새 브랜치 생성 / 현재 브랜치 유지
+Affected Agents: {agent list} ← NEPES_AI_AGENTS only
+Changed File List: {file list}
+Change Summary: {one-line description}
+Current Branch: {branch name}
+Branch Strategy: new branch / keep current branch
 ```
 
-## 체크포인트 저장 (자동)
+## Checkpoint Save (automatic)
 
-Phase 1 출력이 확정되면, 아래 명령을 Bash로 실행하여 진행 상태를 저장한다.
-실패해도 워크플로우를 중단하지 않는다 (best-effort).
+After Phase 1 output is confirmed, run the following command via Bash to save progress.
+Do not stop the workflow if this fails (best-effort).
 
 ```bash
 node -e "
@@ -248,9 +323,9 @@ node -e "
     project: '{PROJECT_NAME}',
     commitType: '{COMMIT_TYPE}',
     itsm: '{ITSM_NUMBER}',
-    branch: '{현재 브랜치명}',
-    branchStrategy: '{새 브랜치 생성 / 현재 브랜치 유지}',
-    summary: '{변경 요약}'
+    branch: '{current branch name}',
+    branchStrategy: '{new branch / keep current branch}',
+    summary: '{change summary}'
   });
   log.startTimer('git-workflow');
   log.logWorkflow({
@@ -261,13 +336,13 @@ node -e "
 "
 ```
 
-`{...}` 부분은 이 phase에서 결정된 실제 값으로 치환한다.
+Replace `{...}` with actual values determined in this phase.
 
-## 실패 처리
+## Failure Handling
 
-### 실패 기록
+### Failure Logging
 
-Phase 1에서 발생하는 모든 실패 (워크플로우 종료 포함)를 아래 명령으로 기록한다:
+Log all failures in Phase 1 (including workflow termination) with the following command:
 
 ```bash
 node -e "
@@ -276,38 +351,39 @@ node -e "
     workflow: 'git-workflow', phase: 1,
     failureType: '{TYPE}', subType: '{SUBTYPE}',
     severity: '{SEVERITY}',
-    cause: '{에러 메시지 또는 종료 사유}',
-    context: { project: '{PROJECT_NAME}', branch: '{브랜치명}' },
-    recoveryAction: '{수행한 조치}',
+    cause: '{error message or termination reason}',
+    context: { project: '{PROJECT_NAME}', branch: '{branch name}' },
+    recoveryAction: '{action taken}',
     resolved: {true/false},
     retryCount: 0
   });
 "
 ```
 
-**기록 대상 실패:**
-- 연동 무결성 검증 실패 (failureType: `script_error`, subType: `integrity_check_fail`)
-- 연동 무결성 검증 스크립트 실행 실패 (failureType: `script_error`, subType: `integrity_check_crash`)
-- 차단 브랜치 감지 (failureType: `validation_fail`, subType: `blocked_branch`)
-- 사용자가 변경사항 확인에서 N 선택 (failureType: `validation_fail`, subType: `user_rejected`)
+**Events to log:**
+- Integration integrity check failed (failureType: `script_error`, subType: `integrity_check_fail`)
+- Integration integrity check script failed to run (failureType: `script_error`, subType: `integrity_check_crash`)
+- Blocked branch detected (failureType: `validation_fail`, subType: `blocked_branch`)
+- User selected N at change confirmation (failureType: `validation_fail`, subType: `user_rejected`)
+- Code review REJECT (failureType: `validation_fail`, subType: `review_rejected`)
 
-`{...}` 부분은 실제 값으로 치환한다.
+Replace `{...}` with actual values.
 
-### 워크플로우 로그에 실패/중단 기록
+### Logging Failures/Aborts to Workflow Log
 
-Phase 1에서 워크플로우가 종료되는 경우, failure-logger 외에 워크플로우 로그에도 결과를 기록한다:
+When the workflow terminates in Phase 1, also log the result to the workflow log in addition to failure-logger:
 
 ```bash
 node -e "
   const log = require(process.env.USERPROFILE + '/.claude/hooks/log-workflow.js');
   log.logWorkflow({
     workflow: 'git-workflow', phase: 1, event: 'phase1_failed',
-    result: '{failure 또는 aborted}',
-    error: '{종료 사유 요약}',
+    result: '{failure or aborted}',
+    error: '{termination reason summary}',
     project: '{PROJECT_NAME}'
   });
 "
 ```
 
-- 차단 브랜치, 검증 실패 등으로 **워크플로우 자체가 종료**되는 경우: `result: 'failure'`
-- 사용자가 N 선택으로 **자발적 중단**한 경우: `result: 'aborted'`
+- When the **workflow itself terminates** due to blocked branch, validation failure, etc.: `result: 'failure'`
+- When the user **voluntarily aborts** by selecting N: `result: 'aborted'`

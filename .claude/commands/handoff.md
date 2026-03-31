@@ -1,72 +1,72 @@
-# 작업 인수인계 문서 작성 (HANDOFF)
+# Task Handoff Document (HANDOFF)
 
-컨텍스트가 포화되기 전에 현재 작업 상태를 문서화하여 다음 세션으로 인수인계합니다.
+Documents the current task state before context saturation to hand off to the next session.
 
-## 실행 절차
+## Execution Procedure
 
-### 1단계: 기존 HANDOFF.md 확인
+### Step 1: Check for Existing HANDOFF.md
 
-프로젝트 루트에 `HANDOFF.md`가 이미 있으면 읽어서 이전 인수인계 내용을 파악합니다.
+If `HANDOFF.md` already exists in the project root, read it to understand the previous handoff content.
 
-### 2단계: 인수인계 문서 작성
+### Step 2: Write Handoff Document
 
-아래 형식으로 인수인계 문서를 프로젝트 루트에 작성합니다.
+Write the handoff document to the project root in the following format.
 
-**파일명 규칙**: `HANDOFF_{YYYYMMDD_HHmm}.md` (타임스탬프 기반)
-- 이전 인수인계 파일과 공존하여 히스토리 보존
-- 최신 인수인계 파일을 `HANDOFF.md`로도 복사 (호환성)
+**Filename convention**: `HANDOFF_{YYYYMMDD_HHmm}.md` (timestamp-based)
+- Coexists with previous handoff files to preserve history
+- Also copy the latest handoff file as `HANDOFF.md` (for compatibility)
 
 ```markdown
-# HANDOFF - 작업 인수인계
+# HANDOFF - Task Handoff
 
-**작성 일시**: {YYYY-MM-DD HH:mm}
-**프로젝트**: {프로젝트명}
+**Created**: {YYYY-MM-DD HH:mm}
+**Project**: {project name}
 
-## 목표
-현재 수행 중인 작업의 최종 목표를 기술합니다.
+## Goal
+Describe the final goal of the task currently in progress.
 
-## 진행 상황
-- [x] 완료된 작업 항목
-- [ ] 미완료 작업 항목
+## Progress
+- [x] Completed task items
+- [ ] Incomplete task items
 
-## 성공한 접근법
-효과적이었던 방법, 발견한 패턴, 유용한 명령어 등을 기록합니다.
-(다음 세션에서 시간 낭비를 방지)
+## Successful Approaches
+Record effective methods, discovered patterns, useful commands, etc.
+(Prevents wasting time in the next session)
 
-## 실패한 접근법
-시도했으나 실패한 것, 피해야 할 것을 기록합니다.
-(같은 실수를 반복하지 않기 위함)
+## Failed Approaches
+Record things tried but failed, things to avoid.
+(To prevent repeating the same mistakes)
 
-## 핵심 컨텍스트
-다음 세션이 반드시 알아야 할 정보:
-- 관련 파일 경로
-- 중요한 변수/설정값
-- 발견한 이슈
+## Key Context
+Information the next session must know:
+- Relevant file paths
+- Important variables/configuration values
+- Discovered issues
 
-## 다음 단계
-구체적인 다음 액션을 우선순위 순으로 나열합니다:
-1. {첫 번째 할 일}
-2. {두 번째 할 일}
+## Next Steps
+List specific next actions in priority order:
+1. {first thing to do}
+2. {second thing to do}
 ```
 
-### 3단계: 사용자 안내
+### Step 3: Notify User
 
-문서 작성 완료 후 아래 안내를 출력합니다:
+After the document is written, output the following message:
 
 ```
-✅ HANDOFF_{타임스탬프}.md가 저장되었습니다.
-   HANDOFF.md에도 최신본이 복사되었습니다.
+✅ HANDOFF_{timestamp}.md has been saved.
+   The latest copy has also been saved as HANDOFF.md.
 
-다음 세션에서 작업을 이어가려면:
-1. /clear 를 입력하여 컨텍스트를 초기화하세요
-2. "HANDOFF.md 읽고 이어서 진행해줘" 라고 입력하세요
+To continue work in the next session:
+1. Enter /clear to reset the context
+2. Enter "Read HANDOFF.md and continue"
 
-이전 인수인계 이력: ls HANDOFF_*.md
+Previous handoff history: ls HANDOFF_*.md
 ```
 
-## 주의사항
+## Notes
 
-- HANDOFF*.md는 **임시 작업 파일**입니다 (`.gitignore`에 `HANDOFF*.md` 등록 필요)
-- 작업 완료 후 불필요하면 삭제해도 됩니다
-- 타임스탬프 기반 파일명으로 이전 인수인계 이력이 자동 보존됩니다
-- `HANDOFF.md`는 항상 최신 인수인계의 복사본입니다
+- HANDOFF*.md files are **temporary working files** (register `HANDOFF*.md` in `.gitignore`)
+- May be deleted after work is complete if no longer needed
+- Previous handoff history is automatically preserved through timestamp-based filenames
+- `HANDOFF.md` is always a copy of the most recent handoff

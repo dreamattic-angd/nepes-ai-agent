@@ -1,35 +1,35 @@
-# 모니터링 리포트
+# Monitoring Report
 
-하네스 워크플로우 실행 현황과 실패 분석 리포트를 생성한다.
+Generates a harness workflow execution status and failure analysis report.
 
-## 사용자 입력
+## User Input
 
 $ARGUMENTS
 
-## 실행 절차
+## Execution Procedure
 
-### 1단계: 기간 파싱
+### Step 1: Parse Period
 
-$ARGUMENTS에서 기간을 파싱한다.
+Parse the period from $ARGUMENTS.
 
-| 입력 | 일수 |
-|------|------|
-| "이번 달", "최근 한달", 미입력 | 30 |
-| "이번 주" | 7 |
-| "90일", "3개월" 등 | 해당 일수 |
-| 숫자만 | 해당 일수 |
+| Input | Days |
+|-------|------|
+| "this month", "last month", no input | 30 |
+| "this week" | 7 |
+| "90 days", "3 months", etc. | corresponding days |
+| number only | corresponding days |
 
-기본값: 30일
+Default: 30 days
 
-### 2단계: 워크플로우 통계 수집
+### Step 2: Collect Workflow Statistics
 
 ```bash
 node "%USERPROFILE%/.claude/scripts/workflow-stats.js" --days {DAYS} --json
 ```
 
-출력된 JSON을 파싱하여 stats와 failures 데이터를 확보한다.
+Parse the output JSON to obtain stats and failures data.
 
-### 3단계: 실패 패턴 분석
+### Step 3: Analyze Failure Patterns
 
 ```bash
 node -e "
@@ -39,76 +39,76 @@ node -e "
 "
 ```
 
-### 4단계: Eval 결과 수집
+### Step 4: Collect Eval Results
 
 ```bash
 node "%USERPROFILE%/.claude/scripts/eval-runner.js"
 ```
 
-### 5단계: 리포트 생성
+### Step 5: Generate Report
 
-수집된 데이터를 아래 형식의 마크다운 보고서로 작성한다.
+Write the collected data as a markdown report in the following format.
 
-**출력 경로**: `~/.claude/logs/reports/monitoring-report-{YYYYMMDD}.md`
+**Output path**: `~/.claude/logs/reports/monitoring-report-{YYYYMMDD}.md`
 
-디렉토리가 없으면 생성한다.
+Create the directory if it does not exist.
 
 ```markdown
-# 하네스 모니터링 리포트
+# Harness Monitoring Report
 
-생성일: {오늘 날짜}
-기간: {시작일} ~ {종료일} ({DAYS}일)
+Generated: {today's date}
+Period: {start date} ~ {end date} ({DAYS} days)
 
 ---
 
-## 1. 실행 요약
+## 1. Execution Summary
 
-| 워크플로우 | 실행 | 성공 | 실패 | 중단 | 성공률 | 평균 소요시간 |
-|-----------|------|------|------|------|--------|-------------|
-| {각 워크플로우별 행} |
+| Workflow | Runs | Success | Failure | Aborted | Success Rate | Avg Duration |
+|----------|------|---------|---------|---------|-------------|-------------|
+| {row per workflow} |
 
-### 총평
-- 전체 실행 건수: {총합}
-- 전체 성공률: {가중 평균}%
+### Overall
+- Total runs: {total}
+- Overall success rate: {weighted average}%
 
-## 2. 실패 유형 분석
+## 2. Failure Type Analysis
 
-| 유형 | 건수 | 워크플로우 |
-|------|------|-----------|
-| {failureType/subType별 행} |
+| Type | Count | Workflow |
+|------|-------|---------|
+| {row per failureType/subType} |
 
-## 3. 반복 실패 패턴
+## 3. Recurring Failure Patterns
 
-{failure-registry 출력. 패턴이 없으면 "반복 실패 패턴 없음" 표시}
+{failure-registry output. If no patterns, display "No recurring failure patterns"}
 
-## 4. 소요시간 분석
+## 4. Duration Analysis
 
-- 평균 소요시간: {avgDurationMs 포맷}
-- 데이터 부족 시: "duration 데이터가 충분하지 않습니다. (기록 시작: v1.33.0)"
+- Average duration: {avgDurationMs formatted}
+- If insufficient data: "Insufficient duration data. (Recording started: v1.33.0)"
 
-## 5. Eval 결과
+## 5. Eval Results
 
-- 총 케이스: {N}건
-- PASS: {N}건
-- FAIL: {N}건
-- 마지막 실행: {오늘 날짜}
+- Total cases: {N}
+- PASS: {N}
+- FAIL: {N}
+- Last run: {today's date}
 
-## 6. 권고사항
+## 6. Recommendations
 
-데이터를 기반으로 아래 관점에서 권고사항을 작성한다:
-- 성공률이 80% 미만인 워크플로우가 있으면 → 원인 분석 권고
-- 반복 실패 패턴이 있으면 → 해당 패턴의 근본 원인 해결 권고
-- Eval 실패 케이스가 있으면 → 로직 수정 권고
-- 데이터가 부족하면 → "모니터링 데이터 누적 후 재분석 권고"
+Write recommendations based on data from the following perspectives:
+- If any workflow has a success rate below 80% → recommend root cause analysis
+- If recurring failure patterns exist → recommend resolving root cause of those patterns
+- If eval failure cases exist → recommend logic fix
+- If data is insufficient → "Recommend re-analysis after accumulating more monitoring data"
 ```
 
-### 완료 보고
+### Completion Report
 
 ```
-📊 모니터링 리포트가 생성되었습니다.
+📊 Monitoring report generated.
 
-파일: {출력 경로}
-기간: {DAYS}일 ({시작일} ~ {종료일})
-워크플로우 수: {N}개
-전체 성공률: {N}%
+File: {output path}
+Period: {DAYS} days ({start date} ~ {end date})
+Workflows: {N}
+Overall success rate: {N}%
 ```

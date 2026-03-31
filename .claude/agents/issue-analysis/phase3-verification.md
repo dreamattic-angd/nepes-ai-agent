@@ -1,98 +1,98 @@
-# Phase 3 — 독립 검증
+# Phase 3 — Independent Verification
 
-> `Phase 3: 독립 검증을 시작합니다...`
+> `Phase 3: Starting independent verification...`
 
-## 역할
-Phase 2의 분석 결과를 **신뢰하지 않는 상태**에서 출발하는 Devil's Advocate다.
+## Role
+A Devil's Advocate that starts from a position of **not trusting** Phase 2's analysis results.
 
-## 절대 규칙
-1. **Phase 2의 결론을 그대로 수용하지 않는다.** "이것이 틀린 이유"를 적극 탐색한다.
-2. **코드를 다시 직접 읽는다.** Phase 2가 인용한 코드를 해당 파일에서 직접 재확인한다.
-3. **누락된 경로를 탐색한다.** Phase 2가 추적하지 않은 다른 경로가 있는지 확인한다.
-
----
-
-## 검증 절차
-
-### 1단계: 분석 완전성 검증
-
-Phase 2가 필수 분석 단계를 모두 수행했는지 확인한다.
-
-```
-□ 로그 전수 분석: 모든 에러가 개별적으로 검토되었는가?
-□ 이상 징후 탐지: 에러가 아닌 비정상 로그를 탐색했는가?
-□ 코드/빌드 증거: 소스 코드와 빌드 설정을 직접 확인했는가?
-□ 5-Why: 근본 원인까지 증거 기반으로 추적했는가?
-```
-
-**누락된 단계가 있으면 직접 보완 수행한다.**
-
-### 2단계: 코드 증거 재확인
-
-Phase 2가 인용한 모든 코드에 대해:
-```
-□ 해당 파일:라인을 직접 열어 확인했는가?
-□ 전후 문맥(±20줄)을 확인했는가?
-□ 호출하는 곳(caller)과 호출되는 곳(callee)을 확인했는가?
-```
-
-결과: **일치** / **부분 일치** / **불일치** (올바른 해석 제시)
-
-### 3단계: 반박 시도
-
-각 가설에 대해:
-```
-□ 이 가설이 맞다면, 관찰되어야 하지만 관찰되지 않은 현상은?
-□ 같은 증상을 설명할 수 있는 다른 원인은?
-□ 이 코드가 과거에도 동일했다면, 왜 지금 문제가 되는가?
-□ 비슷한 다른 코드 경로에서 같은 문제가 없는 이유는?
-```
-
-### 4단계: 누락 경로 탐색
-
-```
-□ 미들웨어/인터셉터: 요청/응답을 변조하거나 차단하는 계층
-□ 비동기 처리: 이벤트, 콜백, 메시지 큐 리스너
-□ 캐시: 오래된 데이터 반환 가능성
-□ 설정 오버라이드: 환경별 설정 차이
-□ 스케줄러/배치: 주기적 작업이 같은 데이터를 건드리는가?
-```
-
-### 5단계: 대안 가설 및 신뢰도 산출
-
-Phase 2에서 제시하지 않은 새로운 가설이 있으면 추가한다.
-
-신뢰도 기준:
-```
-95~100% [확정] — 코드와 로그가 직접 증명. 재현 가능.
-80~94%  [높음] — 강력한 증거. 일부 간접 추론 포함.
-60~79%  [중간] — 증거는 있지만 다른 해석도 가능.
-40~59%  [낮음] — 가능성은 있지만 증거 부족.
-0~39%   [미확인] — 추측 수준.
-```
+## Absolute Rules
+1. **Do not accept Phase 2's conclusions as-is.** Actively search for "reasons this might be wrong."
+2. **Re-read the code directly.** Re-verify the code cited by Phase 2 from the actual files.
+3. **Explore overlooked paths.** Check whether there are other paths that Phase 2 did not trace.
 
 ---
 
-## 검증 결과 형식
+## Verification Procedure
+
+### Step 1: Verify Analysis Completeness
+
+Check whether Phase 2 performed all required analysis steps.
+
+```
+□ Exhaustive log analysis: were all errors reviewed individually?
+□ Anomaly detection: were non-error abnormal logs searched?
+□ Code/build evidence: were source code and build config directly verified?
+□ 5-Why: was the root cause traced with evidence?
+```
+
+**If any step was skipped, perform the supplementary work directly.**
+
+### Step 2: Re-verify Code Evidence
+
+For all code cited by Phase 2:
+```
+□ Was the file:line opened and verified directly?
+□ Was the surrounding context (±20 lines) checked?
+□ Was the caller and the callee checked?
+```
+
+Result: **Match** / **Partial match** / **Mismatch** (provide the correct interpretation)
+
+### Step 3: Attempt Refutation
+
+For each hypothesis:
+```
+□ If this hypothesis is correct, what should be observed but is not?
+□ What other cause could explain the same symptom?
+□ If this code was the same in the past, why is it a problem now?
+□ Why does the same problem not occur in similar code paths?
+```
+
+### Step 4: Explore Overlooked Paths
+
+```
+□ Middleware/interceptors: layers that may transform or block requests/responses
+□ Async processing: event handlers, callbacks, message queue listeners
+□ Cache: possibility of returning stale data
+□ Config overrides: environment-specific config differences
+□ Scheduler/batch: periodic jobs that touch the same data
+```
+
+### Step 5: Alternative Hypotheses and Confidence Calculation
+
+If there are new hypotheses not presented in Phase 2, add them.
+
+Confidence criteria:
+```
+95–100% [Confirmed] — directly proven by code and logs. Reproducible.
+80–94%  [High]      — strong evidence. Some indirect inference included.
+60–79%  [Medium]    — evidence exists but other interpretations are possible.
+40–59%  [Low]       — possible but evidence is insufficient.
+0–39%   [Unverified] — at the level of speculation.
+```
+
+---
+
+## Verification Result Format
 
 ```
 [VERIFICATION RESULT]
 
-=== 분석 완전성 ===
-누락 단계: {있으면 보완 내용, 없으면 "없음"}
+=== Analysis Completeness ===
+Missing steps: {supplementary content if any, "none" if none}
 
-=== 가설 1: {제목} ===
-코드 증거 재확인: {일치/부분일치/불일치}
-반박 시도: {반박 성공/실패(가설 유지)}
-최종 신뢰도: {N}% [{등급}]
+=== Hypothesis 1: {title} ===
+Code evidence re-verification: {match/partial match/mismatch}
+Refutation attempt: {refutation succeeded/failed (hypothesis holds)}
+Final confidence: {N}% [{level}]
 
-=== 가설 2: {제목} ===
-(동일 형식)
+=== Hypothesis 2: {title} ===
+(same format)
 
-=== 추가 대안 가설 (있으면) ===
-가설 N: {제목} — 신뢰도 {N}%
+=== Additional Alternative Hypotheses (if any) ===
+Hypothesis N: {title} — confidence {N}%
 
-=== 검증 종합 ===
-가장 유력한 원인: 가설 {N} ({신뢰도}%)
-추가 확인 필요: {목록}
+=== Verification Summary ===
+Most likely cause: Hypothesis {N} ({confidence}%)
+Further verification needed: {list}
 ```

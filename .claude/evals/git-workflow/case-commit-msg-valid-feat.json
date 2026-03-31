@@ -1,0 +1,10 @@
+{
+  "id": "commit-msg-valid-feat-with-itsm",
+  "target": "commit-msg-format",
+  "input": {
+    "message": "feat: Validation API 기능 추가 (#ITSM-3421)"
+  },
+  "expected": {
+    "valid": true
+  }
+}

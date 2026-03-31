@@ -1,38 +1,38 @@
-# Phase 2 — 브랜치 생성 + 커밋
+# Phase 2 — Branch Creation + Commit
 
-## 역할
-Phase 1의 분석 결과를 바탕으로 브랜치명과 커밋 메시지를 자동 생성하고 즉시 실행한다.
+## Role
+Based on Phase 1 analysis results, automatically generate a branch name and commit message, then execute immediately.
 
-## 수행 절차
+## Procedure
 
-### 0단계: Phase 1 출력 검증
+### Step 0: Validate Phase 1 Output
 
-Phase 2 시작 전에 Phase 1에서 전달받은 데이터의 필수 필드가 모두 존재하는지 확인한다.
+Before starting Phase 2, verify that all required fields from Phase 1 are present.
 
-**필수 필드:**
-- 프로젝트명 (PROJECT_NAME)
-- commit type (feat/fix/improve/refactor/docs/chore 중 하나)
-- 변경 파일 목록 (최소 1개)
-- 현재 브랜치
-- 브랜치 전략 (새 브랜치 생성 / 현재 브랜치 유지)
+**Required fields:**
+- Project name (PROJECT_NAME)
+- commit type (one of: feat/fix/improve/refactor/docs/chore)
+- Changed file list (at least 1 file)
+- Current branch
+- Branch strategy (new branch / keep current branch)
 
-누락된 필드가 있으면 워크플로우를 중단하고 Phase 1부터 재실행을 안내한다:
+If any field is missing, stop the workflow and instruct the user to restart from Phase 1:
 ```
-⚠️ Phase 1 분석 데이터가 불완전합니다.
-누락된 항목: {누락 필드 목록}
+⚠️ Phase 1 analysis data is incomplete.
+Missing fields: {missing field list}
 
-워크플로우를 처음부터 다시 실행해주세요.
+Please restart the workflow from the beginning.
 ```
 
-### 1단계: 브랜치명 자동 생성
+### Step 1: Automatically Generate Branch Name
 
-Phase 1에서 "새 브랜치 생성"으로 결정된 경우에만 수행한다.
-"현재 브랜치 유지"면 이 단계를 건너뛴다.
+Perform this step only when "new branch" was decided in Phase 1.
+Skip if "keep current branch".
 
-**브랜치명 생성 규칙:**
+**Branch name generation rules:**
 
-| commit type | 브랜치 접두사 | 예시 |
-|-------------|-------------|------|
+| commit type | Branch prefix | Example |
+|-------------|--------------|---------|
 | feat | feature/ | feature/add-validation-api |
 | fix | bugfix/ | bugfix/fix-db-connection-leak |
 | improve | feature/ | feature/improve-phase2-checklist |
@@ -40,66 +40,97 @@ Phase 1에서 "새 브랜치 생성"으로 결정된 경우에만 수행한다.
 | docs | feature/ | feature/update-readme |
 | chore | feature/ | feature/update-gitignore |
 
-**이름 생성 방법:**
-- 소문자, 하이픈 구분
-- 형식: `{접두사}/{간단한-설명}`
+**Name generation method:**
+- Lowercase, hyphen-separated
+- Format: `{prefix}/{brief-description}`
 
-### 2단계: 커밋 메시지 자동 생성
+### Step 2: Automatically Generate Commit Message
 
-**커밋 메시지 형식:**
+**Commit message format:**
 ```
-{type}: {간단한 설명}
+{type}: {brief description}
 ```
 
-| type | 설명 | 예시 |
-|------|------|------|
+- The `{type}` prefix is always written in English (conventional commits standard).
+- The `{brief description}` is written in **Korean**, except for technical terms (class names, method names, file names, protocol names, library names, etc.) which remain in English.
+
+| type | Description | Example |
+|------|-------------|---------|
 | feat | 새 기능 추가 | feat: Validation API 기능 추가 (#ITSM-3421) |
-| fix | 버그 수정 | fix: DB 연결 누수 해결 (#ITSM-3421) |
-| improve | 기존 기능 개선 | improve: Phase 2 체크리스트 보강 (#ITSM-3421) |
-| docs | 문서 수정 | docs: README 업데이트 (#ITSM-3421) |
+| fix | 버그 수정 | fix: DB 연결 누수 수정 (#ITSM-3421) |
+| improve | 기존 기능 개선 | improve: Phase 2 체크리스트 개선 (#ITSM-3421) |
+| docs | 문서 업데이트 | docs: README 업데이트 (#ITSM-3421) |
 | refactor | 리팩토링 | refactor: Database 클래스 분리 (#ITSM-3421) |
-| chore | 빌드, 설정 | chore: .gitignore 추가 (#ITSM-3421) |
+| chore | 빌드, 설정 변경 | chore: .gitignore 추가 (#ITSM-3421) |
+| merge | 브랜치 병합 | merge: feature/login-api (#ITSM-3421) |
 
-**ITSM 번호 적용 규칙:**
-- `ITSM_NUMBER`가 있으면 → 커밋 메시지 끝에 `(#ITSM-{번호})` 추가
-- `ITSM_NUMBER`가 없음이면 → ITSM 참조 없이 커밋 메시지 생성
+**ITSM number application rules:**
+- If `ITSM_NUMBER` is present → append `(#ITSM-{number})` to the end of the commit message
+- If `ITSM_NUMBER` is "none" → generate commit message without ITSM reference
 
-### 3단계: 실행
+### Self-Verification (mandatory before execution)
 
-사용자 확인 없이 즉시 실행한다:
+Step 3 실행 전에 아래 항목을 확인한다. 하나라도 실패하면 즉시 교정 후 재확인한다.
+
+**브랜치명 검증:**
+- [ ] prefix가 `feature/` 또는 `bugfix/` 중 하나
+- [ ] 설명부는 소문자·숫자·하이픈만 사용 (대문자, 공백, 특수문자 없음)
+
+**커밋 메시지 검증:**
+- [ ] `{type}: {설명}` 형식 준수
+- [ ] type이 `feat/fix/improve/refactor/docs/chore/merge` 중 하나
+- [ ] 설명이 한국어 (클래스명·메서드명 등 기술 용어 제외)
+- [ ] ITSM 번호 있는 경우 끝에 `(#ITSM-숫자)` 형식으로 존재
+
+**인라인 eval 검증:**
 
 ```bash
-# 1. 피처 브랜치 생성 (현재 위치에서 바로 생성 — 변경사항 유지)
-git checkout -b {브랜치명}
+node "%USERPROFILE%/.claude/scripts/eval-runner.js" --validate branch-name-format --input "{\"branchName\":\"<실제 브랜치명>\"}"
 
-# 2. 변경 파일 스테이징
-git add {파일들}
-
-# 3. 커밋
-git commit -m "{커밋 메시지}"
+node "%USERPROFILE%/.claude/scripts/eval-runner.js" --validate commit-msg-format --input "{\"message\":\"<실제 커밋 메시지>\"}"
 ```
 
-**⚠️ 중요: `git checkout {MAIN_BRANCH}`나 `git checkout develop`이나 `git pull`을 먼저 실행하지 않는다.**
-사용자가 develop 브랜치에서 코드 수정 후 커밋 전 상태일 수 있다.
-`git checkout -b`는 현재 변경사항을 그대로 가지고 새 브랜치를 생성하므로 안전하다.
+- exit code 0 → 검증 통과, Step 3 진행
+- exit code 1 → 출력된 오류 확인 후 수정, 재검증
 
-**⚠️ 이 단계에서 VERSION 파일은 수정하지 않는다. 버전 업데이트는 Phase 3에서 수행한다.**
+---
 
-### 실행 완료 출력
+### Step 3: Execute
+
+Execute immediately without user confirmation:
+
+```bash
+# 1. Create feature branch (from current position — preserves changes)
+git checkout -b {branch name}
+
+# 2. Stage changed files
+git add {files}
+
+# 3. Commit
+git commit -m "{commit message}"
+```
+
+**⚠️ Important: Do NOT run `git checkout {MAIN_BRANCH}`, `git checkout develop`, or `git pull` first.**
+The user may have modified code on the develop branch before committing.
+`git checkout -b` creates a new branch while keeping current changes, so it is safe.
+
+**⚠️ Do NOT modify the VERSION file at this step. Version updates are performed in Phase 3.**
+
+### Execution Complete Output
 
 ```
-✅ 커밋 완료
+✅ Commit complete
 
-브랜치: {브랜치명}
-커밋: {커밋 해시 앞 7자리} {커밋 메시지}
+Branch: {branch name}
+Commit: {first 7 chars of commit hash} {commit message}
 
-develop 머지를 진행합니다.
+Proceeding with develop merge.
 ```
 
-## 체크포인트 저장 (자동)
+## Checkpoint Save (automatic)
 
-커밋 완료 출력 후, 아래 명령을 Bash로 실행하여 진행 상태를 저장한다.
-실패해도 워크플로우를 중단하지 않는다 (best-effort).
+After the commit complete output, run the following command via Bash to save progress.
+Do not stop the workflow if this fails (best-effort).
 
 ```bash
 node -e "
@@ -109,34 +140,34 @@ node -e "
     project: '{PROJECT_NAME}',
     commitType: '{COMMIT_TYPE}',
     itsm: '{ITSM_NUMBER}',
-    branch: '{브랜치명}',
-    commitHash: '{커밋 해시 앞 7자리}',
-    commitMsg: '{커밋 메시지}'
+    branch: '{branch name}',
+    commitHash: '{first 7 chars of commit hash}',
+    commitMsg: '{commit message}'
   });
   log.logWorkflow({
     workflow: 'git-workflow', phase: 2, event: 'phase2_complete',
     result: 'success',
-    project: '{PROJECT_NAME}', branch: '{브랜치명}', commitHash: '{커밋 해시 앞 7자리}'
+    project: '{PROJECT_NAME}', branch: '{branch name}', commitHash: '{first 7 chars of commit hash}'
   });
 "
 ```
 
-`{...}` 부분은 이 phase에서 결정된 실제 값으로 치환한다.
+Replace `{...}` with actual values determined in this phase.
 
-## 실패 처리
+## Failure Handling
 
-### 재시도 규칙
+### Retry Rules
 
-| 명령 | 최대 재시도 | 재시도 조건 | 재시도 불가 시 |
-|------|-----------|-----------|-------------|
-| `git checkout -b` | 1회 | branch already exists → 브랜치명에 `-2` 접미사 추가 | 사용자에게 브랜치명 확인 |
-| `git add` | 1회 | file not found → `git status` 재확인 후 파일 목록 갱신 | 누락 파일 목록을 사용자에게 보고 |
-| `git commit` (nothing to commit) | 0회 | 재시도 불가 — Phase 1 분석이 잘못됨 | 워크플로우 종료, Phase 1 재실행 안내 |
-| `git commit` (pre-commit hook 실패) | 1회 | 훅 출력 확인 후 문제 수정하고 재시도 | 훅 에러 내용을 사용자에게 보고 |
+| Command | Max Retries | Retry Condition | When Retry Not Possible |
+|---------|------------|----------------|------------------------|
+| `git checkout -b` | 1 | branch already exists → add `-2` suffix to branch name | Ask user to confirm branch name |
+| `git add` | 1 | file not found → re-check `git status` and refresh file list | Report missing files to user |
+| `git commit` (nothing to commit) | 0 | No retry — Phase 1 analysis was wrong | End workflow, instruct user to re-run Phase 1 |
+| `git commit` (pre-commit hook failed) | 1 | Check hook output, fix issue, retry | Report hook error to user |
 
-### 실패 기록
+### Failure Logging
 
-모든 실패 (재시도 성공 포함)를 아래 명령으로 기록한다:
+Log all failures (including those that later succeeded on retry) with the following command:
 
 ```bash
 node -e "
@@ -145,13 +176,13 @@ node -e "
     workflow: 'git-workflow', phase: 2,
     failureType: '{TYPE}', subType: '{SUBTYPE}',
     severity: '{SEVERITY}',
-    cause: '{에러 메시지}',
-    context: { branch: '{브랜치명}', command: '{실행한 명령}' },
-    recoveryAction: '{수행한 복구 조치}',
+    cause: '{error message}',
+    context: { branch: '{branch name}', command: '{command executed}' },
+    recoveryAction: '{recovery action taken}',
     resolved: {true/false},
-    retryCount: {재시도 횟수}
+    retryCount: {retry count}
   });
 "
 ```
 
-`{...}` 부분은 실제 값으로 치환한다.
+Replace `{...}` with actual values.

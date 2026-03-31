@@ -1,80 +1,80 @@
 ---
 name: ai-insight
-description: AI 활용 인사이트 보고서를 자동 생성합니다. Claude Code/Desktop 대화 이력을 로컬 JSONL 파일에서 수집하여 업무별 분류 및 월간 보고서를 생성합니다. 사용자가 "인사이트 보고서", "AI 활용 보고서", "월간 보고서", "이번 달 AI 보고서", "Max Plan 보고서", "결재 보고서", "AI 활용 실적", "Claude 사용 보고" 등 AI 활용 현황이나 결재용 보고서를 요청할 때 트리거됩니다.
+description: Automatically generates AI utilization insight reports. Collects conversation history from local JSONL files for Claude Code/Desktop, classifies by work type, and generates monthly reports. Triggered when the user requests reports such as "insight report", "AI utilization report", "monthly report", "this month's AI report", "Max Plan report", "approval report", "AI utilization results", "Claude usage report", or similar AI usage status or approval-ready reports.
 ---
 
-# AI 인사이트 보고서 생성 Skill
+# AI Insight Report Generation Skill
 
-당신은 AI 활용 전략 분석가입니다. 반도체 제조 IT 분야에서 AI를 업무에 적용하는 엔지니어의 대화 이력을 분석하여, 경영진이 AI 도구(Claude Max Plan) 구독 결재를 승인할 수 있는 근거 보고서를 작성합니다.
+You are an AI utilization strategy analyst. You analyze conversation histories of engineers applying AI to semiconductor manufacturing IT, and produce reports that give management sufficient grounds to approve subscriptions to AI tools (Claude Max Plan).
 
-## 변경 이력 (v1 → v2)
-| 원칙 | 변경 내용 |
-|------|----------|
-| P1. 지연 로딩 | session-reader-guide 핵심 파싱 규칙을 본문에 인라인화, Phase 0~2에서 외부 레퍼런스 로드 제거 |
-| P2. 최소 필드 추출 | user_messages 200자 하드캡(상위 5건 500자), tool_use에서 name+file_path 추출, assistant text 스킵, 즉시 압축 |
-| P3. 2단계 집계 파이프라인 | Phase 간 원문 전달 금지, 압축 구조체→집계 통계로 단계적 축소 |
-| P4. 병렬 처리 범위 확장 | Agent 내에서 수집+분류 통합 실행, 압축 결과만 메인 반환 |
-| P5. 결정론적 훅 | 대용량 파일 30% 캡, 50건 초과 시 도메인별 상위 10건, 추정 불가 시 "데이터 부족" 표기 |
-| P6. 사용자 인터랙션 간소화 | Desktop 일반 채팅 기본값 "미포함", 사용자 명시 제공 시에만 포함. 불필요한 질문 제거 |
-
----
-
-## 입력
-
-사용자의 자연어 요청에서 날짜 범위를 파싱한다.
-- 예: "이번 달 인사이트 보고서 만들어줘" → 최근 한달
-- 예: "2월 19일부터 3월 19일까지 AI 활용 보고서" → 2026.02.19 ~ 2026.03.19
-- 예: "지난달 Max Plan 결재 보고서" → 지난달 1일 ~ 말일
-
-## 출력
-
-최종 보고서 파일 1개만 생성한다. 중간 산출물은 만들지 않는다.
-- 경로: `~/.claude/skills/ai-insight/reports/`
-- 파일명: `AI_활용_인사이트_보고서_{YYYYMMDD}_{YYYYMMDD}.md`
+## Change History (v1 → v2)
+| Principle | Change |
+|-----------|--------|
+| P1. Lazy loading | Inlined core parsing rules from session-reader-guide into the body; removed external reference loading in Phase 0–2 |
+| P2. Minimum field extraction | 200-char hard cap on user_messages (top 5 entries get 500 chars), extract name+file_path from tool_use, skip assistant text, compress immediately |
+| P3. Two-stage aggregation pipeline | No raw data passed between phases; compressed struct → aggregated stats, reducing data step by step |
+| P4. Expanded parallel processing | Combined collection+classification inside a single Agent run; return only compressed results to main |
+| P5. Deterministic hooks | 30% cap for large files, top 10 per domain when sessions exceed 50, mark "insufficient data" when estimation is not possible |
+| P6. Simplified user interaction | Desktop general chat excluded by default; include only if user explicitly provides path. Remove unnecessary questions |
 
 ---
 
-## Phase 0 — 사전 확인 (일괄 처리) [P6]
+## Input
 
-### Case 1: 사용자 요청에서 날짜를 파싱할 수 있는 경우
-- `YYYY.MM.DD`, `YYYY-MM-DD`, `YYYY/MM/DD` 형식 허용
-- `~`, `-`, `to`, `부터`, `까지` 등을 구분자로 인식
-- "이번 달", "최근 한달" → 오늘 기준 1개월 전 ~ 오늘
-- "최근 일주일", "이번 주" → 오늘 기준 7일 전 ~ 오늘
-- "지난달" → 전월 1일 ~ 전월 말일
-- 종료일이 미래면 오늘로 자동 조정
+Parse the date range from the user's natural language request.
+- Example: "create an insight report for this month" → last one month
+- Example: "AI utilization report from Feb 19 to Mar 19" → 2026.02.19 ~ 2026.03.19
+- Example: "last month's Max Plan approval report" → first day ~ last day of the previous month
 
-날짜 파싱 성공 시 바로 Phase 1로 진행한다.
+## Output
 
-### Case 2: 날짜 정보가 없는 경우
-AskUserQuestion 도구로 분석 기간을 확인:
-- 옵션 1: 최근 한달 (추천)
-- 옵션 2: 최근 일주일
-- 옵션 3: 직접 입력
-
-### 날짜 파싱 실패 시 [P5]
-날짜 형식이 인식 불가하면 즉시 사용자에게 날짜 재입력 요청. **다음 Phase 진행 금지.**
-
-### Desktop 일반 채팅 이력
-기본값: **미포함**. 사용자가 명시적으로 Desktop 일반 채팅 이력 파일 경로를 제공한 경우에만 분석 대상에 포함한다.
-
-날짜가 확정되면 Phase 1로 진행.
+Generate exactly one final report file. Do not create intermediate artifacts.
+- Path: `~/.claude/skills/ai-insight/reports/`
+- Filename: `AI_Insight_Report_{YYYYMMDD}_{YYYYMMDD}.md`
 
 ---
 
-## Phase 1 — 대화 이력 수집 + 분류 (스크립트) [P2][P4]
+## Phase 0 — Pre-check (Batch Processing) [P6]
 
-### 1.1 실행 방법
+### Case 1: Date can be parsed from the user request
+- Accept formats: `YYYY.MM.DD`, `YYYY-MM-DD`, `YYYY/MM/DD`
+- Recognize `~`, `-`, `to`, `from`, `through` as delimiters
+- "this month", "last month" → 1 month before today ~ today
+- "last week", "this week" → 7 days before today ~ today
+- "last month" → first day ~ last day of the previous month
+- If end date is in the future, automatically adjust to today
 
-Bash 도구로 Python 스크립트를 실행하여 전체 JSONL 세션을 일괄 수집한다:
+When date parsing succeeds, proceed immediately to Phase 1.
+
+### Case 2: No date information present
+Ask the user for the analysis period using AskUserQuestion:
+- Option 1: Last one month (recommended)
+- Option 2: Last one week
+- Option 3: Enter manually
+
+### When date parsing fails [P5]
+If the date format cannot be recognized, immediately ask the user to re-enter the date. **Do not proceed to the next Phase.**
+
+### Desktop general chat history
+Default: **excluded**. Include in analysis only if the user explicitly provides the Desktop general chat history file path.
+
+When the date is confirmed, proceed to Phase 1.
+
+---
+
+## Phase 1 — Conversation History Collection + Classification (Script) [P2][P4]
+
+### 1.1 Execution Method
+
+Run the Python script via the Bash tool to collect all JSONL sessions in batch:
 
 ```bash
 python ~/.claude/skills/ai-insight/scripts/collect_sessions.py {YYYYMMDD} {YYYYMMDD}
 ```
 
-스크립트가 소스 A(CC CLI) + 소스 B(Desktop Agent) + 소스 C(Desktop 메타데이터)를 일괄 스캔하여 압축 구조체 JSON을 stdout으로 출력한다.
+The script scans Source A (CC CLI) + Source B (Desktop Agent) + Source C (Desktop metadata) all at once and outputs a compressed struct JSON to stdout.
 
-### 1.2 스크립트 출력 형식
+### 1.2 Script Output Format
 
 ```json
 {
@@ -87,10 +87,10 @@ python ~/.claude/skills/ai-insight/scripts/collect_sessions.py {YYYYMMDD} {YYYYM
       "timestamp": "2026-03-19T01:23:45Z",
       "cwd": "D:\\project\\YTAP\\trunk",
       "project": "YTAP",
-      "summary": "사용자 메시지 첫 200자...",
+      "summary": "First 200 chars of user message...",
       "tools": ["Read", "Edit", "Bash"],
       "files_touched": ["src/Main.java"],
-      "domain": "개발",
+      "domain": "Development",
       "msg_count": 15,
       "source": "A"
     }
@@ -98,112 +98,112 @@ python ~/.claude/skills/ai-insight/scripts/collect_sessions.py {YYYYMMDD} {YYYYM
 }
 ```
 
-### 1.3 스크립트 내장 규칙
+### 1.3 Built-in Script Rules
 
-스크립트에 아래 규칙이 이미 구현되어 있다 (수정 필요 시 `scripts/collect_sessions.py` 직접 편집):
+The following rules are already implemented in the script (edit `scripts/collect_sessions.py` directly if changes are needed):
 
-- **파싱**: user 메시지 content 200자 캡, assistant는 tool_use.name + Write/Edit의 file_path만 추출, tool_result/queue-operation 스킵
-- **필터링**: user_messages 0건, content 10자 미만, `<command-name>` 전용 세션 제외
-- **대용량 훅**: 5MB 초과 JSONL → 앞 30%만 처리, `[대용량-부분분석]` 태그 부여
-- **프로젝트 식별**: cwd 기반 매핑 (YTAP, YTAP_MANAGER, APP_RMSPAGE, RMSSERVER, nepes-ai-agents, Claude Code 환경설정)
-- **업무 분류**: summary 키워드 + tools 조합으로 6개 영역 분류 (개발, 분석·디버깅, 자동화·워크플로우, 설계·아키텍처, 문서·보고서, 학습·역량강화)
+- **Parsing**: 200-char cap on user message content, extract only tool_use.name + file_path for Write/Edit from assistant, skip tool_result/queue-operation
+- **Filtering**: exclude sessions with 0 user_messages, content under 10 chars, or `<command-name>`-only sessions
+- **Large file hook**: JSONL over 5MB → process only the first 30%, tag with `[large-file-partial]`
+- **Project identification**: cwd-based mapping (YTAP, YTAP_MANAGER, APP_RMSPAGE, RMSSERVER, nepes-ai-agents, Claude Code config)
+- **Work classification**: classify into 6 domains using summary keywords + tools combination (Development, Analysis/Debugging, Automation/Workflow, Design/Architecture, Documentation/Reports, Learning/Capability)
 
-### 1.4 에러 처리
+### 1.4 Error Handling
 
-- 스크립트 실행 실패 시 stderr 메시지를 사용자에게 안내
-- Python 미설치 시 설치 안내
-- 출력이 비어있으면 "해당 기간 세션 없음" 안내 후 종료
+- If script execution fails, inform the user of the stderr message
+- If Python is not installed, provide installation guidance
+- If output is empty, inform the user "no sessions found for the specified period" and stop
 
-### 1.5 프로젝트 식별 규칙
+### 1.5 Project Identification Rules
 
-cwd 경로 또는 프로젝트 디렉토리명에서 프로젝트를 매핑:
+Map project from cwd path or project directory name:
 
-| 패턴 (cwd 또는 디렉토리명) | 프로젝트명 |
-|--------------------------|-----------|
-| `YTAP` (경로에 포함) | YTAP |
-| `YTAP-MANAGER` 또는 `YTAP_MANAGER` | YTAP_MANAGER |
-| `APP-RMSPAGE` 또는 `APP_RMSPAGE` | APP_RMSPAGE |
-| `RMSServer` 또는 `RMSSERVER` | RMSSERVER |
-| `01-claude-workspace` 또는 `nepes-ai-agent` | nepes-ai-agents |
-| `C--Users-{username}` (HOME 디렉토리, 동적 감지) | Claude Code 환경설정 |
-| Desktop 에이전트 모드 (소스 B) | Claude Desktop 작업 |
-| 그 외 | 기타 |
+| Pattern (cwd or directory name) | Project Name |
+|---------------------------------|-------------|
+| `YTAP` (contained in path) | YTAP |
+| `YTAP-MANAGER` or `YTAP_MANAGER` | YTAP_MANAGER |
+| `APP-RMSPAGE` or `APP_RMSPAGE` | APP_RMSPAGE |
+| `RMSServer` or `RMSSERVER` | RMSSERVER |
+| `01-claude-workspace` or `nepes-ai-agent` | nepes-ai-agents |
+| `C--Users-{username}` (HOME directory, dynamic detection) | Claude Code Config |
+| Desktop agent-mode sessions (Source B) | Claude Desktop Work |
+| Other | Other |
 
-### 1.6 업무 영역 분류 규칙
+### 1.6 Work Domain Classification Rules
 
-세션의 summary 키워드 + tools 조합으로 판단:
+Classify using session summary keywords + tools combination:
 
-| 영역 | 판단 기준 |
-|------|----------|
-| **개발** | Write/Edit 도구 사용 + 코드 파일(.java/.py/.js/.ts/.bat/.sh) 수정 |
-| **분석·디버깅** | 로그 파일 읽기, "에러"/"오류"/"분석"/"로그" 키워드, DB 조회 |
-| **자동화·워크플로우** | git-workflow 관련, SKILL.md/commands 수정, install.bat, hook 설정 |
-| **설계·아키텍처** | EnterPlanMode 사용, "설계"/"아키텍처"/"MCP"/"구조" 키워드 |
-| **문서·보고서** | .md/.docx/.pptx 파일 생성, "문서"/"보고서"/"보고" 키워드 |
-| **학습·역량강화** | 질문형 메시지("어떻게"/"뭐야"/"알려줘"), 개념 설명 요청, 기능 탐색 |
+| Domain | Classification Criteria |
+|--------|------------------------|
+| **Development** | Write/Edit tools used + code files (.java/.py/.js/.ts/.bat/.sh) modified |
+| **Analysis/Debugging** | Reading log files, keywords "error"/"bug"/"analysis"/"log", DB queries |
+| **Automation/Workflow** | git-workflow related, SKILL.md/commands modification, install.bat, hook setup |
+| **Design/Architecture** | EnterPlanMode used, keywords "design"/"architecture"/"MCP"/"structure" |
+| **Documentation/Reports** | .md/.docx/.pptx files created, keywords "document"/"report"/"reporting" |
+| **Learning/Capability** | Question-type messages ("how"/"what is"/"explain"), concept explanation requests, feature exploration |
 
-하나의 세션이 여러 영역에 해당하면 **가장 비중이 높은 영역** 1개로 분류.
+If a session matches multiple domains, classify it into the **single domain with the highest weight**.
 
-### 1.7 대용량 처리 훅 [P5]
+### 1.7 Large File Processing Hook [P5]
 
-- **JSONL 파일이 5MB 초과** → 앞 30%만 처리, 해당 세션에 `[대용량-부분분석]` 태그 부여
-- **날짜 범위 내 세션 50건 초과** → 도메인별 상위 10건만 상세 처리, 나머지는 카운트만 집계
-
----
-
-## Phase 2 — 집계 [P3]
-
-Phase 1에서 각 Agent가 반환한 압축 구조체 배열을 통합하여 집계한다 (파일 생성 없음).
-
-### 2.1 집계 항목
-
-1. **도메인별 통계**: 영역별 건수, 비중(%)
-2. **프로젝트별 통계**: 프로젝트별 건수, 주요 영역
-3. **도구 사용 빈도**: 도구별 사용 횟수 (상위 10개)
-4. **임팩트 상위 5개 세션**: 아래 기준을 종합하여 선별, 상세 정보 유지
-   - 메시지 수 (대화 깊이)
-   - tools 다양성
-   - summary 키워드 가중치:
-     - 설계·인프라: 설계/아키텍처/CMMI/MCP/전역/통합
-     - 운영·장애: 장애/에러/알람/설비/분석/긴급
-     - 자동화·혁신: 스킬/파이프라인/자동화/연동
-
-### 2.2 Phase 3 전달 데이터 [P3]
-
-Phase 3에 전달하는 데이터는 **아래 항목만**으로 한정한다:
-- 도메인별 집계 통계 (건수, 비중)
-- 프로젝트별 집계 통계 (건수, 주요 영역)
-- 도구 사용 빈도 상위 10개
-- 임팩트 상위 5개 세션의 압축 구조체
-- 전체 세션 수, 분석 기간
-
-**원문 세션 데이터, 개별 압축 구조체 전체 목록은 Phase 3에 전달하지 않는다.**
+- **JSONL file over 5MB** → process only the first 30%, tag that session with `[large-file-partial]`
+- **More than 50 sessions in date range** → process top 10 per domain in detail, count-only aggregation for the rest
 
 ---
 
-## Phase 3 — 인사이트 보고서 생성
+## Phase 2 — Aggregation [P3]
 
-`references/report-guidelines.md`를 읽고, Phase 2 집계 결과를 기반으로 최종 보고서를 작성한다.
+Merge the compressed struct arrays returned by each Agent from Phase 1 and aggregate (no file generation).
 
-### 3.1 분석 축 (5개)
+### 2.1 Aggregation Items
 
-A) **활용 영역 분류**: 영역별 건수, 비중(%) 산출
-B) **생산성 임팩트 추정**: "AI 없이 수행 시 예상 소요 시간" vs "AI 활용 실제 소요 시간"
-   - 절감 시간 산출 불가 업무 → **"데이터 부족"** 표기 (수치 추정 금지) [P5]
-C) **접근 방식 패턴 분석**: 전략적 AI 활용 패턴 식별
-D) **역량 진화 궤적**: 새로운 시도, 성장 포인트
-E) **비즈니스 가치 환산**: 시간 절감 → 비용 환산, ROI 산출
+1. **Domain statistics**: count and percentage (%) per domain
+2. **Project statistics**: count per project, primary domain
+3. **Tool usage frequency**: usage count per tool (top 10)
+4. **Top 5 impact sessions**: selected based on the criteria below, with detailed info preserved
+   - Message count (conversation depth)
+   - Tool diversity
+   - Summary keyword weights:
+     - Design/Infrastructure: design/architecture/CMMI/MCP/global/integration
+     - Operations/Incidents: incident/error/alarm/equipment/analysis/urgent
+     - Automation/Innovation: skill/pipeline/automation/integration
 
-### 3.2 출력
+### 2.2 Data Passed to Phase 3 [P3]
 
-`~/.claude/skills/ai-insight/reports/AI_활용_인사이트_보고서_{YYYYMMDD}_{YYYYMMDD}.md` 파일 1개만 생성한다.
+Only the following items are passed to Phase 3:
+- Domain aggregation statistics (count, percentage)
+- Project aggregation statistics (count, primary domain)
+- Top 10 tool usage frequency
+- Compressed structs of the top 5 impact sessions
+- Total session count, analysis period
 
-보고서 구조와 작성 원칙은 `references/report-guidelines.md`를 **반드시** 따른다.
+**Raw session data and the full list of individual compressed structs are not passed to Phase 3.**
 
-### 3.3 완료 후
+---
 
-보고서 생성 완료 후 사용자에게 안내:
-1. 생성된 파일 경로
-2. `{{변수명}}` 으로 표시된 부분이 있으면 직접 채워야 함을 안내
-3. Desktop 일반 채팅 이력이 포함되지 않았다면 해당 사실 명시
-4. `[대용량-부분분석]` 태그가 부여된 세션이 있으면 해당 사실 명시
+## Phase 3 — Insight Report Generation
+
+Read `references/report-guidelines.md` and write the final report based on Phase 2 aggregation results.
+
+### 3.1 Analysis Axes (5)
+
+A) **Usage Domain Classification**: count and percentage (%) per domain
+B) **Productivity Impact Estimation**: "estimated time without AI" vs "actual time with AI"
+   - Work where time savings cannot be calculated → mark as **"insufficient data"** (never estimate a number) [P5]
+C) **Approach Pattern Analysis**: identify strategic AI usage patterns
+D) **Capability Evolution Trajectory**: new attempts, growth points
+E) **Business Value Conversion**: time savings → cost conversion, ROI calculation
+
+### 3.2 Output
+
+Generate exactly one file: `~/.claude/skills/ai-insight/reports/AI_Insight_Report_{YYYYMMDD}_{YYYYMMDD}.md`.
+
+The report structure and writing principles must follow `references/report-guidelines.md`.
+
+### 3.3 After Completion
+
+After the report is generated, notify the user:
+1. The path of the generated file
+2. If there are any `{{variable_name}}` placeholders, inform the user they need to fill them in manually
+3. If Desktop general chat history was not included, state that explicitly
+4. If any sessions were tagged `[large-file-partial]`, state that explicitly

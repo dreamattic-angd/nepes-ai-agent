@@ -347,36 +347,47 @@ function checkAgentTable() {
     // (통합) 접미사 제거
     let dirName = agentName.replace(/\s*\(통합\)\s*/, '').trim();
 
-    // 디렉토리 경로 생성
+    // 디렉토리 또는 단일 .md 파일 경로 생성
     const agentDirPath = path.join(agentsDir, dirName);
+    const agentFilePath = path.join(agentsDir, dirName + '.md');
 
     if (fs.existsSync(agentDirPath)) {
       details.push({ agent: agentName, status: 'PASS', message: '디렉토리 존재' });
+    } else if (fs.existsSync(agentFilePath)) {
+      details.push({ agent: agentName, status: 'PASS', message: '단일 파일 에이전트 존재' });
     } else {
-      details.push({ agent: agentName, status: 'FAIL', message: `${dirName}/ 디렉토리 없음` });
+      // commands/ 디렉토리에서도 찾기 (커맨드로 등록된 에이전트)
+      const commandFilePath = path.join(CLAUDE_DIR, 'commands', dirName + '.md');
+      if (fs.existsSync(commandFilePath)) {
+        details.push({ agent: agentName, status: 'PASS', message: '커맨드 파일 존재' });
+      } else {
+        details.push({ agent: agentName, status: 'FAIL', message: `${dirName}/ 디렉토리 또는 ${dirName}.md 파일 없음` });
+      }
     }
   }
 
-  // 역방향: agents/ 직하위 디렉토리가 테이블에 있는지 확인
-  let agentDirs = [];
+  // 역방향: agents/ 직하위 디렉토리 및 단일 .md 파일이 테이블에 있는지 확인
+  let agentEntries = [];
   try {
-    agentDirs = fs.readdirSync(agentsDir, { withFileTypes: true })
-      .filter(e => e.isDirectory())
-      .map(e => e.name);
+    const entries = fs.readdirSync(agentsDir, { withFileTypes: true });
+    // 디렉토리
+    agentEntries.push(...entries.filter(e => e.isDirectory()).map(e => e.name));
+    // 단일 .md 파일 (확장자 제거)
+    agentEntries.push(...entries.filter(e => e.isFile() && e.name.endsWith('.md')).map(e => e.name.replace(/\.md$/, '')));
   } catch {
     // agents/ 디렉토리를 읽을 수 없으면 스킵
   }
 
-  for (const dir of agentDirs) {
-    // 테이블에서 이 디렉토리명으로 시작하는 운영 에이전트가 있는지 확인
+  for (const entry of agentEntries) {
+    // 테이블에서 이 에이전트명으로 시작하는 운영 에이전트가 있는지 확인
     const hasMatch = operationalAgents.some(agent => {
       const cleaned = agent.replace(/\s*\(통합\)\s*/, '').replace(/\s*\(skill\)\s*/, '').trim();
-      return cleaned === dir || cleaned.startsWith(dir + '/');
+      return cleaned === entry || cleaned.startsWith(entry + '/');
     });
 
     if (!hasMatch) {
       warnings++;
-      details.push({ agent: dir, status: 'WARNING', message: 'version.txt 테이블에 없음' });
+      details.push({ agent: entry, status: 'WARNING', message: 'version.txt 테이블에 없음' });
     }
   }
 
@@ -429,12 +440,87 @@ function checkVersionConsistency() {
 }
 
 // ────────────────────────────────────────
+// Check 5: check-output-convention.js PostToolUse 등록 확인
+// ────────────────────────────────────────
+
+/**
+ * hooks 섹션 배열에서 특정 커맨드 문자열을 포함하는 항목을 찾는다.
+ * @param {Array} section - hooks 섹션 배열 (e.g. PostToolUse)
+ * @param {string} keyword - 검색할 커맨드 키워드
+ * @param {string} [matcher] - matcher 필터 (지정 시 해당 matcher만 검색)
+ * @returns {boolean}
+ */
+function findHookInSection(section, keyword, matcher) {
+  if (!Array.isArray(section)) return false;
+  for (const item of section) {
+    if (!item || typeof item !== 'object') continue;
+    if (matcher && item.matcher !== matcher) continue;
+    if (!Array.isArray(item.hooks)) continue;
+    for (const hook of item.hooks) {
+      if (!hook) continue;
+      if (hook.command && hook.command.includes(keyword)) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * settings.json의 hooks.PostToolUse 배열에서
+ * 'Write|Edit' matcher에 check-output-convention.js가 포함되어 있는지 검증한다.
+ * @param {object} [cachedSettings] - 이미 파싱된 settings 객체 (없으면 직접 읽음)
+ * @returns {{ pass: boolean, message: string }}
+ */
+function checkOutputConventionHook(cachedSettings) {
+  let settings = cachedSettings;
+
+  if (!settings) {
+    const settingsPath = path.join(CLAUDE_DIR, 'settings.json');
+    const settingsContent = safeReadFile(settingsPath);
+    if (!settingsContent) {
+      return { pass: false, message: 'settings.json 파일을 읽을 수 없습니다' };
+    }
+    try {
+      settings = JSON.parse(settingsContent);
+    } catch (e) {
+      return { pass: false, message: `settings.json 파싱 실패: ${e.message}` };
+    }
+  }
+
+  const postToolUse = settings.hooks && settings.hooks.PostToolUse;
+  if (!Array.isArray(postToolUse)) {
+    return { pass: false, message: 'hooks.PostToolUse 섹션이 없거나 배열이 아닙니다' };
+  }
+
+  // Write|Edit matcher에 check-output-convention.js가 있는지 확인
+  if (findHookInSection(postToolUse, 'check-output-convention.js', 'Write|Edit')) {
+    return { pass: true, message: 'PostToolUse Write|Edit 에 등록됨' };
+  }
+
+  // PreToolUse에 잘못 등록되었는지 확인
+  const preToolUse = settings.hooks && settings.hooks.PreToolUse;
+  if (findHookInSection(preToolUse, 'check-output-convention.js')) {
+    return { pass: false, message: 'PreToolUse에 잘못 등록됨 (PostToolUse Write|Edit 으로 이동 필요)' };
+  }
+
+  return { pass: false, message: 'check-output-convention.js가 PostToolUse Write|Edit 에 등록되지 않음' };
+}
+
+// ────────────────────────────────────────
 // 메인 실행
 // ────────────────────────────────────────
 
 function main() {
   console.log(' 연동 무결성 검증 시작...');
   console.log('');
+
+  // settings.json을 한 번만 파싱해 Check 1, Check 5에서 공유
+  let cachedSettings = null;
+  const settingsContent = safeReadFile(path.join(CLAUDE_DIR, 'settings.json'));
+  if (settingsContent) {
+    try { cachedSettings = JSON.parse(settingsContent); } catch (e) {
+      console.warn(`  [경고] settings.json 파싱 실패: ${e.message}`);
+    }
+  }
 
   let totalPass = 0;
   let totalFail = 0;
@@ -526,6 +612,20 @@ function main() {
     totalPass++;
   } else {
     console.log(`  \u274C version.txt: ${check4.versionTxt} / CLAUDE.md: ${check4.claudeMd}`);
+    console.log('  결과: FAIL');
+    totalFail++;
+  }
+  console.log('');
+
+  // ── Check 5 ──
+  console.log('[Check 5] check-output-convention.js PostToolUse 등록');
+  const check5 = checkOutputConventionHook(cachedSettings);
+  if (check5.pass) {
+    console.log(`  \u2705 ${check5.message}`);
+    console.log('  결과: PASS');
+    totalPass++;
+  } else {
+    console.log(`  \u274C ${check5.message}`);
     console.log('  결과: FAIL');
     totalFail++;
   }

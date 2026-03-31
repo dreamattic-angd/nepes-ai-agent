@@ -1,0 +1,10 @@
+{
+  "id": "branch-name-invalid-prefix",
+  "target": "branch-name-format",
+  "input": {
+    "branchName": "fix/wrong-prefix-should-be-bugfix"
+  },
+  "expected": {
+    "valid": false
+  }
+}

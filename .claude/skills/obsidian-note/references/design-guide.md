@@ -1,92 +1,92 @@
-# Obsidian 노트 디자인 가이드
+# Obsidian Note Design Guide
 
-Obsidian 노트를 작성하거나 수정할 때 아래 기준을 적용합니다.
+Apply the following standards when writing or editing Obsidian notes.
 
 ---
 
-## 1. 문서 구조
+## 1. Document Structure
 
-### 제목 계층
-- `#` H1: 문서 제목 **1개만**
-- `##` H2: 주요 섹션 (3~6개 권장)
-- `###` H3: 하위 항목
-- H4 이하 → Callout 또는 리스트로 대체
+### Heading Hierarchy
+- `#` H1: Document title — **exactly one**
+- `##` H2: Major sections (3–6 recommended)
+- `###` H3: Sub-items
+- H4 and below → replace with Callout or list
 
-### 프론트매터
-노트 작성 시 YAML 프론트매터를 포함합니다:
+### Front Matter
+Include YAML front matter when writing notes:
 ```yaml
 ---
-tags: [SCM, CMMI, 브랜치전략, NEPES-AI-AGENT]
+tags: [SCM, CMMI, BranchStrategy, NEPES-AI-AGENT]
 created: 2026-03-19
 project: NEPES-AI-AGENT
-author: 이길우
+author: Gil-Woo Lee
 ---
 ```
-- `tags`: 문서 주제 분류 (계층적 분류 가능: `SCM/브랜치`, `CMMI/L2`)
-- `created`: 최초 작성일 (개정 이력 표의 최초 작성일과 동일)
-- `project`: 프로젝트명
-- `author`: 작성자
+- `tags`: document topic classification (hierarchical classification allowed: `SCM/Branch`, `CMMI/L2`)
+- `created`: initial creation date (same as the initial creation date in the revision history table)
+- `project`: project name
+- `author`: author name
 
-### 개정 이력 규칙
-- 문서에 개정 이력 표가 있으면, 문서 수정 시 **반드시 개정 이력도 업데이트**한다
-- 개정 이력이 없는 문서는 해당 없음
+### Revision History Rules
+- If the document has a revision history table, always update it when the document is modified
+- Documents without a revision history table are not subject to this rule
 
-### 섹션 구분
-- `---` 구분선으로 주요 섹션 분리
-- 텍스트 단락 3개 이상 연속 → Callout 삽입 또는 구분선 검토
+### Section Dividers
+- Use `---` divider lines to separate major sections
+- 3 or more consecutive text paragraphs → consider inserting a Callout or divider
 
 ---
 
-## 2. Callout (강조 박스)
+## 2. Callouts (Highlight Boxes)
 
-### 유형별 사용 기준
+### Usage Criteria by Type
 ```
-> [!note] 핵심 개념·정의
-> [!tip] 실용 팁·권장사항
-> [!warning] 주의·경고
-> [!danger] 위험·금지
-> [!summary] 요약·결론
-> [!example] 예시
-> [!question] 질문·탐구
+> [!note] Core concept / definition
+> [!tip] Practical tip / recommendation
+> [!warning] Caution / warning
+> [!danger] Danger / prohibition
+> [!summary] Summary / conclusion
+> [!example] Example
+> [!question] Question / exploration
 ```
 
-### 규칙
-- 단순 인용(`> 텍스트`) 사용 금지 — 반드시 Callout 유형 명시
-- 접기/펼치기: `> [!tip]+ 제목` (기본 펼침), `> [!tip]- 제목` (기본 접힘)
-- 같은 타입의 정보는 같은 Callout 형식 사용 (일관성)
+### Rules
+- Never use plain quotes (`> text`) — always specify a Callout type
+- Expand/collapse: `> [!tip]+ Title` (expanded by default), `> [!tip]- Title` (collapsed by default)
+- Use the same Callout format for the same type of information (consistency)
 
 ---
 
-## 3. 텍스트 서식
+## 3. Text Formatting
 
-### 강조 표현
-- **굵게**: 핵심 용어, 수치, 결론
-- *기울임*: 외래어, 인용, 부가설명
-- `` `코드` ``: 파일명, 경로, 명령어, 기술 용어
-- ~~취소선~~: 폐기·대체된 내용에만
-- 밑줄 사용 금지 (Obsidian 렌더링 불일치)
+### Emphasis
+- **Bold**: key terms, numbers, conclusions
+- *Italic*: foreign words, quotes, supplementary notes
+- `` `code` ``: filenames, paths, commands, technical terms
+- ~~Strikethrough~~: only for deprecated or replaced content
+- Underline is prohibited (inconsistent Obsidian rendering)
 
-### 리스트
-- 순서 있음(`1.`): 절차, 단계, 우선순위
-- 순서 없음(`-`): 병렬 항목 (3~7개 권장)
-- 중첩 2레벨까지만 — 3레벨 이상은 별도 섹션으로 분리
-- 항목 2개 이하 → 리스트 대신 문장으로 작성
+### Lists
+- Ordered (`1.`): procedures, steps, priorities
+- Unordered (`-`): parallel items (3–7 recommended)
+- Maximum 2 levels of nesting — 3 or more levels should be separated into their own section
+- 2 or fewer items → write as a sentence instead of a list
 
-### 표(Table)
-- 비교 항목 3개 이상 + 속성 2개 이상일 때 사용
-- 셀 내 줄바꿈 최소화
-- 정보 나열 3개 이상 → Callout 또는 표 우선 검토
+### Tables
+- Use when comparing 3 or more items with 2 or more attributes
+- Minimize line breaks within cells
+- 3 or more information items → consider Callout or table first
 
-### 내부 링크
-- 관련 노트 참조: `[[노트명]]`
-- 특정 섹션 참조: `[[노트명#섹션]]`
-- 같은 vault 내 노트 간 적극적으로 연결
+### Internal Links
+- Reference related notes: `[[Note Name]]`
+- Reference a specific section: `[[Note Name#Section]]`
+- Actively link between notes within the same vault
 
 ---
 
-## 4. 다이어그램 (Mermaid)
+## 4. Diagrams (Mermaid)
 
-### 테마 — 모든 다이어그램 최상단에 반드시 포함
+### Theme — must be included at the top of every diagram
 ```
 %%{init: {'theme': 'base', 'themeVariables': {
   'primaryColor': '#5B8DEF',
@@ -99,63 +99,63 @@ author: 이길우
 }}}%%
 ```
 
-### 유형 선택
-| 상황 | 사용 유형 |
-|------|-----------|
-| 프로세스·흐름 (5단계 이하) | `flowchart LR` |
-| 계층 구조·트리 | `flowchart TD` |
-| 시간 순서·시스템 간 상호작용 | `sequenceDiagram` |
-| 상태 전이 | `stateDiagram-v2` |
-| 일정·마일스톤 | `gantt` |
-| 클래스·데이터 구조 | `classDiagram` |
+### Type Selection
+| Situation | Type to Use |
+|-----------|------------|
+| Process / flow (5 steps or fewer) | `flowchart LR` |
+| Hierarchy / tree | `flowchart TD` |
+| Time sequence / system interactions | `sequenceDiagram` |
+| State transitions | `stateDiagram-v2` |
+| Schedule / milestones | `gantt` |
+| Class / data structure | `classDiagram` |
 
-### 노드 형태
-- 시작/종료 → `([텍스트])`
-- 일반 프로세스 → `[텍스트]`
-- 판단/분기 → `{텍스트}`
-- 외부 시스템 → `[(텍스트)]`
+### Node Shapes
+- Start/End → `([Text])`
+- General process → `[Text]`
+- Decision/branch → `{Text}`
+- External system → `[(Text)]`
 
-### 노드 색상 스타일링
+### Node Color Styling
 ```
-style 노드ID fill:#5B8DEF,color:#fff,stroke:#3D6FD6       ← 핵심/강조
-style 노드ID fill:#D1FAE5,color:#065F46,stroke:#10B981    ← 완료/성공
-style 노드ID fill:#FEF3C7,color:#92400E,stroke:#F59E0B    ← 주의
-style 노드ID fill:#FEE2E2,color:#991B1B,stroke:#EF4444    ← 오류/위험
+style NodeID fill:#5B8DEF,color:#fff,stroke:#3D6FD6       ← core/emphasis
+style NodeID fill:#D1FAE5,color:#065F46,stroke:#10B981    ← complete/success
+style NodeID fill:#FEF3C7,color:#92400E,stroke:#F59E0B    ← caution
+style NodeID fill:#FEE2E2,color:#991B1B,stroke:#EF4444    ← error/danger
 ```
 
-### 복잡한 다이어그램
-Mermaid로 표현이 어려운 경우 (좌/우 라벨, 그룹 박스, 자유 배치 필요) → 이미지로 대체하고 `![[이미지.png]]`로 임베드
+### Complex Diagrams
+If expression is difficult in Mermaid (left/right labels, group boxes, free positioning needed) → replace with an image and embed with `![[image.png]]`
 
 ---
 
-## 5. 파일 관리
+## 5. File Management
 
-### 파일명 규칙
-- 설명적 이름 사용 (예: `01_브랜치 전략 수립.md`)
-- 정렬이 필요하면 숫자 접두사 (`00_`, `01_`, ...)
-- 영문 파일명은 소문자 + 하이픈 (예: `git-workflow.md`)
+### Filename Rules
+- Use descriptive names (e.g., `01_Branch Strategy Setup.md`)
+- Use numeric prefix for sorting needs (`00_`, `01_`, ...)
+- English filenames: lowercase + hyphens (e.g., `git-workflow.md`)
 
-### 이미지/첨부파일
-- 노트와 동일 폴더 또는 `_attachments/` 폴더에 저장
-- 임베드: `![[이미지.png]]`
-- 크기 조정: `![[이미지.png|500]]` (너비 지정)
+### Images / Attachments
+- Store in the same folder as the note or in an `_attachments/` folder
+- Embed: `![[image.png]]`
+- Resize: `![[image.png|500]]` (specify width)
 
-### 개정 이력 표
-문서에 개정 이력이 필요한 경우:
+### Revision History Table
+When a revision history is needed in a document:
 ```markdown
-## 개정 이력
+## Revision History
 
-| 버전 | 일자 | 작성자 | 변경 내용 |
+| Version | Date | Author | Changes |
 |---|---|---|---|
-| 1.0 | 2026-03-19 | 이길우 | 최초 작성 |
+| 1.0 | 2026-03-19 | Gil-Woo Lee | Initial creation |
 ```
 
 ---
 
-## 6. 자동 판단 규칙
+## 6. Auto-Decision Rules
 
-- 다이어그램 요청 감지 → Mermaid 테마 init 자동 적용 + 유형 선택 표 참조
-- 정보 나열 3개 이상 → Callout 또는 표 우선 검토
-- 단계·절차 감지 → 순서 리스트 또는 `flowchart LR`
-- 비교 분석 감지 → 표 형식 우선
-- 텍스트 단락 3개 이상 연속 → Callout 삽입 또는 `---` 구분선 검토
+- Diagram request detected → automatically apply Mermaid theme init + refer to type selection table
+- 3 or more information items → consider Callout or table first
+- Steps/procedure detected → use ordered list or `flowchart LR`
+- Comparison analysis detected → prefer table format
+- 3 or more consecutive text paragraphs → consider inserting a Callout or `---` divider

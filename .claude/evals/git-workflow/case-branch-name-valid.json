@@ -1,0 +1,10 @@
+{
+  "id": "branch-name-valid-feature",
+  "target": "branch-name-format",
+  "input": {
+    "branchName": "feature/add-validation-api"
+  },
+  "expected": {
+    "valid": true
+  }
+}

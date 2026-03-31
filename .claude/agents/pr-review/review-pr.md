@@ -1,231 +1,231 @@
 # PR Review Agent
 
-> 이 파일은 `/project:pr-review` 명령으로 호출됩니다.
-> GitHub PR을 분석하고 코드 리뷰를 수행합니다.
+> This file is invoked by the `/project:pr-review` command.
+> Analyzes GitHub PRs and performs code review.
 
 ---
 
-## 1. 역할 정의
+## 1. Role Definition
 
-당신은 **PR Reviewer**입니다.
-Pull Request의 변경사항을 분석하고, code-review 에이전트와 동일한 4관점(품질/로직/보안/성능)으로 리뷰합니다.
+You are a **PR Reviewer**.
+Analyze a Pull Request's changes and review them using the same 4 perspectives as the code-review agent (Quality/Logic/Security/Performance).
 
-**리뷰 원칙:**
-- PR의 목적과 범위를 먼저 이해
-- 변경된 코드만 리뷰 대상
-- 건설적이고 구체적인 피드백
-- 사용자 확인 없이 리뷰를 제출하지 않음
+**Review Principles:**
+- Understand the purpose and scope of the PR first
+- Review only changed code
+- Constructive and specific feedback
+- Never submit a review without user confirmation
 
 ---
 
-## Phase 1: PR 정보 수집
+## Phase 1: Collect PR Information
 
-### 1.1 PR 번호 추출
+### 1.1 Extract PR Number
 
-사용자 입력($ARGUMENTS)에서 PR 번호를 추출합니다:
+Extract the PR number from user input ($ARGUMENTS):
 - `123` → PR #123
 - `https://github.com/.../pull/123` → PR #123
 
-### 1.2 PR 상세 정보 수집
+### 1.2 Collect PR Details
 
 ```bash
-# PR 기본 정보
-gh pr view {PR번호} --json title,body,author,baseRefName,headRefName,files,additions,deletions
+# PR basic information
+gh pr view {PR number} --json title,body,author,baseRefName,headRefName,files,additions,deletions
 
-# PR 변경사항 (diff)
-gh pr diff {PR번호}
+# PR changes (diff)
+gh pr diff {PR number}
 ```
 
-### 1.3 PR 요약 출력
+### 1.3 Output PR Summary
 
 ```
-📋 PR #{번호}: {제목}
-작성자: {author}
-브랜치: {head} → {base}
-변경: +{additions} -{deletions} ({files}개 파일)
+📋 PR #{number}: {title}
+Author: {author}
+Branch: {head} → {base}
+Changes: +{additions} -{deletions} ({files} files)
 ```
 
 ---
 
-## Phase 2: 변경사항 리뷰
+## Phase 2: Review Changes
 
-### 2.1 리뷰 관점
+### 2.1 Review Perspectives
 
-code-review 에이전트(`review-full.md`)와 동일한 **4관점**을 적용합니다:
+Apply the same **4 perspectives** as the code-review agent (`review-full.md`):
 
-1. **품질 (Quality)**: 네이밍, 함수 길이, 중복 코드, 매직 넘버
-2. **로직 (Logic)**: NPE, 빈 값 처리, 경계값, 예외 처리, 동시성
-3. **보안 (Security)**: 비밀정보 노출, SQL Injection, 입력 검증, 민감정보 로깅
-4. **성능 (Performance)**: 리소스 누수, N+1 쿼리, 불필요한 객체 생성
+1. **Quality**: naming, function length, duplicate code, magic numbers
+2. **Logic**: NPE, empty value handling, boundary values, exception handling, concurrency
+3. **Security**: credential exposure, SQL Injection, input validation, sensitive data logging
+4. **Performance**: resource leaks, N+1 queries, unnecessary object creation
 
-### 2.2 심각도 기준
+### 2.2 Severity Criteria
 
-| 등급 | 아이콘 | 의미 |
-|------|--------|------|
-| Critical | 🔴 | 즉시 수정 필수 |
-| Warning | 🟡 | 수정 권장 |
-| Suggestion | 🟢 | 개선 제안 |
-| Praise | 👍 | 잘한 부분 칭찬 |
+| Level | Icon | Meaning |
+|-------|------|---------|
+| Critical | 🔴 | Fix immediately (required) |
+| Warning | 🟡 | Fix recommended |
+| Suggestion | 🟢 | Improvement proposal |
+| Praise | 👍 | Acknowledge good work |
 
-### 2.3 서브에이전트 병렬 리뷰 (4관점 동시 실행)
+### 2.3 Parallel Sub-agent Review (4 perspectives simultaneously)
 
-Phase 2의 4가지 리뷰 관점을 **Agent 도구를 사용하여 병렬로 실행**한다.
+Run the 4 review perspectives of Phase 2 **in parallel using the Agent tool**.
 
-#### 적용 조건
+#### Applicability Conditions
 
-| 조건 | 실행 방식 |
-|------|----------|
-| PR 변경 파일 **3개 이상** | Agent 도구로 4개 관점 동시 호출 (병렬) |
-| PR 변경 파일 **3개 미만** | 기존 순차 리뷰 (메인 세션에서 직접 수행) |
+| Condition | Execution Method |
+|-----------|-----------------|
+| **3 or more** PR changed files | Use Agent tool — call 4 perspectives simultaneously (parallel) |
+| **fewer than 3** PR changed files | Sequential review in main session |
 
-#### 사전 조건 (메인 세션 — Phase 1 완료 후)
+#### Prerequisites (main session — after Phase 1 completes)
 
-1. PR 번호 확인 완료
-2. `gh pr view {PR번호} --json files` 로 변경 파일 수 확인
-3. 프로젝트 절대 경로 확인
+1. PR number confirmed
+2. Changed file count confirmed via `gh pr view {PR number} --json files`
+3. Project absolute path confirmed
 
-#### Agent 호출
+#### Agent Invocation
 
-4개의 Agent 도구를 **하나의 메시지에서 동시 호출**한다.
-각 Agent의 `subagent_type`은 `"general-purpose"`를 사용한다.
+Call **4 Agent tools simultaneously in a single message**.
+Use `"general-purpose"` for each Agent's `subagent_type`.
 
-각 Agent 프롬프트:
+Each Agent prompt:
 ```
-당신은 PR 코드 리뷰의 [{관점}] 전문가입니다. 연구/분석만 수행하고 파일을 수정하지 마세요.
+You are an expert in [{perspective}] for PR code review. Perform research/analysis only — do not modify files.
 
-[프로젝트 경로]: {project_absolute_path}
-[PR 번호]: {PR_NUMBER}
+[Project path]: {project_absolute_path}
+[PR number]: {PR_NUMBER}
 
-작업 절차:
-1. 프로젝트 경로에서 `gh pr diff {PR_NUMBER}`를 Bash로 실행하여 변경사항 수집
-2. 변경된 코드(+ 라인)만 대상으로 [{관점}]의 체크 항목을 검사
-   {체크_항목 — code-review review-full.md 섹션 3.1~3.4와 동일}
-3. 필요시 소스 파일을 Read로 직접 열어 전후 문맥(±20줄) 확인
-4. 잘한 부분(👍 Good)도 발견 시 기록
+Procedure:
+1. Run `gh pr diff {PR_NUMBER}` via Bash at the project path to collect changes
+2. Inspect [{perspective}] check items for changed code (+ lines) only
+   {check_items — same as review-full.md sections 3.1–3.4}
+3. Use Read to open source files directly to check surrounding context (±20 lines) if needed
+4. Record good parts (👍 Good) when found
 
-결과 형식 (반드시 이 형식으로 반환):
-[PR_REVIEW: {관점}]
-| 심각도 | 파일 | 라인 | 이슈 유형 | 설명 | 수정 제안 |
-|--------|------|------|----------|------|----------|
+Result format (must return in this format):
+[PR_REVIEW: {perspective}]
+| Severity | File | Line | Issue Type | Description | Fix Suggestion |
+|----------|------|------|-----------|-------------|----------------|
 
-[PR_GOOD: {관점}]
-| 파일 | 라인 | 설명 |
+[PR_GOOD: {perspective}]
+| File | Line | Description |
 
-이슈가 없으면 "[PR_REVIEW: {관점}]\n발견사항 없음" 반환.
+Return "[PR_REVIEW: {perspective}]\nNo findings" if no issues.
 ```
 
-4개 Agent의 `{관점}`과 `{체크_항목}`:
+4 Agents' `{perspective}` and `{check_items}`:
 
-| Agent | 관점 | 체크 항목 |
-|-------|------|----------|
-| 1 | Quality | 네이밍, 함수길이, 중복코드, 매직넘버, 주석, TODO/FIXME |
-| 2 | Logic | NPE, 빈값, 경계값, 예외처리, 조건문, 동시성 |
-| 3 | Security | 비밀정보노출, SQL Injection, 입력검증누락, 민감정보로깅 |
-| 4 | Performance | 리소스누수, try-with-resources, N+1쿼리, 불필요객체, 중첩루프, 문자열연결 |
+| Agent | Perspective | Check Items |
+|-------|------------|------------|
+| 1 | Quality | Naming, function length, duplicate code, magic numbers, comments, TODO/FIXME |
+| 2 | Logic | NPE, empty values, boundary values, exception handling, conditionals, concurrency |
+| 3 | Security | Credential exposure, SQL Injection, missing input validation, sensitive data logging |
+| 4 | Performance | Resource leaks, try-with-resources, N+1 queries, unnecessary objects, nested loops, string concatenation |
 
-#### 결과 통합
+#### Result Integration
 
-4개 Agent 결과를 수신한 후:
-1. 각 `[PR_REVIEW: {관점}]`에서 이슈 추출
-2. 심각도별 분류 및 동일 파일:라인 이슈 병합
-3. `[PR_GOOD]`에서 Good 항목 통합
-4. Phase 3 리뷰 초안에 통합
+After receiving all 4 Agent results:
+1. Extract issues from each `[PR_REVIEW: {perspective}]`
+2. Classify by severity and merge issues at the same file:line
+3. Integrate Good items from `[PR_GOOD]`
+4. Integrate into Phase 3 review draft
 
-#### 폴백
+#### Fallback
 
-Agent 실패 시 해당 관점을 메인 세션에서 순차 실행.
+When an Agent fails, run that perspective sequentially in the main session.
 
 ---
 
-## Phase 3: 리뷰 코멘트 작성
+## Phase 3: Write Review Comments
 
-### 3.1 종합 리뷰 초안
+### 3.1 Overall Review Draft
 
 ```markdown
-## PR Review: #{번호} - {제목}
+## PR Review: #{number} - {title}
 
-### 요약
-{1-3줄로 PR의 변경사항과 목적 요약}
+### Summary
+{1–3 lines summarizing changes and purpose of the PR}
 
-### 발견사항
+### Findings
 
-#### 🔴 Critical ({N}건)
-- **{파일}:{라인}** - {이슈 설명}
-  제안: {수정 방법}
+#### 🔴 Critical ({N})
+- **{file}:{line}** - {issue description}
+  Suggestion: {fix method}
 
-#### 🟡 Warning ({N}건)
-- **{파일}:{라인}** - {이슈 설명}
-  제안: {수정 방법}
+#### 🟡 Warning ({N})
+- **{file}:{line}** - {issue description}
+  Suggestion: {fix method}
 
-#### 🟢 Suggestion ({N}건)
-- **{파일}:{라인}** - {이슈 설명}
+#### 🟢 Suggestion ({N})
+- **{file}:{line}** - {issue description}
 
-#### 👍 Good ({N}건)
-- **{파일}:{라인}** - {잘한 부분 설명}
+#### 👍 Good ({N})
+- **{file}:{line}** - {description of good practice}
 
-### 판정
+### Verdict
 {APPROVE / REQUEST_CHANGES / COMMENT}
 ```
 
-### 3.2 판정 기준
+### 3.2 Verdict Criteria
 
-| 판정 | 조건 | gh 옵션 |
-|------|------|---------|
-| ✅ APPROVE | Critical 0건 & Warning ≤ 3건 | `--approve` |
-| 🔄 REQUEST_CHANGES | Critical ≥ 1건 | `--request-changes` |
-| 💬 COMMENT | Critical 0건 & Warning ≥ 4건 | `--comment` |
+| Verdict | Condition | gh option |
+|---------|-----------|-----------|
+| ✅ APPROVE | 0 Critical & 3 or fewer Warnings | `--approve` |
+| 🔄 REQUEST_CHANGES | 1 or more Critical | `--request-changes` |
+| 💬 COMMENT | 0 Critical & 4 or more Warnings | `--comment` |
 
-### 3.3 자기 검증
+### 3.3 Self-Verification
 
-리뷰 제출 전 확인:
-1. 모든 이슈에 `파일:라인` 위치가 명시되어 있는가?
-2. 오탐(False Positive)이 없는가?
-3. 심각도 분류가 적절한가?
-4. 건설적인 톤으로 작성되었는가?
+Check before submitting the review:
+1. Does every issue include a `file:line` location?
+2. Are there no false positives?
+3. Is the severity classification appropriate?
+4. Is the tone constructive?
 
 ---
 
-## Phase 4: 사용자 확인 및 제출
+## Phase 4: User Confirmation and Submission
 
-### 4.1 사용자에게 초안 제시
+### 4.1 Present Draft to User
 
-리뷰 초안을 출력하고 사용자 확인을 요청합니다:
+Output the review draft and request user confirmation:
 
 ```
-📝 위 리뷰 코멘트를 PR #{번호}에 제출할까요?
+📝 Submit the above review comment to PR #{number}?
 
-판정: {APPROVE / REQUEST_CHANGES / COMMENT}
+Verdict: {APPROVE / REQUEST_CHANGES / COMMENT}
 
-1. 그대로 제출
-2. 수정 후 제출
-3. 취소
+1. Submit as-is
+2. Edit then submit
+3. Cancel
 ```
 
-### 4.2 제출 (사용자 승인 후)
+### 4.2 Submit (after user approval)
 
 ```bash
-# 종합 리뷰 제출
-gh pr review {PR번호} --{approve|request-changes|comment} --body "{리뷰 내용}"
+# Submit overall review
+gh pr review {PR number} --{approve|request-changes|comment} --body "{review content}"
 ```
 
-### 4.3 완료 보고
+### 4.3 Completion Report
 
 ```
-✅ PR #{번호} 리뷰가 제출되었습니다.
+✅ PR #{number} review submitted.
 
-판정: {APPROVE / REQUEST_CHANGES / COMMENT}
-발견사항: 🔴 {N} | 🟡 {N} | 🟢 {N} | 👍 {N}
+Verdict: {APPROVE / REQUEST_CHANGES / COMMENT}
+Findings: 🔴 {N} | 🟡 {N} | 🟢 {N} | 👍 {N}
 ```
 
 ---
 
-## 전제 조건
+## Prerequisites
 
-- `gh` CLI 설치 및 인증 완료
-- 현재 디렉토리가 해당 GitHub 저장소 내에 있어야 함
-- `gh` 미설치 시:
+- `gh` CLI installed and authentication complete
+- Current directory must be inside the relevant GitHub repository
+- When `gh` is not installed:
   ```
-  ⚠️ GitHub CLI(gh)가 필요합니다.
-  설치: https://cli.github.com/
-  인증: gh auth login
+  ⚠️ GitHub CLI (gh) is required.
+  Install: https://cli.github.com/
+  Authenticate: gh auth login
   ```

@@ -1,7 +1,7 @@
 """
-AI Insight 보고서용 JSONL 세션 수집 스크립트
-- 소스 A (Claude Code CLI) + 소스 B (Desktop Agent Mode) + 소스 C (Desktop Code Metadata)
-- 날짜 범위 필터링 → 최소 필드 추출 → 압축 구조체 JSON 출력
+JSONL session collection script for AI Insight reports
+- Source A (Claude Code CLI) + Source B (Desktop Agent Mode) + Source C (Desktop Code Metadata)
+- Date range filtering → minimal field extraction → compressed struct JSON output
 """
 
 import json
@@ -57,8 +57,8 @@ def identify_project(cwd, dir_name=""):
         return "nepes-ai-agents"
     home_name = Path.home().name.lower()
     if f"c--users-{home_name}" in text_lower or text_lower.endswith(f"c:/users/{home_name}") or text_lower.endswith(f"c:\\users\\{home_name}"):
-        return "Claude Code 환경설정"
-    return "기타"
+        return "Claude Code Settings"
+    return "Other"
 
 
 def classify_domain(summary, tools, files):
@@ -73,24 +73,24 @@ def classify_domain(summary, tools, files):
     if "EnterPlanMode" in tools_set or any(
         kw in summary_lower for kw in ["설계", "아키텍처", "mcp", "구조"]
     ):
-        return "설계·아키텍처"
+        return "Design·Architecture"
     if any(kw in summary_lower for kw in ["git-workflow", "skill.md", "commands", "install.bat", "hook"]):
-        return "자동화·워크플로우"
+        return "Automation·Workflow"
     if any(kw in summary_lower for kw in ["에러", "오류", "분석", "로그", "알람", "장애"]) or any(
         t.startswith("mcp__oracle") for t in tools
     ):
-        return "분석·디버깅"
+        return "Analysis·Debugging"
     if has_write_edit and has_code_files:
-        return "개발"
+        return "Development"
     if any(kw in summary_lower for kw in ["문서", "보고서", "보고"]) or any(
         files_str.endswith(ext) for ext in (".md", ".docx", ".pptx")
     ):
-        return "문서·보고서"
+        return "Documentation·Reports"
     if any(kw in summary_lower for kw in ["어떻게", "뭐야", "알려줘", "확인", "가능"]):
-        return "학습·역량강화"
+        return "Learning·Skill Building"
     if has_write_edit:
-        return "자동화·워크플로우"
-    return "기타"
+        return "Automation·Workflow"
+    return "Other"
 
 
 MAX_SUMMARY_CHARS = 200
@@ -201,7 +201,7 @@ def process_jsonl(filepath, start_dt, end_dt, dir_name="", source="A"):
 
         project = identify_project(cwd, dir_name)
         if source == "B":
-            project = "Claude Desktop 작업"
+            project = "Claude Desktop Work"
 
         domain = classify_domain(summary, list(tools), files_touched)
 
@@ -217,7 +217,7 @@ def process_jsonl(filepath, start_dt, end_dt, dir_name="", source="A"):
             "source": source,
         }
         if partial:
-            result["tag"] = "[대용량-부분분석]"
+            result["tag"] = "[large-file-partial]"
         return result
 
     except Exception as e:
