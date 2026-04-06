@@ -46,7 +46,27 @@ Which type of task is this?
 ## Step 0.5: Complexity Determination (Design Agent Routing)
 
 After mode determination, analyze the input to determine **design complexity**.
-Route to lightweight design (architect) or precision design (software-develop-architect) based on complexity.
+First, check whether the task qualifies for a lightweight escape. If it does, skip the entire workflow and execute directly.
+
+### Lightweight Escape (execute directly without workflow)
+
+If **any one** of the following conditions is met, skip the workflow entirely and proceed with direct execution:
+
+| Condition | Description |
+|-----------|-------------|
+| **No design decisions needed** | Task is a straightforward add/delete/partial edit of existing files |
+| **No multi-agent coordination needed** | Task can be completed by a single agent in one pass |
+| **No new system structure design needed** | Task does not introduce new components, modules, or architectural patterns |
+
+**When escaping:**
+```
+⚡ Lightweight task detected — skipping workflow.
+Reason: {which condition(s) matched}
+Proceeding directly.
+```
+→ Execute the task directly using Claude Code default behavior. Do not invoke sub-agents, create spec files, or run checkpoints.
+
+---
 
 ### Determination Criteria
 
@@ -391,4 +411,13 @@ Also display the design agent routing result:
 | Implementation | developer | ✅/🔄/⏳ | {filename} |
 | Review | code-reviewer | ✅/🔄/⏳ | {filename} |
 | Test | tester | ✅/🔄/⏳ | {filename} |
+```
+
+## Usage Examples
+
+```
+/workflow-automate 로그인 기능 추가
+/workflow-automate #42 결제 금액 오류 수정
+/workflow-automate todo 앱 새로 만들기
+/workflow-automate "Add user authentication API"
 ```

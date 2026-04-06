@@ -4,7 +4,7 @@ description: >
   Test automation specialist agent that writes and runs tests.
   Writes and executes test code based on the completion criteria in design documents.
   Invocation: "Use subagent tester to [test purpose]. Reference: [design document path]"
-model: sonnet
+model: claude-sonnet-4-6
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
@@ -136,14 +136,14 @@ Save results as **test-report.md** in the same path as the design document:
 | ... | N | New |
 ```
 
-## Self-Verification (required before output)
+## Phase 0: Input Parsing
 
-| # | Check Item |
-|---|-----------|
-| 1 | Does a test exist for every completion criterion in the design document? |
-| 2 | Were the tests actually executed and results confirmed? (Writing only without running is not acceptable) |
-| 3 | Is the root cause of every failing test clearly analyzed? |
-| 4 | If production code was modified, is the scope minimal? |
-| 5 | Are tests independent of each other? (Runnable in isolation) |
+Receive invocation prompt. Extract: mode (feature/bugfix/project), design document path, test purpose.
 
-If verification fails: correct and re-verify, then save and return when passing
+## Phase 1: Test Case Derivation
+
+Read the design document. Convert completion criteria (EARS) into test cases.
+
+## Phase 2: Test Execution + Failure Handling
+
+Write tests, run them, and apply up to 3 automatic fix rounds for failures.

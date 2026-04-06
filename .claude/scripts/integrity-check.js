@@ -109,8 +109,15 @@ function checkHookIntegration() {
     }
   }
 
+  // 유틸리티 모듈 (settings.json 직접 등록 없이 다른 hook에서 require하는 파일)
+  const hookUtilModules = ['stdin-json-reader.js'];
+
   // 각 hook .js 파일에 대해 검증
   for (const hookFile of hookFiles) {
+    if (hookUtilModules.includes(hookFile)) {
+      details.push({ file: hookFile, status: 'PASS', ref: 'utility module (required by other hooks)' });
+      continue;
+    }
     let foundInSettings = false;
     let settingsSection = '';
 
@@ -201,10 +208,11 @@ function checkCommandAgentRefs() {
 
     const agentPaths = [];
 
-    // 패턴 A: .claude/agents/ 로 시작하는 직접 경로 (후행 구두점 제거)
+    // 패턴 A: .claude/agents/ 로 시작하는 직접 경로 (후행 구두점 제거, 와일드카드 제외)
     const directRefs = content.match(/\.claude\/agents\/[^\s)`,]+\.md/g);
     if (directRefs) {
       for (const ref of directRefs) {
+        if (ref.includes('*')) continue; // 와일드카드 패턴은 실제 경로가 아니므로 스킵
         agentPaths.push(ref);
       }
     }

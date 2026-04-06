@@ -61,14 +61,11 @@ function calculateStats(workflowRecords) {
       stats[wf] = { totalRuns: 0, success: 0, failure: 0, aborted: 0, durations: [] };
     }
 
-    // 성공 판정: result가 있으면 사용, 없으면 event 기반 (하위 호환)
-    if (r.result === 'success' || (!r.result && r.event === 'workflow_complete')) {
-      // workflow_complete만 1회의 완료된 실행으로 카운트
-      if (r.event === 'workflow_complete') {
-        stats[wf].totalRuns++;
-        stats[wf].success++;
-        if (r.durationMs) stats[wf].durations.push(r.durationMs);
-      }
+    // 성공 판정: workflow_complete 이벤트 또는 result=success로 완료된 실행을 카운트
+    if (r.event === 'workflow_complete' || r.result === 'success') {
+      stats[wf].totalRuns++;
+      stats[wf].success++;
+      if (r.durationMs) stats[wf].durations.push(r.durationMs);
     } else if (r.result === 'failure') {
       // phase1_failed 등 워크플로우 종료 실패
       if (r.event && r.event.includes('failed')) {

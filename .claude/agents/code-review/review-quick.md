@@ -26,6 +26,8 @@ Find Critical issues fast — **within 5 minutes**.
 | 4 | **Credential exposure** | Hardcoded API keys, tokens, passwords | `password = "nepes01"`, `apiKey = "sk-..."` |
 | 5 | **SQL Injection** | Query generation via string concatenation | `"SELECT * WHERE id='" + input + "'"` |
 | 6 | **Sensitive data logging** | Passwords, personal info printed to logs | `logger.info("password=" + pwd)` |
+| 7 | **XSS vulnerability** | `innerHTML` or `dangerouslySetInnerHTML` with unsanitized user input | `el.innerHTML = userInput` without sanitize |
+| 8 | **Auth token in localStorage** | JWT/session token stored in `localStorage` (XSS-vulnerable) instead of httpOnly cookie | `localStorage.setItem('token', jwt)` |
 
 ---
 
@@ -101,6 +103,27 @@ String sql = "SELECT * FROM users WHERE id = ?";
 ps.setString(1, userId);
 ```
 
+### 3.7 XSS Vulnerability
+```javascript
+// Critical - unsanitized user content injected into DOM
+element.innerHTML = userInput;
+return <div dangerouslySetInnerHTML={{ __html: userContent }} />;
+
+// Safe pattern - sanitize first
+import DOMPurify from 'dompurify';
+element.innerHTML = DOMPurify.sanitize(userInput);
+```
+
+### 3.8 Auth Token in localStorage
+```javascript
+// Critical - XSS can steal tokens from localStorage
+localStorage.setItem('token', jwtToken);
+localStorage.setItem('session', sessionId);
+
+// Safe pattern - httpOnly cookie (set server-side)
+res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Secure; SameSite=Strict`);
+```
+
 ### 3.6 Sensitive Data Logging
 ```java
 // Critical - sensitive data exposed in logs
@@ -155,7 +178,7 @@ logger.debug("Request received for endpoint: " + endpoint);
 | Verdict | Condition |
 |---------|-----------|
 | ✅ **PASS** | 0 Critical |
-| ❌ **FAIL** | 1 or more Critical |
+| ❌ **FAIL** | 1 or more Critical (any of items 1–8) |
 
 ---
 
@@ -222,3 +245,19 @@ Perform the following self-check immediately **before** outputting review result
 ---
 
 *Quick review does not replace a full review. Always run a full review before merging.*
+
+## Phase 0: Target Collection
+
+Collect changed files via `git diff` or from the specified file list in `$ARGUMENTS`.
+
+## Phase 1: Critical Scan
+
+Apply the 6 Critical-only scan patterns defined in Section 2 above.
+
+## Error Handling
+
+| Situation | Action |
+|-----------|--------|
+| No changed files found | Output "No changed files to review." and stop |
+| Git command failure | Attempt to use staged diff (`git diff --cached`); if also fails, ask user to specify files |
+| File read failure | Skip that file and note it in the report as "Read failed" |

@@ -11,6 +11,11 @@ Read the following files. ($USERPROFILE is the user's home directory)
 - $USERPROFILE/.claude/log-analyzer/config.json
 - $USERPROFILE/.claude/log-analyzer/eqp-info.json (if not found, treat as empty `{"equipments":{}}`)
 
+Resolve the source code path for the current target from the `source_paths` field in eqp-info.json:
+- Case A (equipment): `source_paths.equipment`
+- Case B (server): `source_paths.{target}` (e.g., `source_paths.rmsserver` for rms/rmsserver target)
+- If not found: source code reference is unavailable — skip STEP 2.5 below
+
 ## Request Type Determination
 
 Detect Case B (Server) keywords first (includes Korean user input variants):
@@ -120,6 +125,15 @@ Based on the collected information, output in the following format.
 
 ### 📈 Key Event Timeline
 {time} - {description}
+
+### 💡 Source Code Analysis
+If source code analysis would help clarify the above errors, explicitly request it.
+- If `source_paths` entry exists for the current target in eqp-info.json:
+  > 소스 코드 경로가 설정되어 있습니다: {resolved source path}
+  > 소스 코드 분석이 필요하다면 명시적으로 요청해 주세요.
+- If `source_paths` entry does not exist:
+  > 소스 코드 경로가 설정되어 있지 않습니다.
+  > 소스 코드 분석이 필요하다면 경로를 알려주세요.
 ---
 
 ## Deep Analysis Integration

@@ -49,6 +49,8 @@ process.stdin.on('end', () => {
       '.ipynb',
       '.woff', '.woff2', '.ttf', '.eot',
       '.xlsx', '.xls', '.docx', '.pptx',
+      '.pyc', '.pyo', '.o', '.obj', '.class', '.jar',
+      '.map',
     ];
     if (binaryExts.includes(ext)) {
       process.exit(0);
@@ -57,6 +59,7 @@ process.stdin.on('end', () => {
     // 줄 수 카운트 (효율적: 버퍼 단위로 newline 수만 셈)
     const BUFFER_SIZE = 64 * 1024;
     let lineCount = 0;
+    let earlyBreak = false; // 임계값 초과로 조기 종료 여부
     let fd;
     try {
       fd = fs.openSync(resolvedPath, 'r');
@@ -67,14 +70,20 @@ process.stdin.on('end', () => {
           if (buf[i] === 0x0A) lineCount++;
         }
         // 임계값 초과 시 조기 종료 (전체 파일을 읽을 필요 없음)
-        if (lineCount > LINE_THRESHOLD) break;
+        if (lineCount > LINE_THRESHOLD) {
+          earlyBreak = true;
+          break;
+        }
       }
       // 마지막 바이트가 newline이 아니면 마지막 줄 보정
-      const stat = fs.fstatSync(fd);
-      if (stat.size > 0) {
-        const lastBuf = Buffer.alloc(1);
-        fs.readSync(fd, lastBuf, 0, 1, stat.size - 1);
-        if (lastBuf[0] !== 0x0A) lineCount++;
+      // earlyBreak인 경우 이미 초과 확정이므로 보정 불필요
+      if (!earlyBreak) {
+        const stat = fs.fstatSync(fd);
+        if (stat.size > 0) {
+          const lastBuf = Buffer.alloc(1);
+          fs.readSync(fd, lastBuf, 0, 1, stat.size - 1);
+          if (lastBuf[0] !== 0x0A) lineCount++;
+        }
       }
     } finally {
       if (fd !== undefined) fs.closeSync(fd);

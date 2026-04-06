@@ -21,7 +21,7 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ---
 
-## 현재 버전: 2.2.0
+## 현재 버전: 2.5.8
 
 ## 에이전트 현황
 
@@ -62,7 +62,9 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 | developer | ✅ 운영 | v1.39.1 | 설계 문서 기반 코드 구현 서브에이전트 |
 | tester | ✅ 운영 | v1.39.1 | 테스트 작성 및 실행 서브에이전트 |
 | log-analyzer | ✅ 운영 | v2.1.0 | 로그 분석 서브에이전트 — 구조화 결과 반환 (troubleshoot 파이프라인용) |
-| ai-guideline-analyzer | ✅ 운영 | v2.2.0 | AI 지침 파일 품질 자동 분석 (Static+Adaptive Rubric, 100점 만점) |
+| ai-guideline-analyzer | ✅ 운영 | v2.5.0 | AI 지침 파일 품질 분석 agent — 10개마다 배치 저장, Bash shell redirect 병합, 소형 인덱스+요약 생성 |
+| ai-guideline-fixer | ✅ 운영 | v2.5.0 | AI 지침 파일 수정 agent — analysis-index.md 소형 파일만 읽기, Edit tool만 사용 (전면 재설계) |
+| ai-guideline-orchestrator | ❌ 삭제 | v2.4.0~v2.4.8 | ai-guideline-v2 재설계로 대체 삭제 |
 | web-rmspage/git-workflow | ❌ 삭제 | v25.0 | v26.0에서 통합 워크플로우로 대체 |
 
 상태 값:
@@ -75,6 +77,26 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ## 변경 이력
 
+2.5.8 improve: ECC 패턴 적용 — code-review/pr-review/ai-guideline 에이전트 품질 강화 (#ITSM-3876)
+2.5.7 fix: hooks 보안 취약점 및 안정성 개선 (#ITSM-3871)
+2.5.6 improve: analyze-log 소스 코드 경로 연동 기능 추가 (#ITSM-3862)
+2.5.5 fix: git branch -d 오인식 방지 — -D 패턴 /i 플래그 제거
+2.5.4 fix: hook 명령어 환경변수 %USERPROFILE% bash 문법($USERPROFILE)으로 수정 (#ITSM-3855)
+2.5.3 improve: Hook/Agent 버그 수정 및 코드 품질 개선 (#ITSM-3854)
+2.5.2 improve: AI 지침 파일 품질 개선 및 워크플로우 개선 (#ITSM-3848)
+2.5.1 improve: ai-guideline-analyzer 제외 패턴 보강 — .gitignore 항목 및 runtime 산출물 추가
+2.5.0 feat: ai-guideline-analyzer/fixer v2 신규 개발 — 컨텍스트 안전 분석/수정 시스템 (#ITSM-3842)
+2.4.8 improve: ai-guideline 분석 도구 경량화 — analyzer 삭제, orchestrator CP/Phase3 제거, fixer 검증 축소 (#ITSM-3828)
+2.4.7 improve: ai-guideline-orchestrator 중간 저장 방식을 배치 독립 파일로 변경
+2.4.6 improve: rubric 제거 및 ai-guideline 파이프라인 컨텍스트 최적화 (#ITSM-3806)
+2.4.5 improve: ai-guideline-orchestrator 컨텍스트 포화 방지 재설계 (#ITSM-3800)
+2.4.4 improve: analyzer 규모 제한 및 성능 개선
+2.4.3 improve: ai-guideline-orchestrator 분석 리포트 읽기 방식 개선 (Grep 기반 동적 offset)
+2.4.2 fix: AI 지침 파일 멀티에이전트 freeze 원인 제거 (P1~P5 + 추가 수정 2건) (#ITSM-3793)
+2.4.1 improve: session-handoff 커맨드 정리 및 workflow-automate 경량 탈출 경로 추가 (#ITSM-3792)
+2.4.0 feat: ai-guideline-orchestrator agent 신규 개발 (#ITSM-3791)
+2.3.0 feat: ai-guideline-fixer command + agent 신규 개발 (#ITSM-3786)
+2.2.1 improve: ai-guideline-analyzer command Agent 도구 호출 지침 명시화
 2.2.0 feat: ai-guideline-analyzer agent/command 신규 구현 (#ITSM-3773)
 2.1.5 improve: AI 자체 검증 로직 강화 (#ITSM-3758)
 2.1.4 improve: workflow-automate 요구사항 프로빙 단계 추가 및 커밋 메시지 한국어 규칙 적용

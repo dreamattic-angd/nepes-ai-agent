@@ -100,3 +100,11 @@ node -e "
 Agent folder: `.claude/agents/git-workflow/`
 Execute in order: Phase 1(phase1-change-analysis.md) → 2(phase2-branch-commit.md) → 3(phase3-review-merge.md) → 4(phase4-cleanup.md).
 Read each phase file only when starting that step. Do not skip steps.
+
+## Usage Examples
+
+```
+/git-workflow
+/git-workflow v1.5.0
+/git-workflow ITSM-3421
+```

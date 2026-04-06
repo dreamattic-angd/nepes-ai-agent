@@ -1,5 +1,5 @@
 <!-- nepes-ai-agents:start -->
-# nepes-ai-agents v2.2.0
+# nepes-ai-agents v2.5.8
 Claude Code AI agent management repository. The `.claude/` directory is deployed to `~/.claude/`.
 - Project commands: `/project:{command}`
 - Global commands (after install.bat): `/{command}`
@@ -46,4 +46,10 @@ When writing library-related code, always use context7 to reference the latest v
 ## Output Language
 - All user-facing output (results, status updates, questions, confirmations, progress messages) must be written in **Korean**.
 - Internal reasoning, code comments, commit messages, and file content follow their own conventions.
+
+## Output Format
+
+- 슬래시 커맨드 실행 결과: 진행 상태, 완료 메시지, 오류 메시지를 한국어로 출력한다.
+- 분석/리뷰 결과: 해당 커맨드/에이전트가 지정한 형식을 따른다.
+
 <!-- nepes-ai-agents:end -->

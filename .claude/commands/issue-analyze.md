@@ -120,6 +120,15 @@ Phase 4: Writing final report...
 - **All saved context is invested entirely into actual analysis (reading logs, tracing code, exploring patterns).**
 - The Phase 0 index file is referenced repeatedly in subsequent phases, so write it accurately and completely.
 
+## Usage Examples
+
+```
+/issue-analyze PRS-04
+/issue-analyze BGP04 2026-04-01
+/issue-analyze rms yesterday
+/issue-analyze .claude/agents/issue-analysis/logs/
+```
+
 ## Automatic Report Saving (Required)
 When analysis is complete, **always save the final report as a .md file in the `.claude/agents/issue-analysis/reports/` folder.** This is separate from outputting to the user — do not omit the file save.
 

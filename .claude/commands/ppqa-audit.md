@@ -121,3 +121,11 @@ Output in the following markdown format inside a code block. Copy to Loop for us
 
 If there are NG items, list the violating commits specifically for each item.
 Do not modify already-pushed commits; provide improvement guidance to prevent the same violations in the future.
+
+## Usage Examples
+
+```
+/ppqa-audit naa
+/ppqa-audit rmsserver
+/ppqa-audit ytap
+```

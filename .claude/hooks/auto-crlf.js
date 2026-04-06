@@ -31,8 +31,8 @@ process.stdin.on('end', () => {
     process.exit(0);
   }
 
-  // 이미 CRLF인 줄은 건드리지 않고, LF만 있는 줄을 CRLF로 변환
-  const converted = content.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n');
+  // CR 없이 LF만 있는 줄을 CRLF로 변환 (단일 패스, 이미 CRLF인 줄은 보존)
+  const converted = content.replace(/(?<!\r)\n/g, '\r\n');
   if (converted === content) process.exit(0);
 
   try {

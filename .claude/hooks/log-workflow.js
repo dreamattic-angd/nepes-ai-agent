@@ -9,11 +9,37 @@ const LOG_DIR = path.join(process.env.USERPROFILE || process.env.HOME, '.claude'
 const LOG_FILE = path.join(LOG_DIR, 'workflow-runs.jsonl');
 const TIMER_DIR = path.join(LOG_DIR, '.timers');
 
+const MAX_LOG_FILE_SIZE = 512 * 1024; // 512KB
+const LOG_ROTATE_KEEP_LINES = 200;
+
+/**
+ * workflow-runs.jsonl이 MAX_LOG_FILE_SIZE를 초과하면
+ * 최근 LOG_ROTATE_KEEP_LINES행만 남기고 나머지를 삭제한다.
+ */
+function rotateLogIfNeeded() {
+  const tmpFile = LOG_FILE + '.tmp';
+  try {
+    if (!fs.existsSync(LOG_FILE)) return;
+    const stat = fs.statSync(LOG_FILE);
+    if (stat.size <= MAX_LOG_FILE_SIZE) return;
+
+    const lines = fs.readFileSync(LOG_FILE, 'utf8').trim().split('\n');
+    const kept = lines.slice(-LOG_ROTATE_KEEP_LINES).join('\n') + '\n';
+    try { if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile); } catch (_) {}
+    fs.writeFileSync(tmpFile, kept, 'utf8');
+    fs.renameSync(tmpFile, LOG_FILE);
+  } catch (e) {
+    // 로테이션 실패는 워크플로우를 중단하지 않음
+    try { if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile); } catch (_) {}
+  }
+}
+
 function logWorkflow(entry) {
   try {
     if (!fs.existsSync(LOG_DIR)) {
       fs.mkdirSync(LOG_DIR, { recursive: true });
     }
+    rotateLogIfNeeded();
     const record = {
       timestamp: new Date().toISOString(),
       ...entry
@@ -50,6 +76,7 @@ function getElapsedMs(workflowId) {
     const timerFile = path.join(TIMER_DIR, `${workflowId}.start`);
     if (!fs.existsSync(timerFile)) return null;
     const startTime = parseInt(fs.readFileSync(timerFile, 'utf8').trim(), 10);
+    if (isNaN(startTime)) return null;
     return Date.now() - startTime;
   } catch (e) {
     return null;

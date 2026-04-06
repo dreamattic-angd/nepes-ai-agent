@@ -118,3 +118,11 @@ Auto-update `review-summary.md` same as review-full.md section 8.2
 |---|-----------|---------|
 | 6 | **Cross-validation Complete** | Were layer contracts (parameters/return types/transactions) verified? |
 | 7 | **Backtrack Performed** | When a mismatch was found in cross-validation, was the relevant thought re-examined? |
+
+## Phase 0: Review Target Collection
+
+Collect changed files via `git diff {base-branch} --name-only`. Classify by layer.
+
+## Phase 1: Sequential Thinking Review
+
+Execute Thoughts 1 through N+2 as defined in Section 3 above.

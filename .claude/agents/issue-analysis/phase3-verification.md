@@ -96,3 +96,10 @@ Hypothesis N: {title} — confidence {N}%
 Most likely cause: Hypothesis {N} ({confidence}%)
 Further verification needed: {list}
 ```
+
+## Error Handling
+
+| Situation | Action |
+|-----------|--------|
+| Code file cited by Phase 2 not found | Mark code evidence as "file not found" and proceed with log evidence only |
+| All hypotheses confidence below 40% | Add "추가 조사 필요" flag and proceed to Phase 4 with the highest-confidence hypothesis |

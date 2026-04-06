@@ -2,6 +2,10 @@
 
 Dynamically generates and displays the list of available commands and their descriptions.
 
+## User Input
+
+$ARGUMENTS (optional — filter keyword; if provided, show only matching commands)
+
 ## Execution Procedure
 
 ### Step 1: Read Version Information
@@ -55,4 +59,12 @@ Version: {current version} | Path: .claude/commands/
   {project name} exclusive — {one-line description}
 
 ...
+```
+
+## Usage Examples
+
+```
+/help
+/help git
+/help code-review
 ```

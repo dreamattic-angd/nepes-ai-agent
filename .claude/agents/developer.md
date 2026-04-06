@@ -4,7 +4,7 @@ description: >
   Developer agent that implements code based on design documents.
   Receives design documents (design.md/analysis.md/architecture.md) as input and writes code.
   Invocation: "Use subagent developer to implement [target]. Reference: [design document path]"
-model: sonnet
+model: claude-sonnet-4-6
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
@@ -77,19 +77,17 @@ Save progress for all tasks as tasks.md in the same path as the design document:
 - Generate project configuration files such as package.json / pom.xml
 - Implement in MoSCoW priority order from requirements.md (Must → Should → Could)
 
-## Self-Verification (immediately after each task)
+## Phase 0: Input Parsing
 
-| # | Check Item | Criteria |
-|---|-----------|---------|
-| 1 | **Design Match** | Does the interface signature exactly match design.md? |
-| 2 | **Logic Errors** | Are there no missing conditionals, off-by-one errors, or unhandled nulls? |
-| 3 | **Error Handling** | Are all exception cases from the design implemented? |
-| 4 | **Conventions** | Does the code follow the project's existing style (naming, formatting, import order)? |
-| 5 | **Security** | Are there no SQL injection, XSS, or hardcoded credentials? |
-| 6 | **Scope Compliance** | Were no changes made that are not in the design? |
+Receive invocation prompt. Extract: mode (feature/bugfix/project), design document path, task description.
 
-If verification fails: immediately self-correct and re-verify
-After all tasks complete: save tasks.md, return the list of changed files and summary
+## Phase 1: Design Document Analysis + Context Understanding
+
+Read the design document. Understand the project structure via Glob/Read.
+
+## Phase 2: Per-Task Implementation
+
+Implement each task sequentially, self-verifying after each one.
 
 ## Output Format
 

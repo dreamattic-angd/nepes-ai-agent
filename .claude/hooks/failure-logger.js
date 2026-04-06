@@ -44,6 +44,7 @@ const ROTATE_KEEP_LINES = 200;            // 로테이션 시 최근 N행 유지
  * 원자적 쓰기: 임시 파일 → 원본 교체.
  */
 function rotateIfNeeded() {
+  const tmpFile = FAILURE_FILE + '.tmp';
   try {
     if (!fs.existsSync(FAILURE_FILE)) return;
     const stat = fs.statSync(FAILURE_FILE);
@@ -51,11 +52,14 @@ function rotateIfNeeded() {
 
     const lines = fs.readFileSync(FAILURE_FILE, 'utf8').trim().split('\n');
     const kept = lines.slice(-ROTATE_KEEP_LINES).join('\n') + '\n';
-    const tmpFile = FAILURE_FILE + '.tmp';
+    // 이전 실패한 로테이션의 잔여 tmp 파일 정리
+    try { if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile); } catch (_) {}
     fs.writeFileSync(tmpFile, kept, 'utf8');
     fs.renameSync(tmpFile, FAILURE_FILE);
   } catch (e) {
     // 로테이션 실패는 워크플로우를 중단하지 않음
+    // 잔여 tmp 파일 정리 시도
+    try { if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile); } catch (_) {}
   }
 }
 
@@ -168,17 +172,19 @@ function queryFailures(filter = {}) {
  * 최근 SUCCESS_ROTATE_KEEP_LINES행만 남기고 나머지를 삭제한다.
  */
 function rotateSuccessIfNeeded() {
+  const tmpFile = SUCCESS_FILE + '.tmp';
   try {
     if (!fs.existsSync(SUCCESS_FILE)) return;
     const stat = fs.statSync(SUCCESS_FILE);
     if (stat.size <= MAX_SUCCESS_FILE_SIZE) return;
     const lines = fs.readFileSync(SUCCESS_FILE, 'utf8').trim().split('\n');
     const kept = lines.slice(-SUCCESS_ROTATE_KEEP_LINES).join('\n') + '\n';
-    const tmpFile = SUCCESS_FILE + '.tmp';
+    try { if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile); } catch (_) {}
     fs.writeFileSync(tmpFile, kept, 'utf8');
     fs.renameSync(tmpFile, SUCCESS_FILE);
   } catch (e) {
     // 로테이션 실패는 워크플로우를 중단하지 않음
+    try { if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile); } catch (_) {}
   }
 }
 

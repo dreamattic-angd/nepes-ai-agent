@@ -162,3 +162,11 @@ Output in the following markdown format inside a code block. Copy to Loop for us
 ````
 
 If there are NG items, provide remediation guidance for each item.
+
+## Usage Examples
+
+```
+/cm-audit naa
+/cm-audit rmsserver
+/cm-audit ytap
+```

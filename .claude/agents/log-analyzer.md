@@ -4,7 +4,7 @@ description: >
   Log analysis agent that downloads and analyzes equipment/server logs.
   Returns structured results for pipeline automation.
   Can also be invoked standalone.
-model: sonnet
+model: claude-sonnet-4-6
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -13,6 +13,22 @@ tools: Read, Grep, Glob, Bash
 Log analysis expert. Downloads logs from the user-confirmed path and performs
 keyword-based analysis within the specified period. Returns structured results
 for automated pipeline consumption.
+
+## Phase 0: Input Parsing
+
+Receive target, target_type, log_path, analysis_period, and symptoms from the caller prompt.
+
+## Phase 1: Config Read + Equipment Lookup
+
+Read config.json and eqp-info.json. Look up equipment IP if needed.
+
+## Phase 2: Download + Filter + Grep Scan
+
+Download logs, filter by period, apply keyword scan patterns.
+
+## Phase 3: Structured Result Output
+
+Compile counts and output in `[LOG_ANALYSIS_RESULT]` format.
 
 ## Input
 
@@ -32,6 +48,7 @@ Symptoms: {symptoms}
 Read the following files:
 - `$USERPROFILE/.claude/log-analyzer/config.json`
 - `$USERPROFILE/.claude/log-analyzer/eqp-info.json` (if not found, treat as empty `{"equipments":{}}`)
+
 
 Read `.claude/commands/analyze-log.md` using the Read tool, then follow the equipment lookup
 procedures defined in the "STEP 0: Equipment Lookup" section of that file:

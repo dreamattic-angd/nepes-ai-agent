@@ -11,12 +11,13 @@ const MIN_CONTENT_LENGTH = 50;
 // 허용된 베이스 경로: USERPROFILE 또는 HOME 기반 .claude 디렉토리
 const ALLOWED_BASE = (process.env.USERPROFILE || process.env.HOME || '').replace(/\\/g, '/') + '/.claude';
 
-// failure-logger는 선택적 의존성 (없어도 동작)
-let logFailure = () => {};
-try {
-  const fl = require(path.join(process.env.USERPROFILE || process.env.HOME, '.claude', 'hooks', 'failure-logger.js'));
-  logFailure = fl.logFailure;
-} catch (_) {}
+// failure-logger는 선택적 의존성 (없어도 동작) — lazy loading
+function logFailure(data) {
+  try {
+    const fl = require(path.join(process.env.USERPROFILE || process.env.HOME, '.claude', 'hooks', 'failure-logger.js'));
+    fl.logFailure(data);
+  } catch (_) {}
+}
 
 // stdin에서 hook 입력 읽기
 let input = '';
@@ -103,8 +104,8 @@ function run(rawInput) {
     // frontmatter 블록(--- ~ --- 사이)만 추출하여 검사
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
     const frontmatter = frontmatterMatch ? frontmatterMatch[1] : '';
-    // Rule C: YAML frontmatter에 name: 필수
-    if (!frontmatter || !/^name:\s*.+/m.test(frontmatter)) {
+    // Rule C: YAML frontmatter에 name: 필수 (공백만 있는 값은 무효)
+    if (!frontmatter || !/^name:\s*\S+/m.test(frontmatter)) {
       violations.push('Rule C: YAML frontmatter에 name: 필드가 없습니다.');
     }
     // Rule D: YAML frontmatter에 description: 필수

@@ -26,13 +26,21 @@ CLAUDE.local.md
 # log-analyzer 로컬 캐시 (사용 중 자동 생성, DB에서 최신 정보 조회)
 .claude/log-analyzer/eqp-info.json
 
-# workflow-automate 임시 산출물 (설계/리뷰/테스트)
-specs/
+# workflow-automate 임시 산출물 (설계/리뷰/테스트) — 루트 한정
+# .claude/specs/ 는 agent 설계 문서이므로 git 관리 대상 (제외하지 않음)
+/specs/
 .planning/
 
 # 작업 인수인계 문서 (개인 임시 파일, 루트만)
 /HANDOFF.md
 /HANDOFF_*.md
+
+# ai-guideline-* 런타임 산출물 (agent 실행 시 자동 생성, git 관리 불필요)
+.claude/guideline-analysis-report.md
+.claude/guideline-fix-report.md
+
+# 프로젝트 압축 파일 (빌드/배포용 바이너리)
+*.zip
 
 # Windows NUL device artifact (bash에서 > NUL 사용 시 생성되는 파일)
 nul

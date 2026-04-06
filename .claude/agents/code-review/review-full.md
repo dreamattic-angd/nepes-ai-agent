@@ -5,6 +5,20 @@
 
 ---
 
+## Phase 0: Review Target Collection
+
+Determine base branch (develop if present, otherwise main). Run `git diff {base-branch} --name-only` to collect changed files.
+
+## Phase 1: 4-Perspective Review
+
+Apply Code Quality, Logic Validation, Security, and Performance perspectives sequentially.
+
+## Phase 2: Verdict and Report
+
+Classify issues by severity, apply verdict criteria, and save the report.
+
+---
+
 ## 1. Role Definition
 
 You are a **Senior Code Reviewer**.
@@ -112,7 +126,8 @@ Issues found in unchanged code are shown as **reference notes (FYI) only**.
 | Check Item | Criteria | Severity |
 |-----------|---------|---------|
 | **Naming** | Do variable/function names clearly convey intent? | Warning |
-| **Function length** | 30 lines or less, single responsibility principle | Warning |
+| **Function length** | 50 lines or less, single responsibility principle | Warning |
+| **Deep nesting** | Avoid 4+ levels of if/for/try nesting; use early returns | Warning |
 | **Duplicate code** | Repeated identical/similar logic | Warning |
 | **Magic numbers** | Hardcoded numbers/strings | Warning |
 | **Comments** | Mismatch between code and comments | Suggestion |
@@ -137,6 +152,10 @@ Issues found in unchanged code are shown as **reference notes (FYI) only**.
 | **SQL Injection** | SQL query generated via string concatenation | Critical |
 | **Missing input validation** | External input used without type/range/length checks | Warning |
 | **Sensitive data logging** | Passwords, personal info printed to logs | Critical |
+| **XSS vulnerability** | `innerHTML` / `dangerouslySetInnerHTML` with unsanitized user content | Critical |
+| **Auth token storage** | JWT/session token stored in `localStorage` instead of httpOnly cookie | Warning |
+| **Error details exposed** | Stack trace or internal error message returned to client response | Warning |
+| **Missing authorization** | No role/permission check before sensitive operations (delete, admin, etc.) | Critical |
 
 **Credential exposure detection patterns:**
 ```java
@@ -189,6 +208,7 @@ db.query("SELECT * FROM eqp WHERE id = ?", eqpId);
 | **Unnecessary object creation** | new operations inside loops | Warning |
 | **Nested loops** | O(n²) or higher complexity | Warning |
 | **String concatenation** | String + operations inside loops | Warning |
+| **Sequential async** | Multiple independent `await` calls that could use `Promise.all` | Warning |
 
 ### 3.5 Parallel Sub-agent Review (4 perspectives simultaneously)
 
@@ -259,8 +279,9 @@ Return "[REVIEW_RESULT: {perspective}]\nNo findings" if no issues.
 |-------|------------|-------------------------------------|
 | 1 | Quality | Naming (Warning), function length (Warning), duplicate code (Warning), magic numbers (Warning), comments (Suggestion), TODO/FIXME (Suggestion) |
 | 2 | Logic | NPE (Critical), empty values (Critical), boundary values (Critical), exception handling (Critical), conditionals (Warning), concurrency (Critical) |
-| 3 | Security | Credential exposure (Critical), SQL Injection (Critical), missing input validation (Warning), sensitive data logging (Critical) |
-| 4 | Performance | Resource leaks (Critical), try-with-resources (Critical), N+1 queries (Warning), unnecessary objects (Warning), nested loops (Warning), string concatenation (Warning) |
+| 3 | Security | Credential exposure (Critical), SQL Injection (Critical), missing input validation (Warning), sensitive data logging (Critical), XSS vulnerability (Critical), auth token in localStorage (Warning), error details exposed (Warning), missing authorization (Critical) |
+| 4 | Performance | Resource leaks (Critical), try-with-resources (Critical), N+1 queries (Warning), unnecessary objects (Warning), nested loops (Warning), string concatenation (Warning), sequential async (Warning) |
+| 5 | Test Quality | Only when test files (`.test.*`, `*Spec.*`) are in changed files. Vague test names (Warning), no assertions / mock-only tests (Critical), test order dependency (Critical), below 80% coverage on changed feature (Warning) |
 
 #### Result Integration (main session)
 
@@ -283,69 +304,10 @@ When an Agent call fails or the result format is invalid:
 
 ## 4. Project-Specific Checklists
 
-### 4.1 Java Backend
-
-**DB Connection Management (HikariCP, etc.):**
-```java
-// ✅ Correct pattern
-try (Connection conn = dataSource.getConnection();
-     PreparedStatement ps = conn.prepareStatement(sql);
-     ResultSet rs = ps.executeQuery()) {
-    // process
-}
-
-// ❌ Incorrect pattern - Critical
-Connection conn = dataSource.getConnection();
-// ... conn.close() missing
-```
-
-**ActiveMQ Resource Management:**
-```java
-// ✅ Correct pattern
-try {
-    // message processing
-} finally {
-    if (consumer != null) consumer.close();
-    if (session != null) session.close();
-    if (connection != null) connection.close();
-}
-```
-
-**Hardcoded config values prohibited:** (→ see section 3.3 Security)
-```java
-// ❌ Critical - hardcoded
-String dbUrl = "jdbc:oracle:thin:@192.168.10.37:1521:NEPESDB1";
-String password = "nepes01";
-
-// ✅ Recommended - config file or environment variable
-String dbUrl = Config.get("db.url");
-```
-
-### 4.2 Vue.js Frontend
-
-**Reactivity System:**
-```javascript
-// ❌ Warning - potential reactivity loss
-const data = reactive({ items: [] });
-data = { items: newItems }; // reactivity lost
-
-// ✅ Correct pattern
-data.items = newItems;
-```
-
-**API Error Handling:**
-```javascript
-// ❌ Warning - error ignored
-const res = await api.get('/endpoint');
-
-// ✅ Correct pattern
-try {
-    const res = await api.get('/endpoint');
-} catch (error) {
-    console.error('API error:', error);
-    // notify user
-}
-```
+> 프로젝트별 코드 패턴 예시는 `review-checklists.md`를 Read tool로 확인하세요.
+> 경로: `.claude/agents/code-review/review-checklists.md`
+>
+> 주요 항목: Java DB 연결 관리, ActiveMQ 리소스, 하드코딩 설정, Vue.js 반응성/API 오류 처리
 
 ---
 
@@ -544,118 +506,18 @@ Auto-update `review-summary.md` after review completes:
 
 ---
 
-## 9. Review Execution Example
+## 9. Review Execution Flow
 
-**User request:**
-```
-Review the code
-```
+> 상세 흐름도와 상호작용 예시는 `review-examples.md`를 Read tool로 확인하세요.
+> 경로: `.claude/agents/code-review/review-examples.md`
 
-**Claude Code auto-execution:**
-1. Load `.claude/agents/code-review/review-full.md` guidelines
-2. Check and clean log folder (if needed)
-3. Check for Git repository
-   - **Git connected:**
-     - Determine base branch (develop if exists, otherwise main)
-     - Collect changed file list via `git diff {base-branch} --name-only`
-     - Extract changed content (diff) via `git diff {base-branch} -- src/`
-     - **Set only changed lines (`+`) as the review target**
-   - No Git: review all source files
-4. Perform 4-perspective review (Quality/Logic/Security/Performance)
-   - **3 or more changed files**: call 4 Agent tools simultaneously per section 3.5 parallel sub-agent review
-   - **fewer than 3 changed files**: sequential review in main session (existing approach)
-   - Changed code issues → classify as Critical/Warning/Suggestion
-   - Unchanged code issues → classify as **reference notes**
-5. Generate result report and save to `.claude/reviews/YYYYMMDD_HHMMSS.log`
-6. Update `review-summary.md`
-7. Determine verdict based on **issues in changed code only** (PASS/REVIEW_NEEDED/REJECT)
-8. Proceed with merge or request fixes based on verdict
-
----
-
-## 9.1 Diff-based Review Flow
-
-```
-Review starts
-    │
-    ▼
-[Step 1] git diff {base-branch} --name-only
-    │   → collect list of changed files
-    │
-    ▼
-[Step 2] git diff {base-branch} -- src/
-    │   → extract changed content (diff)
-    │
-    ▼
-[Step 3] Line classification
-    │
-    ├─ `+` lines (added/modified) ─────────────────────┐
-    │                                                    │
-    ├─ `-` lines (deleted) → check deletion impact ─────┼─→ 🎯 Review target
-    │                                                    │     (verdict reflected)
-    └─ Context lines (unchanged) ───────────────────────┘
-                │
-                └─→ Reference notes
-                      (verdict not reflected)
-    │
-    ▼
-[Step 4] Issue classification
-    │
-    ├─ Issues in changed code → Critical/Warning/Suggestion
-    │                            (reflected in verdict)
-    │
-    └─ Issues in unchanged code → Reference notes
-                                   (not reflected in verdict)
-    │
-    ▼
-[Step 5] Verdict (based on changed code)
-    │
-    ├─ 0 Critical & Warning ≤ 3 → ✅ PASS
-    ├─ 0 Critical & Warning ≥ 4 → ⚠️ REVIEW_NEEDED
-    └─ Critical ≥ 1             → ❌ REJECT
-```
-
----
-
-## 9.2 Interaction Examples: Changed Code vs. Existing Code
-
-### Example 1: Changed code calls existing code causing an issue
-
-```java
-// Existing code (not changed)
-public String getData() {
-    return null;  // may return null
-}
-
-// Changed code (review target)
-+ String result = getData().trim();  // 🔴 Critical: NPE possible
-```
-
-**Verdict:** This issue is a **problem in the changed code**.
-- `getData()` returning null is a characteristic of existing code
-- The problem is that the changed code calls it without a null check
-- **Included in review targets, reflected in verdict**
-
-### Example 2: A problem in the existing code itself
-
-```java
-// Existing code (not changed) - already existing issue
-public void processData() {
-    Connection conn = getConnection();
-    // ... conn.close() missing (resource leak)
-}
-
-// Changed code (different method)
-+ public void newFeature() {
-+     // new feature implementation
-+ }
-```
-
-**Verdict:** This issue is a **reference note**.
-- The resource leak in `processData()` is an existing code issue
-- Unrelated to the current work (`newFeature`)
-- **Classified as reference note, not reflected in verdict**
-- Recommend a separate `bugfix/resource-leak-fix` branch
+**실행 순서 요약:**
+1. 로그 폴더 정리 확인
+2. Git 여부 확인 → base branch 결정 (develop 또는 main)
+3. `git diff {base-branch} --name-only` → 변경 파일 목록
+4. 4관점 리뷰 (변경 파일 3개 이상이면 3.5절 병렬 sub-agent, 미만이면 순차)
+5. 리뷰 결과 저장 → `review-summary.md` 업데이트
+6. 변경 코드 기준으로 verdict 결정 (PASS/REVIEW_NEEDED/REJECT)
 
 ---
 

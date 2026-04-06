@@ -54,3 +54,10 @@ Related Code Paths: {file path list}
 Related Log Location: {log file/line range}
 Environment: {environment info}
 ```
+
+## Error Handling
+
+| Situation | Action |
+|-----------|--------|
+| Insufficient information | Ask user for missing items (max 5 questions, explain why each is needed) |
+| Issue type cannot be determined | Default to RUNTIME; note ambiguity in the triage result |

@@ -15,3 +15,10 @@ Read the `.claude/agents/software-develop-architect.md` file using the Read tool
 ### Notes
 - This command **writes design documents only**. It does not perform implementation, review, or testing.
 - If implementation is needed after design, use `/workflow-automate` referencing the design document.
+
+## Usage Examples
+
+```
+/software-develop-architect 장비 모니터링 대시보드 기능 추가
+/software-develop-architect specs/features/login/design.md 출력 경로로 로그인 기능 설계
+```

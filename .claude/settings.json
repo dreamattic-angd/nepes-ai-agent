@@ -3,11 +3,11 @@
   "permissions": {
     "allow": [
       "Bash(*)",
-      "Edit",
-      "Write",
-      "Read",
-      "Glob",
-      "Grep",
+      "Edit(*)",
+      "Write(*)",
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)",
       "Agent",
       "NotebookEdit",
       "WebFetch",
@@ -30,7 +30,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "node \"%USERPROFILE%/.claude/scripts/status-line.js\""
+    "command": "node \"$USERPROFILE/.claude/scripts/status-line.js\""
   },
   "hooks": {
     "PreToolUse": [
@@ -39,11 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"%USERPROFILE%/.claude/hooks/check-db-write.js\""
-          },
-          {
-            "type": "command",
-            "command": "node \"%USERPROFILE%/.claude/hooks/check-dangerous-cmd.js\""
+            "command": "node \"$USERPROFILE/.claude/hooks/check-dangerous-cmd.js\""
           }
         ]
       },
@@ -52,7 +48,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"%USERPROFILE%/.claude/hooks/check-read-size.js\""
+            "command": "node \"$USERPROFILE/.claude/hooks/check-read-size.js\""
           }
         ]
       },
@@ -61,7 +57,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"%USERPROFILE%/.claude/hooks/check-sensitive-write.js\""
+            "command": "node \"$USERPROFILE/.claude/hooks/check-sensitive-write.js\""
           }
         ]
       }
@@ -72,7 +68,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"%USERPROFILE%/.claude/hooks/auto-crlf.js\""
+            "command": "node \"$USERPROFILE/.claude/hooks/auto-crlf.js\""
           }
         ]
       },
@@ -81,15 +77,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"%USERPROFILE%/.claude/hooks/check-output-convention.js\""
+            "command": "node \"$USERPROFILE/.claude/hooks/check-output-convention.js\""
           }
         ]
       },
       {
+        "matcher": "Read|Write|Edit|Bash|Agent",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"%USERPROFILE%/.claude/hooks/context-monitor.js\""
+            "command": "node \"$USERPROFILE/.claude/hooks/context-monitor.js\""
           }
         ]
       }
@@ -99,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"%USERPROFILE%/.claude/hooks/post-compact-notice.js\""
+            "command": "node \"$USERPROFILE/.claude/hooks/post-compact-notice.js\""
           }
         ]
       }

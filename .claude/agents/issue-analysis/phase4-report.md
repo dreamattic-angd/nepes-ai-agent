@@ -107,3 +107,10 @@ Anomalies:
 - Questions about other hypotheses → provide information about hypotheses rejected in Phases 2–3
 - Request for additional investigation → extend from Phase 1 while preserving existing analysis
 - "The analysis is wrong" → generate postmortem (`reports/{YYYYMMDD}-{issue_type}-postmortem.md`)
+
+## Error Handling
+
+| Situation | Action |
+|-----------|--------|
+| Report file save fails | Retry once; if fails, output the report content to user and note the save failure |
+| All hypotheses confidence below 60% | Include "추가 조사 권장" section with specific investigation items |

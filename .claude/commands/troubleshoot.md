@@ -258,3 +258,12 @@ Pipeline Status: troubleshoot {target}
 ```
 
 Synonyms accepted per workflow-rules.md: "status" → s, "계속"/"yes"/"ㅇ" → y, "다시"/"no"/"ㄴ" → n
+
+## Usage Examples
+
+```
+/troubleshoot PRS-04
+/troubleshoot BGP04 yesterday
+/troubleshoot rms today
+/troubleshoot PRS-04 09:00~11:00
+```

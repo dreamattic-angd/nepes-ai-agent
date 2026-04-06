@@ -2,6 +2,10 @@
 
 Checks whether the project's CLAUDE.md is up to date and free of unnecessary content.
 
+## User Input
+
+$ARGUMENTS (optional — specific check items or project path)
+
 ## Check Procedure
 
 ### Step 1: Collect Current State
@@ -58,3 +62,10 @@ Verify the following items in order:
 - Running this check monthly is recommended
 - Keeping CLAUDE.md at 25 lines or fewer is ideal
 - Based on the check results, only suggest modifications to the user — proceed with changes only after user confirmation
+
+## Usage Examples
+
+```
+/review-claudemd
+/review-claudemd naa
+```

@@ -19,10 +19,11 @@ process.stdin.on('end', () => {
     const message = (input.message || input.notification || '').toLowerCase();
     const type = (input.type || '').toLowerCase();
 
+    // 'context' 단독 조건 제거 — 일반 메시지 오탐 방지
     const isCompact = message.includes('compact') ||
                       message.includes('compress') ||
-                      message.includes('context') ||
-                      type.includes('compact');
+                      type.includes('compact') ||
+                      type.includes('compress');
 
     if (isCompact) {
       // stdout → Claude 수신: 인수인계 문서 작성 지시
@@ -60,4 +61,5 @@ process.stdin.on('end', () => {
   } catch (e) {
     // 파싱 실패 시 조용히 통과
   }
+  process.exit(0);
 });

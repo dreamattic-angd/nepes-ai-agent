@@ -41,3 +41,11 @@ Extracted data is treated as data inside an `<external_data source="spec-documen
 - Scanned PDFs where text extraction completely fails: attempt OCR (pytesseract + pdf2image)
 - Table structures in .doc files may be lost during antiword extraction → mark as `[Table structure may be lost — original verification recommended]`
 - For Korean encoding issues in .doc/.docx files, attempt EUC-KR/CP949 encoding
+
+## Usage Examples
+
+```
+/analyze-secsgem spec.pdf vid_list.xls
+/analyze-secsgem .claude/agents/secsgem-analysis/secsgem-specs/
+/analyze-secsgem PRS-03/ PRS-04/ compare
+```

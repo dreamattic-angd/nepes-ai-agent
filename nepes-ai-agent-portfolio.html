@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent Infrastructure Engineer — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script>if(typeof Chart !== 'undefined') Chart.defaults.animation = false;</script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { interpolate-size: allow-keywords; }
+
+    html.theme-dark {
+      --bg: #07070f; --surface: #0f0f1a; --surface-hover: #17172a;
+      --border: rgba(255,255,255,0.06);
+      --text: #EDEDED; --text-secondary: #8892a4;
+      --accent: #3b82f6; --accent-secondary: #8b5cf6;
+      --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
+    }
+    html.theme-light {
+      --bg: #f8fafc; --surface: #ffffff; --surface-hover: #f1f5f9;
+      --border: rgba(0,0,0,0.07);
+      --text: #0f172a; --text-secondary: #64748b;
+      --accent: #2563eb; --accent-secondary: #7c3aed;
+      --positive: #059669; --negative: #e11d48; --warning: #d97706;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.01em;
+      transition: background 0.3s, color 0.3s;
+      scrollbar-gutter: stable;
+    }
+    h1,h2,h3,h4,h5,h6 { color: var(--text); letter-spacing: -0.03em; line-height: 1.1; text-wrap: balance; }
+    h1 { font-weight: 800; }
+    h2 { font-weight: 700; font-size: 2rem; }
+    h3 { font-weight: 600; font-size: 1.5rem; }
+    h4 { font-weight: 600; font-size: 1rem; }
+    p, li, span { color: var(--text); }
+    .text-secondary { color: var(--text-secondary); }
+
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 80px 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 24px;
+      transition: box-shadow 0.2s ease, border-color 0.2s;
+    }
+    .card:hover { box-shadow: 0 0 0 1px var(--border), 0 8px 24px rgba(0,0,0,0.12); }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .animate { animation: fadeInUp 0.65s ease-out both; }
+    .animate.delay-1 { animation-delay: 0.1s; }
+    .animate.delay-2 { animation-delay: 0.2s; }
+    .animate.delay-3 { animation-delay: 0.3s; }
+    .animate.delay-4 { animation-delay: 0.4s; }
+    .animate.delay-5 { animation-delay: 0.5s; }
+    .animate.delay-6 { animation-delay: 0.65s; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 120px 0 80px;
+      background:
+        radial-gradient(ellipse 90% 60% at 50% -5%, rgba(59,130,246,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 35% at 85% 90%, rgba(139,92,246,0.09) 0%, transparent 50%),
+        var(--bg);
+    }
+    html.theme-light .hero {
+      background:
+        radial-gradient(ellipse 90% 60% at 50% -5%, rgba(37,99,235,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 35% at 85% 90%, rgba(124,58,237,0.04) 0%, transparent 50%),
+        var(--bg);
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.28);
+      color: var(--positive); font-size: 0.75rem; font-weight: 600;
+      padding: 6px 14px; border-radius: 20px; margin-bottom: 24px;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .hero-badge::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--positive); animation: pulse 2s infinite;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+      font-weight: 800; line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    html.theme-dark .hero-title {
+      background: linear-gradient(140deg, #e2e8f0 0%, #94a3b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    html.theme-light .hero-title {
+      background: linear-gradient(140deg, #0f172a 0%, #475569 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.05rem; color: var(--text-secondary);
+      max-width: 580px; margin-bottom: 36px; line-height: 1.85;
+    }
+
+    .hero-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 52px; }
+    .hero-meta-item {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      padding: 7px 14px; border-radius: 8px; font-size: 0.82rem; color: var(--text-secondary);
+    }
+    html.theme-light .hero-meta-item { background: rgba(0,0,0,0.02); }
+
+    /* ===== KPI GRID ===== */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .kpi-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 22px;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .kpi-card:hover {
+      border-color: rgba(59,130,246,0.35);
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.15), 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .kpi-value {
+      font-size: 2.6rem; font-weight: 800; color: var(--accent);
+      line-height: 1; margin-bottom: 5px; font-family: 'Inter', sans-serif;
+    }
+    .kpi-label { font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; }
+    .kpi-desc { font-size: 0.74rem; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header { margin-bottom: 48px; }
+    .section-tag {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px; display: block;
+    }
+    .section-header h2 { margin-bottom: 10px; }
+    .section-header p { color: var(--text-secondary); max-width: 580px; font-size: 0.95rem; line-height: 1.8; }
+
+    /* ===== BEFORE / AFTER ===== */
+    .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .ba-card { border-radius: 10px; padding: 20px; }
+    .ba-before { background: rgba(244,63,94,0.05); border: 1px solid rgba(244,63,94,0.14); }
+    .ba-after  { background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.14); }
+    .ba-label  { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+    .ba-before .ba-label { color: var(--negative); }
+    .ba-after  .ba-label { color: var(--positive); }
+    .ba-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .ba-list li { font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 8px; }
+    .ba-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .ba-before .ba-list li::before { background: var(--negative); }
+    .ba-after  .ba-list li::before { background: var(--positive); }
+
+    /* ===== FLOW STEPS ===== */
+    .flow-container { display: flex; flex-direction: column; align-items: stretch; }
+    .flow-step {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 13px 18px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .flow-step:hover { border-color: rgba(59,130,246,0.3); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .flow-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .flow-content h4 { font-size: 0.88rem; margin-bottom: 1px; }
+    .flow-content p  { font-size: 0.76rem; color: var(--text-secondary); }
+    .flow-arrow { width: 2px; height: 22px; background: linear-gradient(to bottom, rgba(59,130,246,0.5), transparent); margin: 0 auto; }
+
+    /* ===== TWO COLUMN ===== */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .two-col.r3-2 { grid-template-columns: 3fr 2fr; }
+    .two-col.r2-3 { grid-template-columns: 2fr 3fr; }
+
+    /* ===== FEATURE LIST ===== */
+    .feature-list { display: flex; flex-direction: column; gap: 10px; }
+    .feature-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      transition: border-color 0.2s;
+    }
+    .feature-item:hover { border-color: rgba(59,130,246,0.28); }
+    .feature-icon {
+      width: 32px; height: 32px; border-radius: 7px;
+      background: rgba(59,130,246,0.1); display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+    }
+    .feature-text h4 { font-size: 0.86rem; margin-bottom: 2px; }
+    .feature-text p  { font-size: 0.76rem; color: var(--text-secondary); line-height: 1.55; }
+
+    /* ===== TECH TAGS ===== */
+    .tech-grid { display: flex; flex-wrap: wrap; gap: 9px; }
+    .tech-tag {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 7px 13px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 500;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .tech-tag:hover { border-color: var(--accent); background: var(--surface-hover); }
+    .tech-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ===== CHART WRAPPER ===== */
+    .chart-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px;
+    }
+    .chart-title {
+      font-size: 0.76rem; font-weight: 700; color: var(--text-secondary);
+      margin-bottom: 22px; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    /* ===== VERSION TIMELINE ===== */
+    .ver-timeline { display: flex; flex-direction: column; }
+    .ver-item { display: flex; gap: 22px; padding: 15px 0; border-bottom: 1px solid var(--border); }
+    .ver-item:last-child { border-bottom: none; }
+    .ver-badge {
+      font-family: 'Inter', monospace; font-size: 0.75rem; font-weight: 700;
+      background: rgba(59,130,246,0.1); color: var(--accent);
+      padding: 4px 10px; border-radius: 6px; height: fit-content;
+      white-space: nowrap; min-width: 72px; text-align: center; flex-shrink: 0;
+    }
+    .ver-badge.major { background: rgba(139,92,246,0.14); color: var(--accent-secondary); }
+    .ver-content h4 { font-size: 0.86rem; margin-bottom: 3px; }
+    .ver-content p  { font-size: 0.76rem; color: var(--text-secondary); }
+
+    /* ===== PROJECTS GRID ===== */
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .project-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 18px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .project-card:hover { border-color: rgba(59,130,246,0.28); transform: translateY(-2px); }
+    .project-name { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; font-family: 'Inter', monospace; }
+    .project-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ===== ARCH DIAGRAM ===== */
+    .arch-diagram {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 36px; overflow: hidden;
+    }
+
+    /* ===== ORCH FLOW (horizontal) ===== */
+    .orch-flow { display: flex; align-items: center; gap: 0; overflow-x: auto; padding-bottom: 6px; }
+    .orch-node { flex-shrink: 0; text-align: center; min-width: 108px; }
+    .orch-box {
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 6px;
+      font-size: 0.8rem; font-weight: 600;
+    }
+    .orch-sub  { font-size: 0.68rem; color: var(--text-secondary); line-height: 1.45; }
+    .orch-arrow { flex-shrink: 0; padding: 0 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .orch-cp {
+      font-size: 0.6rem; background: rgba(245,158,11,0.12); color: var(--warning);
+      border: 1px solid rgba(245,158,11,0.28); padding: 2px 8px;
+      border-radius: 4px; font-weight: 700; white-space: nowrap;
+    }
+
+    /* ===== CARDS ROW ===== */
+    .cards-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .cards-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+    /* ===== INFO NOTE ===== */
+    .info-note {
+      padding: 14px 18px; background: var(--surface);
+      border: 1px solid var(--border); border-left: 3px solid var(--accent);
+      border-radius: 8px; font-size: 0.8rem; line-height: 1.7;
+    }
+    .info-note strong { color: var(--text); }
+
+    /* ===== MCP TAG ROW ===== */
+    .mcp-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .mcp-tag {
+      padding: 7px 14px; background: rgba(16,185,129,0.07);
+      border: 1px solid rgba(16,185,129,0.2); border-radius: 8px;
+      font-size: 0.8rem; color: var(--text-secondary);
+    }
+
+    /* ===== MENU ===== */
+    .viz-menu { position: fixed; top: 16px; right: 16px; z-index: 9999; }
+    .viz-menu-toggle {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(12px); transition: all 0.2s;
+    }
+    .viz-menu-toggle:hover { background: var(--surface-hover); }
+    .viz-menu-dropdown {
+      position: absolute; top: 52px; right: 0; min-width: 200px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 8px;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: all 0.2s; backdrop-filter: blur(16px);
+    }
+    .viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .viz-menu-dropdown button {
+      width: 100%; padding: 10px 14px; border: none; border-radius: 8px;
+      background: transparent; color: var(--text); font-size: 14px;
+      font-family: inherit; cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 10px; transition: background 0.15s;
+    }
+    .viz-menu-dropdown button:hover { background: var(--surface-hover); }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body { background: white !important; color: black !important; }
+      .viz-menu { display: none !important; }
+      .hero { min-height: auto; padding: 40px 0; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .card, .kpi-card, .feature-item { break-inside: avoid; border: 1px solid #e2e8f0; box-shadow: none; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+    @page { margin: 0.75in; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      h2 { font-size: 1.6rem; }
+      h3 { font-size: 1.3rem; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .two-col, .two-col.r3-2, .two-col.r2-3 { grid-template-columns: 1fr; gap: 28px; }
+      .ba-grid, .cards-3, .cards-2, .projects-grid { grid-template-columns: 1fr; }
+      section { padding: 60px 0; }
+      .section-header { margin-bottom: 32px; }
+    }
+    @media (max-width: 375px) {
+      body { overflow-x: hidden; }
+      .container { padding: 0 16px; }
+      .kpi-value { font-size: 2rem; }
+      .hero-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" onfocus="this.style.cssText='position:fixed;left:16px;top:16px;z-index:10000;padding:8px 16px;background:var(--accent);color:white;text-decoration:none;border-radius:4px;'" onblur="this.style.cssText='position:absolute;left:-9999px;'">콘텐츠로 건너뛰기</a>
+
+  <!-- ===== MENU ===== -->
+  <div class="viz-menu">
+    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown">
+      <button onclick="cycleTheme()"><span id="themeIcon">🌙</span><span id="themeLabel">다크 모드</span></button>
+      <button onclick="downloadImage()"><span>📥</span><span>PNG 다운로드</span></button>
+      <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
+    </div>
+  </div>
+
+  <main id="main-content" role="main">
+
+  <!-- ======================================================
+       1. HERO
+       ====================================================== -->
+  <section class="hero" role="banner">
+    <div class="container">
+      <div class="animate">
+        <div class="hero-badge">현재 재직 중 &nbsp;·&nbsp; NEPES &nbsp;·&nbsp; 2025.11.12 ~</div>
+      </div>
+
+      <h1 class="hero-title animate delay-1">
+        AI Agent Orchestration<br>Infrastructure
+      </h1>
+
+      <p class="hero-sub animate delay-2">
+        반도체 제조 현장에 Claude Code 기반 AI 자동화 인프라를 설계·구축·운영.<br>
+        소프트웨어 관리 체계 부재 환경에서 CMMI Level 2+3 수준의 프로세스를 자력으로 정립.
+      </p>
+
+      <div class="hero-meta animate delay-3">
+        <div class="hero-meta-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>2025.11.12 ~ 현재 (약 5개월)</span>
+        </div>
+        <div class="hero-meta-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>v1.0 → v2.5.8 지속 개발·운영</span>
+        </div>
+        <div class="hero-meta-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+          <span>6개 프로젝트 통합 지원</span>
+        </div>
+        <div class="hero-meta-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span>Claude Code / Anthropic API</span>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid animate delay-4">
+        <div class="kpi-card">
+          <div class="kpi-value" data-count="13">0</div>
+          <div class="kpi-label">Agents</div>
+          <div class="kpi-desc">역할 분리 전문 에이전트</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" data-count="18">0</div>
+          <div class="kpi-label">Commands</div>
+          <div class="kpi-desc">슬래시 커맨드 자동화</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" data-count="12">0</div>
+          <div class="kpi-label">Hooks</div>
+          <div class="kpi-desc">안전성·모니터링 훅</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" style="color: var(--accent-secondary); font-size: 2rem;">v2.5.8</div>
+          <div class="kpi-label">Current Version</div>
+          <div class="kpi-desc">안정화 프로덕션 버전</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       2. OVERVIEW
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Overview</span>
+        <h2>무엇을 어떻게 해결했나</h2>
+        <p>소프트웨어 개발·관리 프로세스가 전혀 없던 환경에서 시작, AI 기반 자동화 인프라로 체계화</p>
+      </div>
+
+      <div class="two-col" data-reveal>
+        <div>
+          <h3 style="margin-bottom: 18px;">배경 및 문제</h3>
+          <div class="ba-grid">
+            <div class="ba-card ba-before">
+              <div class="ba-label">Before — 입사 전</div>
+              <ul class="ba-list">
+                <li>버전 관리 체계 전무</li>
+                <li>코드 리뷰 프로세스 없음</li>
+                <li>이슈 발생 시 수동 로그 확인</li>
+                <li>브랜치 전략 미정립</li>
+                <li>배포 기준·절차 없음</li>
+              </ul>
+            </div>
+            <div class="ba-card ba-after">
+              <div class="ba-label">After — 구축 후</div>
+              <ul class="ba-list">
+                <li>CMMI L2+L3 기반 워크플로우</li>
+                <li>멀티 에이전트 코드 리뷰</li>
+                <li>자동 로그 수집·분석 파이프라인</li>
+                <li>Git Flow 브랜치 전략</li>
+                <li>3-level 버전관리 자동화</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin-bottom: 18px;">핵심 성과</h3>
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="feature-text">
+                <h4>프로세스 성숙도 향상</h4>
+                <p>CMMI Level 0 → Level 2+3 수준<br>설계→개발→리뷰→테스트 전 단계 자동화</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+              </div>
+              <div class="feature-text">
+                <h4>6개 프로젝트 통합 지원</h4>
+                <p>단일 워크플로우로 다중 프로젝트 자동 감지·처리<br>(APP_RMSPAGE, YTAP, RMSSERVER 외 3개)</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div class="feature-text">
+                <h4>이슈 분석 완전 자동화</h4>
+                <p>FTP 로그 수집 → Oracle DB 조회 → AI 분석<br>→ 보고서 생성 원스톱 파이프라인</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </div>
+              <div class="feature-text">
+                <h4>자기 개선(Self-Improvement) 루프</h4>
+                <p>실패 패턴 자동 기록 → 컨텍스트 주입<br>→ CLAUDE.md 영구 규칙화 3단계 학습 루프</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       3. GIT WORKFLOW + CMMI
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Core Achievement 01</span>
+        <h2>버전 관리 체계 정립</h2>
+        <p>Git-Workflow + CMMI Level 2+3 개념을 결합한 소프트웨어 개발 프로세스 자동화</p>
+      </div>
+
+      <div class="two-col r2-3" data-reveal>
+        <!-- Flow -->
+        <div class="flow-container" style="gap: 0;">
+          <div class="flow-step" style="border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.04);">
+            <div class="flow-icon" style="background: rgba(59,130,246,0.14);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 1 — 변경 분석</h4>
+              <p>변경 범위·영향도 파악, ITSM 번호 확인</p>
+            </div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-step">
+            <div class="flow-icon" style="background: rgba(16,185,129,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--positive)" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 2 — 브랜치·커밋</h4>
+              <p>feature/* 자동 생성, 컨벤션 커밋 메시지</p>
+            </div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-step">
+            <div class="flow-icon" style="background: rgba(245,158,11,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 3 — 리뷰·버전·머지</h4>
+              <p>자동 코드리뷰, SEMVER 자동 증가, develop 머지</p>
+            </div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-step" style="border-color: rgba(139,92,246,0.25);">
+            <div class="flow-icon" style="background: rgba(139,92,246,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent-secondary)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 4 — 정리·푸시</h4>
+              <p>로컬 브랜치 정리, 원격 푸시 안내</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Features -->
+        <div>
+          <h3 style="margin-bottom: 18px;">핵심 기능</h3>
+          <div class="feature-list" style="margin-bottom: 20px;">
+            <div class="feature-item">
+              <div class="feature-icon" style="background: rgba(139,92,246,0.1);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-secondary)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div class="feature-text">
+                <h4>MAJOR.MINOR.PATCH 자동 버전닝</h4>
+                <p>커밋 타입에 따라 자동 결정. feat → MINOR, fix/improve → PATCH</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon" style="background: rgba(16,185,129,0.1);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--positive)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <div class="feature-text">
+                <h4>6개 프로젝트 자동 감지</h4>
+                <p>git remote URL 기반 자동 식별, 동일 워크플로우 적용</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon" style="background: rgba(245,158,11,0.1);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="feature-text">
+                <h4>Git Flow 전략 강제 적용</h4>
+                <p>develop/main 보호 브랜치, feature/* 전략 자동 강제</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon" style="background: rgba(59,130,246,0.1);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div class="feature-text">
+                <h4>ITSM 연동 필수 검증</h4>
+                <p>커밋 전 ITSM 티켓 번호 필수 확인, 추적 가능성 보장</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-note">
+            <strong>CMMI Level 2:</strong> 재현 가능한 프로세스 정의, 계획·추적·관리 체계<br>
+            <strong>CMMI Level 3:</strong> 조직 표준 프로세스, 정량적 품질 기준 도입
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       4. SDLC MULTI-AGENT ORCHESTRATION
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Core Achievement 02</span>
+        <h2>설계→개발→리뷰→테스트 멀티 에이전트 오케스트레이션</h2>
+        <p>역할이 분리된 전문 에이전트들이 체크포인트로 연결되는 SDLC 자동화 파이프라인</p>
+      </div>
+
+      <!-- Horizontal pipeline -->
+      <div class="arch-diagram" data-reveal style="margin-bottom: 28px;">
+        <div class="orch-flow">
+
+          <div class="orch-node">
+            <div class="orch-box" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.35);">
+              <div style="font-size: 0.6rem; color: var(--accent); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Orchestrator</div>
+              /workflow-automate
+            </div>
+            <div class="orch-sub">복잡도 분석<br>모드 결정</div>
+          </div>
+
+          <div class="orch-arrow">
+            <svg width="24" height="20" viewBox="0 0 24 20" fill="none" stroke="var(--text-secondary)" stroke-width="1.5"><path d="M3 10h18M14 3l7 7-7 7"/></svg>
+          </div>
+
+          <div class="orch-node">
+            <div class="orch-box" style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.28);">
+              <div style="font-size: 0.6rem; color: var(--accent-secondary); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Sub-Agent</div>
+              architect
+            </div>
+            <div class="orch-sub">6-Phase<br>설계 문서</div>
+          </div>
+
+          <div class="orch-arrow">
+            <div class="orch-cp">✓ CP1</div>
+            <svg width="24" height="20" viewBox="0 0 24 20" fill="none" stroke="var(--text-secondary)" stroke-width="1.5"><path d="M3 10h18M14 3l7 7-7 7"/></svg>
+          </div>
+
+          <div class="orch-node">
+            <div class="orch-box" style="background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.22);">
+              <div style="font-size: 0.6rem; color: var(--positive); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Sub-Agent</div>
+              developer
+            </div>
+            <div class="orch-sub">설계 기반<br>구현</div>
+          </div>
+
+          <div class="orch-arrow">
+            <svg width="24" height="20" viewBox="0 0 24 20" fill="none" stroke="var(--text-secondary)" stroke-width="1.5"><path d="M3 10h18M14 3l7 7-7 7"/></svg>
+          </div>
+
+          <div class="orch-node">
+            <div class="orch-box" style="background: rgba(244,63,94,0.07); border: 1px solid rgba(244,63,94,0.22);">
+              <div style="font-size: 0.6rem; color: var(--negative); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Sub-Agent</div>
+              code-reviewer
+            </div>
+            <div class="orch-sub">4-관점 리뷰<br>자동 재작업</div>
+          </div>
+
+          <div class="orch-arrow">
+            <div class="orch-cp">✓ CP2</div>
+            <svg width="24" height="20" viewBox="0 0 24 20" fill="none" stroke="var(--text-secondary)" stroke-width="1.5"><path d="M3 10h18M14 3l7 7-7 7"/></svg>
+          </div>
+
+          <div class="orch-node">
+            <div class="orch-box" style="background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.22);">
+              <div style="font-size: 0.6rem; color: var(--accent); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Sub-Agent</div>
+              tester
+            </div>
+            <div class="orch-sub">테스트 작성<br>실행·검증</div>
+          </div>
+
+          <div class="orch-arrow">
+            <div class="orch-cp" style="background: rgba(16,185,129,0.1); color: var(--positive); border-color: rgba(16,185,129,0.28);">✓ CP3</div>
+            <svg width="24" height="20" viewBox="0 0 24 20" fill="none" stroke="var(--text-secondary)" stroke-width="1.5"><path d="M3 10h18M14 3l7 7-7 7"/></svg>
+          </div>
+
+          <div class="orch-node">
+            <div class="orch-box" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.35);">
+              <div style="font-size: 0.6rem; color: var(--accent); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;">Workflow</div>
+              /git-workflow
+            </div>
+            <div class="orch-sub">PR 생성<br>Merge</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="cards-3" data-reveal>
+        <div class="card">
+          <h4 style="margin-bottom: 8px; color: var(--accent);">역할 완전 분리</h4>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65;">설계·구현·리뷰·테스트를 별개 에이전트가 담당. 리뷰어가 구현에 개입하지 않는 독립성 보장.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin-bottom: 8px; color: var(--accent);">체크포인트 & 자동 재작업</h4>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65;">Critical 이슈 발견 시 developer → code-reviewer 자동 재실행. 사용자 승인 후 다음 단계 진행.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin-bottom: 8px; color: var(--accent);">복잡도 라우팅</h4>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65;">단순 작업은 architect, 중대형은 software-develop-architect(6-Phase Opus 4.6)로 자동 분기.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       5. ISSUE ANALYSIS PIPELINE
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Core Achievement 03</span>
+        <h2>이슈 분석 자동화 파이프라인</h2>
+        <p>DB MCP와 FTP 자동 접속을 통한 설비·서버 로그 수집부터 5-Why 근본원인 분석까지 완전 자동화</p>
+      </div>
+
+      <div class="two-col" data-reveal>
+        <!-- Flow -->
+        <div class="flow-container" style="gap: 0;">
+          <div class="flow-step" style="border-color: rgba(244,63,94,0.28); background: rgba(244,63,94,0.04);">
+            <div class="flow-icon" style="background: rgba(244,63,94,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--negative)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 0 — 로그 사전 스캔</h4>
+              <p>이슈 시점 추론, 관련 설비·서버 목록 추출</p>
+            </div>
+          </div>
+          <div class="flow-arrow" style="background: linear-gradient(to bottom, rgba(244,63,94,0.4), rgba(59,130,246,0.4));"></div>
+
+          <div class="flow-step">
+            <div class="flow-icon" style="background: rgba(245,158,11,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 1 — FTP 자동 로그 수집</h4>
+              <p>fetch_log.py — 설비·서버 FTP 자동 접속 후 로그 파일 수집</p>
+            </div>
+          </div>
+          <div class="flow-arrow"></div>
+
+          <div class="flow-step">
+            <div class="flow-icon" style="background: rgba(59,130,246,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 2 — Oracle DB MCP 조회</h4>
+              <p>설비 메타정보·이력 데이터 자동 조회 및 컨텍스트 보강</p>
+            </div>
+          </div>
+          <div class="flow-arrow"></div>
+
+          <div class="flow-step">
+            <div class="flow-icon" style="background: rgba(139,92,246,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent-secondary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 3 — log-analyzer 분석</h4>
+              <p>구조화 로그 파싱, 이상 패턴 감지, JSON 결과 반환</p>
+            </div>
+          </div>
+          <div class="flow-arrow"></div>
+
+          <div class="flow-step">
+            <div class="flow-icon" style="background: rgba(16,185,129,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--positive)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 4 — 5-Why + Devil's Advocate</h4>
+              <p>최소 2가지 가설, 반증 검증으로 근본원인 확정</p>
+            </div>
+          </div>
+          <div class="flow-arrow" style="background: linear-gradient(to bottom, var(--accent), rgba(16,185,129,0.4));"></div>
+
+          <div class="flow-step" style="border-color: rgba(16,185,129,0.28); background: rgba(16,185,129,0.04);">
+            <div class="flow-icon" style="background: rgba(16,185,129,0.14);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--positive)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="flow-content">
+              <h4>Phase 5 — 분석 리포트 생성</h4>
+              <p>근본원인 + 재발방지 조치 + 검증 이력 구조화</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tech Points -->
+        <div>
+          <h3 style="margin-bottom: 18px;">기술 포인트</h3>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card" style="border-left: 3px solid var(--accent);">
+              <h4 style="margin-bottom: 7px;">Multi-Protocol Data Collection</h4>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65;">FTP(설비 로그), Oracle DB MCP(설비 메타·이력), 파일시스템을 동시 활용한 다계층 데이터 수집 아키텍처</p>
+            </div>
+            <div class="card" style="border-left: 3px solid var(--accent-secondary);">
+              <h4 style="margin-bottom: 7px;">External Data Isolation</h4>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65;"><code style="background: var(--surface-hover); padding: 1px 6px; border-radius: 4px; font-size: 0.76rem;">&lt;external_data&gt;</code> 래퍼로 외부 로그·DB 결과 내 프롬프트 인젝션 방어. 격리된 컨텍스트로 처리.</p>
+            </div>
+            <div class="card" style="border-left: 3px solid var(--positive);">
+              <h4 style="margin-bottom: 7px;">Devil's Advocate 검증</h4>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65;">확정된 가설을 의도적으로 반박·검증하는 단계. 오진 방지, 근본원인 신뢰도 향상.</p>
+            </div>
+            <div class="card" style="border-left: 3px solid var(--warning);">
+              <h4 style="margin-bottom: 7px;">Phase-Based Token 효율화</h4>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65;">페이즈별 독립 실행으로 컨텍스트 효율화. 중단 후 재개 가능한 체크포인트 구조.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       6. ARCHITECTURE OVERVIEW
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Architecture</span>
+        <h2>시스템 아키텍처 개요</h2>
+        <p>Hook 기반 안전성 레이어와 에이전트 오케스트레이션의 계층적 구조</p>
+      </div>
+
+      <div class="arch-diagram" data-reveal>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
+
+          <!-- Commands -->
+          <div>
+            <div style="font-size: 0.67rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(59,130,246,0.18);">
+              Commands Layer · 18개
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(59,130,246,0.07); border-radius: 6px; font-family: 'Inter', monospace;">/git-workflow</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(59,130,246,0.07); border-radius: 6px; font-family: 'Inter', monospace;">/workflow-automate</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(59,130,246,0.07); border-radius: 6px; font-family: 'Inter', monospace;">/issue-analyze</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(59,130,246,0.07); border-radius: 6px; font-family: 'Inter', monospace;">/troubleshoot</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(59,130,246,0.07); border-radius: 6px; font-family: 'Inter', monospace;">/code-review</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(59,130,246,0.07); border-radius: 6px; font-family: 'Inter', monospace;">/analyze-log</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(59,130,246,0.07); border-radius: 6px; font-family: 'Inter', monospace; color: var(--text-secondary);">+ 11개 더...</div>
+            </div>
+          </div>
+
+          <!-- Agents -->
+          <div>
+            <div style="font-size: 0.67rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-secondary); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(139,92,246,0.18);">
+              Agents Layer · 13개
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(139,92,246,0.07); border-radius: 6px;">architect / sw-architect</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(139,92,246,0.07); border-radius: 6px;">developer</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(139,92,246,0.07); border-radius: 6px;">code-reviewer</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(139,92,246,0.07); border-radius: 6px;">tester</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(139,92,246,0.07); border-radius: 6px;">log-analyzer</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(139,92,246,0.07); border-radius: 6px;">ai-guideline-analyzer/fixer</div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(139,92,246,0.07); border-radius: 6px; color: var(--text-secondary);">+ 6개 더...</div>
+            </div>
+          </div>
+
+          <!-- Hooks -->
+          <div>
+            <div style="font-size: 0.67rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warning); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(245,158,11,0.18);">
+              Safety Hooks · 12개
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(245,158,11,0.05); border-radius: 6px; display: flex; align-items: center; gap: 7px;">
+                <span style="font-size: 0.58rem; background: rgba(244,63,94,0.18); color: var(--negative); padding: 2px 6px; border-radius: 3px; font-weight: 700; flex-shrink: 0;">PRE</span>dangerous-cmd 차단
+              </div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(245,158,11,0.05); border-radius: 6px; display: flex; align-items: center; gap: 7px;">
+                <span style="font-size: 0.58rem; background: rgba(244,63,94,0.18); color: var(--negative); padding: 2px 6px; border-radius: 3px; font-weight: 700; flex-shrink: 0;">PRE</span>sensitive 파일 보호
+              </div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(245,158,11,0.05); border-radius: 6px; display: flex; align-items: center; gap: 7px;">
+                <span style="font-size: 0.58rem; background: rgba(244,63,94,0.18); color: var(--negative); padding: 2px 6px; border-radius: 3px; font-weight: 700; flex-shrink: 0;">PRE</span>read size 제한
+              </div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(245,158,11,0.05); border-radius: 6px; display: flex; align-items: center; gap: 7px;">
+                <span style="font-size: 0.58rem; background: rgba(16,185,129,0.2); color: var(--positive); padding: 2px 6px; border-radius: 3px; font-weight: 700; flex-shrink: 0;">POST</span>context 모니터링
+              </div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(245,158,11,0.05); border-radius: 6px; display: flex; align-items: center; gap: 7px;">
+                <span style="font-size: 0.58rem; background: rgba(16,185,129,0.2); color: var(--positive); padding: 2px 6px; border-radius: 3px; font-weight: 700; flex-shrink: 0;">POST</span>실패 자동 기록
+              </div>
+              <div style="font-size: 0.76rem; padding: 6px 10px; background: rgba(245,158,11,0.05); border-radius: 6px; color: var(--text-secondary);">+ 7개 더...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MCP Layer -->
+        <div style="margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--border);">
+          <div style="font-size: 0.67rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--positive); margin-bottom: 10px;">MCP Integration Layer</div>
+          <div class="mcp-row">
+            <div class="mcp-tag">Oracle DB MCP — 설비 DB 직접 조회</div>
+            <div class="mcp-tag">Sequential Thinking MCP — 복잡 추론</div>
+            <div class="mcp-tag">Context7 MCP — 최신 라이브러리 문서</div>
+            <div class="mcp-tag">Obsidian MCP — 지식 관리 연동</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       7. METRICS / CHARTS
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Metrics</span>
+        <h2>성장 지표</h2>
+        <p>v1.0에서 v2.5.8까지의 기능 확장 및 아키텍처 진화</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 22px;" data-reveal>
+        <div class="chart-wrap">
+          <div class="chart-title">버전별 컴포넌트 성장 추이</div>
+          <div style="height: 300px;" role="img" aria-label="버전별 에이전트·커맨드·훅 증가 추이를 보여주는 그룹형 막대 차트">
+            <canvas id="versionChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="chart-title">컴포넌트 분포</div>
+          <div style="height: 300px;" role="img" aria-label="에이전트 13개, 커맨드 18개, 훅 12개, 스킬 3개, 스크립트 4개 분포를 보여주는 도넛 차트">
+            <canvas id="compChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       8. VERSION TIMELINE
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Timeline</span>
+        <h2>버전 히스토리</h2>
+        <p>2025년 11월 입사 후 현재까지의 개발 이력</p>
+      </div>
+
+      <div class="ver-timeline" data-reveal>
+        <div class="ver-item">
+          <div class="ver-badge major">v2.5.8</div>
+          <div class="ver-content">
+            <h4>ECC 패턴 적용 — 에이전트 품질 강화</h4>
+            <p>code-review / pr-review / ai-guideline 에이전트 품질 개선, Everything Claude Code 패턴 도입</p>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-badge">v2.5.7</div>
+          <div class="ver-content">
+            <h4>Hooks 보안 취약점 수정</h4>
+            <p>PreToolUse 훅 커맨드 인젝션 취약점 패치, 안정성 전반 개선</p>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-badge">v2.5.0</div>
+          <div class="ver-content">
+            <h4>AI Guideline Analyzer/Fixer v2 릴리즈</h4>
+            <p>배치 기반 분석(10파일/배치), 소형 인덱스 파일로 컨텍스트 효율화</p>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-badge">v2.1.0</div>
+          <div class="ver-content">
+            <h4>/troubleshoot 파이프라인 구축</h4>
+            <p>문제 파싱 → 로그 분석 → 근본원인 진단 → 코드 수정 완전 자동화</p>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-badge major">v2.0.0</div>
+          <div class="ver-content">
+            <h4>Major Release — develop 브랜치 도입</h4>
+            <p>Git Flow 전략 완전 정립, develop/main 이중 브랜치 체계 확립</p>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-badge">v1.39+</div>
+          <div class="ver-content">
+            <h4>Sub-Agent 아키텍처 도입</h4>
+            <p>architect, developer, code-reviewer, tester 4개 역할 분리 에이전트 구축</p>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-badge">v1.32+</div>
+          <div class="ver-content">
+            <h4>체크포인트·실패 메모리 시스템 구현</h4>
+            <p>파일 기반 체크포인트 세션 재개, JSONL 실패 기록 → 3단계 학습 루프</p>
+          </div>
+        </div>
+        <div class="ver-item">
+          <div class="ver-badge">v1.0</div>
+          <div class="ver-content">
+            <h4>프로젝트 초기 구축 (2025.11.12)</h4>
+            <p>입사 직후 첫 버전. 기본 에이전트 및 커맨드 체계 수립, git-workflow 초기 구현</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       9. TECH STACK
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Technology</span>
+        <h2>기술 스택</h2>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 22px;" data-reveal>
+        <div>
+          <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 11px;">AI / LLM</div>
+          <div class="tech-grid">
+            <div class="tech-tag"><div class="tech-dot" style="background: #d97706;"></div>Claude Sonnet 4.6</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #b45309;"></div>Claude Opus 4.6</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #7c3aed;"></div>Anthropic API</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #2563eb;"></div>Claude Code CLI</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #059669;"></div>MCP (Model Context Protocol)</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #9333ea;"></div>Multi-Agent Orchestration</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 11px;">Data & Integration</div>
+          <div class="tech-grid">
+            <div class="tech-tag"><div class="tech-dot" style="background: #dc2626;"></div>Oracle DB MCP</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #0284c7;"></div>FTP 자동화 (Python)</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #16a34a;"></div>JSONL 이벤트 로깅</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #0891b2;"></div>Sequential Thinking MCP</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #4f46e5;"></div>Obsidian MCP</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 11px;">DevOps / Process</div>
+          <div class="tech-grid">
+            <div class="tech-tag"><div class="tech-dot" style="background: #f97316;"></div>Git Flow</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #6366f1;"></div>CMMI Level 2+3</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #0891b2;"></div>Semantic Versioning</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #65a30d;"></div>ITSM 연동</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #be185d;"></div>Hook-based Security</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #ca8a04;"></div>SECS/GEM (반도체 도메인)</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 11px;">Development</div>
+          <div class="tech-grid">
+            <div class="tech-tag"><div class="tech-dot" style="background: #f59e0b;"></div>JavaScript / Node.js</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #3b82f6;"></div>Python</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #10b981;"></div>Markdown DSL (Agent 명세)</div>
+            <div class="tech-tag"><div class="tech-dot" style="background: #8b5cf6;"></div>JSON / JSONL</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       10. SUPPORTED PROJECTS
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Scope</span>
+        <h2>지원 프로젝트</h2>
+        <p>단일 AI 인프라로 6개 프로젝트를 통합 지원</p>
+      </div>
+
+      <div class="projects-grid" data-reveal>
+        <div class="project-card">
+          <div class="project-name">NEPES_AI_AGENTS</div>
+          <div class="project-desc">본 AI 에이전트 관리 리포지토리. ~/.claude/ 배포 관리</div>
+        </div>
+        <div class="project-card">
+          <div class="project-name">APP_RMSPAGE</div>
+          <div class="project-desc">RMS 페이지 애플리케이션 — 설비 관리 시스템</div>
+        </div>
+        <div class="project-card">
+          <div class="project-name">YTAP</div>
+          <div class="project-desc">YTAP 메인 시스템 — 반도체 공정 자동화</div>
+        </div>
+        <div class="project-card">
+          <div class="project-name">RMSSERVER</div>
+          <div class="project-desc">RMS 서버 — 백엔드 서비스 인프라</div>
+        </div>
+        <div class="project-card">
+          <div class="project-name">WEB_RMSPAGE</div>
+          <div class="project-desc">RMS 웹 페이지 — 프론트엔드 관리 인터페이스</div>
+        </div>
+        <div class="project-card">
+          <div class="project-name">YTAP_MANAGER</div>
+          <div class="project-desc">YTAP 관리자 시스템 — 운영·모니터링 대시보드</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       11. ADDITIONAL FEATURES
+       ====================================================== -->
+  <section>
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <span class="section-tag">Advanced Features</span>
+        <h2>추가 기술 특장점</h2>
+      </div>
+
+      <div class="cards-2" data-reveal>
+        <div class="card">
+          <h4 style="margin-bottom: 9px; display: flex; align-items: center; gap: 8px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Hook 기반 보안 아키텍처
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7;">모델 외부에서 실행되므로 AI 모델이 우회 불가. rm -rf, git push --force, 민감 파일 접근 등을 시스템 레벨에서 차단. 모델 업데이트와 무관하게 동작.</p>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom: 9px; display: flex; align-items: center; gap: 8px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            3단계 실패 학습 루프
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7;">JSONL 실패 기록 → 워크플로우 컨텍스트 주입 → 3회 이상 반복 시 CLAUDE.md 영구 규칙화. 동일 실수 재발 자동 방지.</p>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom: 9px; display: flex; align-items: center; gap: 8px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            세션 핸드오프 자동화
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7;">컨텍스트 75% 포화 시 자동 감지, HANDOFF.md 생성. 새 세션에서 완벽한 컨텍스트 복원으로 작업 연속성 보장.</p>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom: 9px; display: flex; align-items: center; gap: 8px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            AI Guideline 품질 관리
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7;">10개 배치 기반 에이전트 파일 품질 분석·자동 수정. 소형 인덱스 파일만 로드하는 컨텍스트 효율 설계.</p>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom: 9px; display: flex; align-items: center; gap: 8px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            SECS/GEM 도메인 특화 에이전트
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7;">반도체 장비 통신 표준(SECS/GEM) PDF·Word·Excel 분석, VID 목록 교차 검증. 제조 도메인 특화 전문 에이전트.</p>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom: 9px; display: flex; align-items: center; gap: 8px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            모델별 최적화 라우팅
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7;">에이전트 파일의 model 필드로 역할에 맞는 모델 자동 선택. 복잡 설계는 Opus 4.6, 일반 작업은 Sonnet 4.6 자동 분기.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="padding: 52px 0; border-top: 1px solid var(--border);">
+    <div class="container" style="text-align: center;">
+      <p style="color: var(--text-secondary); font-size: 0.8rem; line-height: 1.9;">
+        NEPES AI Agent Infrastructure &nbsp;·&nbsp; v2.5.8 &nbsp;·&nbsp; 2025.11.12 ~ 현재<br>
+        Claude Code + Anthropic API 기반 멀티 에이전트 오케스트레이션 시스템<br>
+        <span style="color: var(--border); font-size: 0.72rem;">13 Agents · 18 Commands · 12 Hooks · 6 Projects</span>
+      </p>
+    </div>
+  </footer>
+
+  </main>
+
+  <script>
+    // ===== Menu =====
+    function toggleMenu() {
+      var d = document.getElementById('vizMenuDropdown');
+      if (d) d.classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.viz-menu')) {
+        var d = document.getElementById('vizMenuDropdown');
+        if (d) d.classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var d = document.getElementById('vizMenuDropdown');
+        if (d) d.classList.remove('open');
+      }
+    });
+
+    // ===== Theme =====
+    var currentTheme = localStorage.getItem('viz-theme') ||
+      (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
+    function applyTheme(t) {
+      document.documentElement.className = 'theme-' + t;
+      var icon = document.getElementById('themeIcon');
+      var label = document.getElementById('themeLabel');
+      if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+      if (label) label.textContent = t === 'dark' ? '다크 모드' : '라이트 모드';
+      localStorage.setItem('viz-theme', t);
+      currentTheme = t;
+      if (typeof onThemeChange === 'function') onThemeChange();
+    }
+    function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+    applyTheme(currentTheme);
+
+    // ===== Scroll Reveal =====
+    document.querySelectorAll('[data-reveal]').forEach(function(el) { el.classList.add('reveal'); });
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+
+    // ===== Number Counters =====
+    function animateCounters() {
+      document.querySelectorAll('[data-count]').forEach(function(el) {
+        if (el.dataset.counted) return;
+        el.dataset.counted = '1';
+        var target = parseFloat(el.dataset.count);
+        var prefix = el.dataset.prefix || '';
+        var suffix = el.dataset.suffix || '';
+        var start = performance.now();
+        var duration = 1400;
+        (function tick(now) {
+          var p = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = prefix + Math.round(target * eased) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        })(start);
+      });
+    }
+    var counterEl = document.querySelector('[data-count]');
+    if (counterEl) {
+      var cObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) { if (e.isIntersecting) { animateCounters(); cObs.disconnect(); } });
+      }, { threshold: 0.3 });
+      cObs.observe(counterEl);
+    }
+
+    // ===== Download PNG =====
+    async function downloadImage() {
+      var menu = document.querySelector('.viz-menu');
+      if (menu) menu.style.display = 'none';
+      try {
+        var url = await htmlToImage.toPng(document.body, {
+          quality: 1, pixelRatio: 2,
+          filter: function(n) { return !n.classList || !n.classList.contains('viz-menu'); }
+        });
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'ai-agent-portfolio.png';
+        a.click();
+      } catch(e) { console.error('Download failed:', e); }
+      if (menu) menu.style.display = '';
+    }
+
+    // ===== Charts =====
+    var chartsBuilt = false;
+
+    function getColors() {
+      var s = getComputedStyle(document.documentElement);
+      var isDark = document.documentElement.classList.contains('theme-dark');
+      return {
+        text: s.getPropertyValue('--text').trim(),
+        textSecondary: s.getPropertyValue('--text-secondary').trim(),
+        border: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)',
+        accent: s.getPropertyValue('--accent').trim(),
+        accentSec: s.getPropertyValue('--accent-secondary').trim(),
+        positive: s.getPropertyValue('--positive').trim(),
+        warning: s.getPropertyValue('--warning').trim(),
+        surface: s.getPropertyValue('--surface').trim()
+      };
+    }
+
+    function resetCanvas(id) {
+      var old = document.getElementById(id);
+      if (!old) return null;
+      var parent = old.parentNode;
+      var c = document.createElement('canvas');
+      c.id = id;
+      parent.replaceChild(c, old);
+      return c;
+    }
+
+    function buildCharts() {
+      if (chartsBuilt || typeof Chart === 'undefined') return;
+      var colors = getColors();
+
+      // --- Version progression bar chart ---
+      var ctx1 = resetCanvas('versionChart');
+      if (ctx1) {
+        try {
+          new Chart(ctx1, {
+            type: 'bar',
+            data: {
+              labels: ['v1.0', 'v1.32', 'v1.39', 'v2.0', 'v2.1', 'v2.5', 'v2.5.8'],
+              datasets: [
+                {
+                  label: 'Agents',
+                  data: [4, 6, 10, 11, 11, 12, 13],
+                  backgroundColor: 'rgba(59,130,246,0.7)',
+                  borderColor: 'rgba(59,130,246,1)',
+                  borderWidth: 1, borderRadius: 4
+                },
+                {
+                  label: 'Commands',
+                  data: [4, 7, 10, 14, 15, 17, 18],
+                  backgroundColor: 'rgba(139,92,246,0.7)',
+                  borderColor: 'rgba(139,92,246,1)',
+                  borderWidth: 1, borderRadius: 4
+                },
+                {
+                  label: 'Hooks',
+                  data: [3, 5, 7, 9, 9, 11, 12],
+                  backgroundColor: 'rgba(245,158,11,0.7)',
+                  borderColor: 'rgba(245,158,11,1)',
+                  borderWidth: 1, borderRadius: 4
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                tooltip: { enabled: true, padding: 10, cornerRadius: 8 },
+                legend: { labels: { color: colors.textSecondary, font: { family: 'Inter', size: 12 }, boxWidth: 12, padding: 16 } }
+              },
+              scales: {
+                x: {
+                  ticks: { color: colors.textSecondary, font: { family: 'Inter', size: 11 } },
+                  grid: { color: colors.border },
+                  border: { color: 'transparent' }
+                },
+                y: {
+                  ticks: { color: colors.textSecondary, font: { family: 'Inter', size: 11 }, maxTicksLimit: 6 },
+                  grid: { color: colors.border },
+                  border: { color: 'transparent' },
+                  beginAtZero: true
+                }
+              },
+              layout: { padding: { top: 8, right: 8, bottom: 4, left: 4 } }
+            }
+          });
+        } catch(e) { console.error('versionChart failed:', e); }
+      }
+
+      // --- Component distribution doughnut ---
+      var ctx2 = resetCanvas('compChart');
+      if (ctx2) {
+        try {
+          new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+              labels: ['Agents (13)', 'Commands (18)', 'Hooks (12)', 'Skills (3)', 'Scripts (4)'],
+              datasets: [{
+                data: [13, 18, 12, 3, 4],
+                backgroundColor: [
+                  'rgba(59,130,246,0.8)',
+                  'rgba(139,92,246,0.8)',
+                  'rgba(245,158,11,0.8)',
+                  'rgba(16,185,129,0.8)',
+                  'rgba(244,63,94,0.65)'
+                ],
+                borderColor: [
+                  'rgba(59,130,246,1)',
+                  'rgba(139,92,246,1)',
+                  'rgba(245,158,11,1)',
+                  'rgba(16,185,129,1)',
+                  'rgba(244,63,94,1)'
+                ],
+                borderWidth: 2,
+                hoverOffset: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: '62%',
+              plugins: {
+                tooltip: {
+                  enabled: true, padding: 10, cornerRadius: 8,
+                  callbacks: {
+                    label: function(ctx) { return ' ' + ctx.label + ': ' + ctx.raw + '개'; }
+                  }
+                },
+                legend: {
+                  position: 'bottom',
+                  labels: { color: colors.textSecondary, font: { family: 'Inter', size: 11 }, boxWidth: 10, padding: 12 }
+                }
+              },
+              layout: { padding: 8 }
+            }
+          });
+        } catch(e) { console.error('compChart failed:', e); }
+      }
+
+      chartsBuilt = true;
+    }
+
+    function onThemeChange() {
+      if (!chartsBuilt) return;
+      chartsBuilt = false;
+      setTimeout(buildCharts, 80);
+    }
+
+    if (typeof Chart !== 'undefined') {
+      Chart.defaults.animation = false;
+      document.addEventListener('DOMContentLoaded', buildCharts);
+      window.addEventListener('load', buildCharts);
+    }
+  </script>
+</body>
+</html>

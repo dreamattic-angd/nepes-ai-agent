@@ -46,3 +46,9 @@ Read both files and migrate according to the conversion rules.
 ### 3. Simple Query/Browse
 
 Process directly with MCP tools without loading additional files.
+
+## Output Format
+
+- Note Write/Edit: 노트가 Obsidian vault에 design-guide.md 규칙에 따라 저장된다.
+- Migration: 변환된 노트가 Obsidian vault에 저장되며, 변환 요약이 출력된다.
+- Simple Query: MCP 도구 결과가 직접 출력된다.

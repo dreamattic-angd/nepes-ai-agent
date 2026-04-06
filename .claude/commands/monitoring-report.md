@@ -112,3 +112,12 @@ Period: {DAYS} days ({start date} ~ {end date})
 Workflows: {N}
 Overall success rate: {N}%
 ```
+
+## Usage Examples
+
+```
+/monitoring-report
+/monitoring-report this week
+/monitoring-report 90 days
+/monitoring-report last month
+```

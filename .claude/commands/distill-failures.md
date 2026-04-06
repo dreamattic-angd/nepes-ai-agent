@@ -8,6 +8,10 @@ When git-workflow runs, it automatically checks the date of the last distillatio
 If **14 or more days have elapsed**, this command runs automatically before entering the workflow.
 Manual execution is also available: `/distill-failures`
 
+## User Input
+
+$ARGUMENTS (optional — project keyword filter, e.g., `naa`, `rmsserver`)
+
 ## Confirmation Bias Prevention Principles
 
 1. **Only patterns with verified: true can be promoted** — unverified hypotheses never go into CLAUDE.md
@@ -142,6 +146,14 @@ Add eval cases? (Y/N/skip)
 - **`Y`** → Create eval JSON cases matching the relevant patterns in the `evals/{workflow}/` directory
 - **`N` or `skip`** → Skip and proceed to Step 5
 - **No matching type** → Automatically skip this step
+
+## Usage Examples
+
+```
+/distill-failures
+/distill-failures naa
+/distill-failures rmsserver
+```
 
 ### Step 5: Record Run Date and Report Results
 

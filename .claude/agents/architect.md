@@ -4,7 +4,7 @@ description: >
   Software architect agent for writing design documents.
   Specializes in feature design, bug analysis, and project architecture design.
   Invocation: "Use subagent architect to design [target]. Output to: [specs path]"
-model: sonnet
+model: claude-sonnet-4-6
 tools: Read, Grep, Glob, Bash, Write
 ---
 
@@ -171,17 +171,14 @@ architecture.md:
 | ... | ... | ... |
 ```
 
-## Self-Verification (required before output)
+## Phase 0: Input Parsing
 
-After completing the design document, always check the following:
+Receive invocation prompt from orchestrator. Extract: mode (feature/bugfix/project), output path, requirements (`{REQUIREMENTS}`), and optional `PROBING_DONE` flag.
 
-| # | Check Item |
-|---|-----------|
-| 1 | Are all completion criteria testable? (Is the measurement/verification method clear?) |
-| 2 | Is the impact scope realistically estimated? (Do the referenced files actually exist?) |
-| 3 | Have potential conflicts with existing code been reviewed? |
-| 4 | Is the interface definition specific enough for a developer to start implementing immediately? |
-| 5 | Are there any missing exception cases? |
+## Phase 1: Pre-analysis
 
-If verification passes: save the file and return a result summary
-If verification fails: self-correct and re-verify
+Use Glob/Grep/Read to understand the project structure, existing code patterns, and tech stack.
+
+## Phase 2: Document Generation
+
+Generate the design document according to the mode-specific template above.
