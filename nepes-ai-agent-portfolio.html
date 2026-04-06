@@ -340,12 +340,40 @@
     @page { margin: 0.75in; }
 
     /* ===== RESPONSIVE ===== */
+    /* ===== ARCH LAYER GRID (3-col) ===== */
+    .arch-layer-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+    }
+    /* ===== CHART GRID (3fr 2fr) ===== */
+    .chart-grid {
+      display: grid; grid-template-columns: 3fr 2fr; gap: 22px;
+    }
+
     @media (max-width: 768px) {
       h2 { font-size: 1.6rem; }
       h3 { font-size: 1.3rem; }
       .kpi-grid { grid-template-columns: repeat(2, 1fr); }
       .two-col, .two-col.r3-2, .two-col.r2-3 { grid-template-columns: 1fr; gap: 28px; }
       .ba-grid, .cards-3, .cards-2, .projects-grid { grid-template-columns: 1fr; }
+      /* 인라인 그리드 대체 클래스 — 모바일에서 단일 열로 */
+      .arch-layer-grid { grid-template-columns: 1fr; gap: 20px; }
+      /* arch-diagram 내부 padding 축소 */
+      .arch-diagram { padding: 20px 16px; }
+      /* mcp-tag 줄바꿈 허용 */
+      .mcp-row { gap: 8px; }
+      .mcp-tag { font-size: 0.75rem; padding: 6px 10px; }
+      /* 차트 그리드: 단일 열 + 오버플로 방지 */
+      .chart-grid { grid-template-columns: 1fr; overflow: hidden; }
+      .chart-wrap { padding: 20px 16px; overflow: hidden; }
+      .chart-wrap canvas { max-width: 100%; }
+      /* 가로 오케스트레이션 파이프라인 스크롤 힌트 */
+      .orch-flow-wrap { position: relative; }
+      .orch-flow-wrap::after {
+        content: '← 좌우 스크롤';
+        display: block; text-align: center;
+        font-size: 0.68rem; color: var(--text-secondary);
+        padding-top: 8px; opacity: 0.7;
+      }
       section { padding: 60px 0; }
       .section-header { margin-bottom: 32px; }
     }
@@ -640,7 +668,7 @@
       </div>
 
       <!-- Horizontal pipeline -->
-      <div class="arch-diagram" data-reveal style="margin-bottom: 28px;">
+      <div class="arch-diagram orch-flow-wrap" data-reveal style="margin-bottom: 28px;">
         <div class="orch-flow">
 
           <div class="orch-node">
@@ -852,7 +880,7 @@
       </div>
 
       <div class="arch-diagram" data-reveal>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
+        <div class="arch-layer-grid">
 
           <!-- Commands -->
           <div>
@@ -937,7 +965,7 @@
         <p>v1.0에서 v2.5.8까지의 기능 확장 및 아키텍처 진화</p>
       </div>
 
-      <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 22px;" data-reveal>
+      <div class="chart-grid" data-reveal>
         <div class="chart-wrap">
           <div class="chart-title">버전별 컴포넌트 성장 추이</div>
           <div style="height: 300px;" role="img" aria-label="버전별 에이전트·커맨드·훅 증가 추이를 보여주는 그룹형 막대 차트">
