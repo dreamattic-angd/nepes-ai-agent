@@ -1,6 +1,16 @@
 {
   "permissions": {
     "allow": [
+      "Bash(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Agent",
+      "NotebookEdit",
+      "WebFetch",
+      "WebSearch",
       "mcp__oracle-db__test_connection",
       "mcp__oracle-db__list_tables",
       "mcp__oracle-db__query",

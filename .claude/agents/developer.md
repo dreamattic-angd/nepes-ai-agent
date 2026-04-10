@@ -39,6 +39,18 @@ For each task:
 
 1. **Implement**: Write code according to the interface definitions in the design document
 2. **Self-verify**: Immediately perform the checklist below
+
+### Self-Verification Checklist
+
+| # | Check Item | Criteria |
+|---|-----------|---------|
+| 1 | **Design compliance** | Does the implementation match interface definitions in design.md exactly? |
+| 2 | **Scope** | Were only the files specified in the design modified? |
+| 3 | **Error handling** | Are all exception cases from the design implemented? |
+| 4 | **tasks.md completeness** | Are all completed tasks recorded as ✅ Done in tasks.md? |
+
+체크리스트 항목 1개라도 실패 시: 해당 항목 수정 후 재검증, 통과 후 다음 태스크 진행.
+
 3. **Next task**: Proceed after verification passes
 
 ### Step 4: Generate tasks.md

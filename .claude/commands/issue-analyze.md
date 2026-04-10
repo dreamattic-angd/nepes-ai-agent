@@ -132,6 +132,16 @@ Phase 4: Writing final report...
 ## Automatic Report Saving (Required)
 When analysis is complete, **always save the final report as a .md file in the `.claude/agents/issue-analysis/reports/` folder.** This is separate from outputting to the user — do not omit the file save.
 
+## Judge Evaluation (Required)
+
+After Phase 4 final report is saved:
+
+Use subagent issue-analysis-judge to evaluate [Phase 4 최종 리포트가 저장된 경로]
+
+Judge 완료 후 결과를 사용자에게 출력:
+- action이 AUTO_APPROVED: `✅ Judge 자동 승인 (score: N) — {reason}`
+- action이 NEEDS_REVIEW: `⚠️ Judge 검토 필요 (score: N) — {reason}`
+
 | Save Target | Save Filename | Notes |
 |-------------|--------------|-------|
 | Phase 0 scan index | `{YYYYMMDD}-log-scan-index.md` | To prevent context loss during analysis |

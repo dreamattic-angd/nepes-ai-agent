@@ -1,5 +1,5 @@
 <!-- nepes-ai-agents:start -->
-# nepes-ai-agents v2.5.8
+# nepes-ai-agents v2.8.1
 Claude Code AI agent management repository. The `.claude/` directory is deployed to `~/.claude/`.
 - Project commands: `/project:{command}`
 - Global commands (after install.bat): `/{command}`
@@ -15,7 +15,7 @@ Extract the repo name from `git remote get-url origin` to identify the project.
 - On detection failure (no remote, name mismatch, error, etc.) → confirm the project with the user before proceeding
 
 ## Git Workflow
-For any git operation (commit, branch, merge, etc.), follow the rules below. Even for natural-language requests, always execute the workflow command.
+When the user explicitly requests a git operation (commit, branch, merge, etc.), follow the rules below.
 - **All projects** (including NEPES_AI_AGENTS) → run `/git-workflow` (auto project detection)
 - **If executed from a blocked branch** → `/git-workflow` exits immediately; fulfill the user's original request using **Claude Code default behavior**. Never apply the workflow's branch strategy, versioning scheme, or tagging rules.
 - **Otherwise** → workflow undefined. Use **Claude Code default behavior**. Never apply the workflow's branch strategy, versioning scheme, or tagging rules.
@@ -51,5 +51,8 @@ When writing library-related code, always use context7 to reference the latest v
 
 - 슬래시 커맨드 실행 결과: 진행 상태, 완료 메시지, 오류 메시지를 한국어로 출력한다.
 - 분석/리뷰 결과: 해당 커맨드/에이전트가 지정한 형식을 따른다.
+
+## Tool Use Authorization
+작업 수행에 필요한 파일 읽기/쓰기/수정 및 셸 명령 실행(Bash)은 사용자의 별도 확인 없이 수행한다.
 
 <!-- nepes-ai-agents:end -->

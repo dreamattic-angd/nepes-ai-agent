@@ -13,14 +13,14 @@ If matching fails, ask the user to confirm the project before proceeding.
 
 ## Project Configuration Table
 
-| Repo Name | Project Name | Main Branch | Source Version File | Deep Review Layers | diff Source Path | Version File | CLAUDE.md Sync | README Auto-update | Draft PR |
-|-----------|-------------|------------|--------------------|--------------------|-----------------|--------------|---------------|--------------------|----------|
-| APP_RMSPAGE | APP_RMSPAGE | main | src/common/Version.java | Controller/Service/Repository | src/ | ./VERSION | N | N | N |
-| Web_rmspage | WEB_RMSPAGE | main | (none) | View/Composable/Store | src/ | ./VERSION | N | N | N |
-| YTAP | YTAP | master | src/Common/Version/YTAPVersion.java | Controller/Service/Repository | src/ | ./VERSION | N | N | N |
-| RMSSERVER | RMSSERVER | master | (none) | Controller/Service/Repository | RMSWorkflow/ RMSScenario/ RMSRDL/ RMS2.1.16/ RMSConnectivity/ DCP_Base/ | ./VERSION | N | N | N |
-| YTAP_MANAGER | YTAP_MANAGER | master | (none) | Controller/Servlet/Service/Manager/Repository/DAO | src/ | ./VERSION | N | N | N |
-| nepes-ai-agents | NEPES_AI_AGENTS | main | (none) | (none) | .claude/ | .claude/version.txt | Y | Y | Y |
+| Repo Name | Project Name | Main Branch | Source Version File | Deep Review Layers | diff Source Path | Version File | CLAUDE.md Sync | README Auto-update |
+|-----------|-------------|------------|--------------------|--------------------|-----------------|--------------|---------------|--------------------|
+| APP_RMSPAGE | APP_RMSPAGE | main | src/common/Version.java | Controller/Service/Repository | src/ | ./VERSION | N | N |
+| Web_rmspage | WEB_RMSPAGE | main | (none) | View/Composable/Store | src/ | ./VERSION | N | N |
+| YTAP | YTAP | master | src/Common/Version/YTAPVersion.java | Controller/Service/Repository | src/ | ./VERSION | N | N |
+| RMSSERVER | RMSSERVER | master | (none) | Controller/Service/Repository | RMSWorkflow/ RMSScenario/ RMSRDL/ RMS2.1.16/ RMSConnectivity/ DCP_Base/ | ./VERSION | N | N |
+| YTAP_MANAGER | YTAP_MANAGER | master | (none) | Controller/Servlet/Service/Manager/Repository/DAO | src/ | ./VERSION | N | N |
+| nepes-ai-agents | NEPES_AI_AGENTS | main | (none) | (none) | .claude/ | .claude/version.txt | Y | Y |
 
 ## User Input Parsing
 

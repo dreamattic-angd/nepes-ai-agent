@@ -21,7 +21,7 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ---
 
-## 현재 버전: 2.5.8
+## 현재 버전: 2.8.1
 
 ## 에이전트 현황
 
@@ -64,6 +64,14 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 | log-analyzer | ✅ 운영 | v2.1.0 | 로그 분석 서브에이전트 — 구조화 결과 반환 (troubleshoot 파이프라인용) |
 | ai-guideline-analyzer | ✅ 운영 | v2.5.0 | AI 지침 파일 품질 분석 agent — 10개마다 배치 저장, Bash shell redirect 병합, 소형 인덱스+요약 생성 |
 | ai-guideline-fixer | ✅ 운영 | v2.5.0 | AI 지침 파일 수정 agent — analysis-index.md 소형 파일만 읽기, Edit tool만 사용 (전면 재설계) |
+| code-review-judge | ✅ 운영 | v2.6.0 | code-reviewer 출력 품질 자동 채점 judge — 루브릭 1~5점, AUTO_APPROVED/NEEDS_REVIEW 판정 |
+| pr-review-judge | ✅ 운영 | v2.6.0 | pr-review 출력 품질 자동 채점 judge — 루브릭 1~5점, AUTO_APPROVED/NEEDS_REVIEW 판정 |
+| architect-judge | ✅ 운영 | v2.6.0 | architect 설계 문서 품질 자동 채점 judge — EARS 형식·인터페이스 정의 명확성 기준 |
+| issue-analysis-judge | ✅ 운영 | v2.6.0 | issue-analysis 리포트 품질 자동 채점 judge — 근거·수정 제안 구체성 기준 |
+| fdc-git-workflow | ✅ 운영 | v2.7.0 | FDC Portal 전용 git-workflow — feature 브랜치 전략, 테스트 연동, ITSM 번호 커밋 연동 |
+| language-router | ✅ 운영 | v2.8.0 | 변경 파일 언어 감지 후 적절한 code-reviewer로 라우팅 |
+| java-code-reviewer | ✅ 운영 | v2.8.0 | Java/Spring 특화 코드 리뷰 (@Transactional, JPA, Spring Bean 등) |
+| js-code-reviewer | ✅ 운영 | v2.8.0 | JavaScript/TypeScript 특화 코드 리뷰 (async/await, React hooks, any 타입 등) |
 | ai-guideline-orchestrator | ❌ 삭제 | v2.4.0~v2.4.8 | ai-guideline-v2 재설계로 대체 삭제 |
 | web-rmspage/git-workflow | ❌ 삭제 | v25.0 | v26.0에서 통합 워크플로우로 대체 |
 
@@ -77,6 +85,19 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ## 변경 이력
 
+2.8.1 improve: git-workflow Draft PR 기능 제거 (#ITSM-4199)
+2.8.0 feat: code-review agent 언어별 라우팅 구조 추가 (#ITSM-4196)
+2.7.8 improve: 커밋 body 규칙 전 타입 적용 및 git workflow 트리거 조건 개선 (#ITSM-4124)
+2.7.7 improve: 커밋 메시지 body 작성 규칙 추가 (#ITSM-4082)
+2.7.6 improve: fdc-git-workflow ITSM 연동 추가 (#ITSM-4080)
+2.7.5 improve: developer Self-Verification Checklist 및 fdc-git-workflow phase2 body 규칙 추가 (#ITSM-4067)
+2.7.4 fix: squash merge 후 브랜치 삭제 방식 수정 git update-ref -d 적용 (#ITSM-4052)
+2.7.3 fix: fdc-git-workflow phase3 squash 머지 방식으로 변경 (#ITSM-4050)
+2.7.2 improve: fdc-git-workflow 자동 브랜치 생성 및 머지 흐름 추가
+2.7.1 improve: fdc-git-workflow feature 브랜치 전략으로 변경
+2.7.0 feat: FDC Portal 전용 git-workflow 커맨드 추가 (#ITSM-4008)
+2.6.1 docs: CLAUDE.md Tool Use Authorization 지침 추가
+2.6.0 feat: judge 에이전트 4종 추가 및 eval 매트릭스 구조 구축 (#ITSM-3959)
 2.5.8 improve: ECC 패턴 적용 — code-review/pr-review/ai-guideline 에이전트 품질 강화 (#ITSM-3876)
 2.5.7 fix: hooks 보안 취약점 및 안정성 개선 (#ITSM-3871)
 2.5.6 improve: analyze-log 소스 코드 경로 연동 기능 추가 (#ITSM-3862)

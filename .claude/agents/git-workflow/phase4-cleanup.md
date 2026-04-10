@@ -97,43 +97,6 @@ node -e "
 
 Replace `{...}` with actual values determined throughout the workflow.
 
-## Step 3 (optional): Create Draft PR
-
-**Run only when `Draft PR` in the project settings table is Y AND the user requests it with phrases like "create a PR", "PR creation", "Draft PR", etc.**
-Skip this step if not requested.
-
-```bash
-# Create Draft PR using GitHub CLI
-gh pr create --draft \
-  --title "{commit type}: {commit message summary}" \
-  --body "## Changes
-- {key change content}
-
-## Version
-{old version} → {new version}
-
-## Related Tag
-v{new version}"
-```
-
-### Completion Report
-
-```
-📝 Draft PR created.
-
-PR URL: {PR URL}
-Status: Draft (not ready for review)
-
-To mark as ready for review:
-  gh pr ready {PR number}
-```
-
-**Notes:**
-- Requires `gh` CLI to be installed and authenticated
-- If `gh` is not installed, output a guidance message and skip
-
----
-
 ## Push-related Rules
 
 **Claude Code does not execute push directly.** The user performs it manually.
@@ -161,7 +124,6 @@ Fork:
 | Command | Max Retries | Retry Condition | When Retry Not Possible |
 |---------|------------|----------------|------------------------|
 | `git branch -d` | 1 | not fully merged → ask user to confirm `-D` usage, retry | Guide user to manage branch manually |
-| `gh pr create` | 2 | network error → retry at 2-second intervals | Skip PR creation, guide user to create manually |
 
 ### `git branch -d` Failure Handling
 

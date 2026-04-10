@@ -16,6 +16,16 @@ Read the `.claude/agents/software-develop-architect.md` file using the Read tool
 - This command **writes design documents only**. It does not perform implementation, review, or testing.
 - If implementation is needed after design, use `/workflow-automate` referencing the design document.
 
+### Judge Evaluation
+
+After the design document is saved:
+
+Use subagent architect-judge to evaluate [설계 문서가 저장된 경로]
+
+Judge 완료 후 결과를 사용자에게 출력:
+- action이 AUTO_APPROVED: `✅ Judge 자동 승인 (score: N) — {reason}`
+- action이 NEEDS_REVIEW: `⚠️ Judge 검토 필요 (score: N) — {reason}`
+
 ## Usage Examples
 
 ```
