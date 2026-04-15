@@ -126,3 +126,17 @@ Collect changed files via `git diff {base-branch} --name-only`. Classify by laye
 ## Phase 1: Sequential Thinking Review
 
 Execute Thoughts 1 through N+2 as defined in Section 3 above.
+
+## Error Handling
+
+| 상황 | 처리 |
+|------|------|
+| `git diff` 실패 | base-branch를 develop → main 순으로 fallback 시도 |
+| 변경 파일 없음 | "변경 파일이 없습니다." 출력 후 중단 |
+| Sequential Thinking 도구 사용 불가 | review-full.md 방식으로 단순 순차 리뷰로 대체 |
+
+## Uncertainty Handling
+
+- 레이어 분류 불명확 시: 파일 경로와 클래스명을 기준으로 최선 분류하고 리포트에 명시한다.
+- Cross-validation 결과 불일치 판단 불가 시: Reference note로 분류하고 수동 확인 권장 기재한다.
+- base-branch 판단 불가 시: develop → main 순으로 시도, 모두 실패 시 사용자에게 확인 요청.

@@ -42,17 +42,18 @@ If `ITSM_NUMBER` is `none`, omit the ITSM reference:
 ```
 
 **Generation rules:**
-- English only, all lowercase (except proper nouns, file names, error messages)
+- Subject line: English only, all lowercase (except proper nouns, file names, error messages)
 - Present tense, imperative mood ("add", "fix", "update" — not "added", "fixing")
 - Be specific: mention what changed and where
 - Use ` + ` to join multiple related changes: `feat: A + B`
 - Use ` — ` (space + em dash + space) for additional context
 - ITSM reference always goes at the end of the subject line: `feat: ... (#ITSM-3207)`
 - Subject line: keep under 72 characters
+- Body: **한국어로 작성** (Korean only)
 
 **Body (always required for all types):**
 
-The body explains *why* the change was made and *how* it works. Include:
+The body explains *why* the change was made and *how* it works. **Write in Korean.** Include:
 - Root cause of the bug (for `fix`) or motivation for the change (for all types)
 - What the old behavior was vs. the new behavior
 - Key implementation decisions and alternatives considered
@@ -61,15 +62,15 @@ The body explains *why* the change was made and *how* it works. Include:
 
 Example:
 ```
-fix: update watermark per-batch in extract_date (H-26)
+fix: update watermark per-batch in extract_date (#ITSM-3207)
 
-Root cause: watermark was updated once after the full blob loop, so a
-mid-loop exception left watermark behind the actual DB state. On restart,
-already-committed blobs were re-fetched → duplicate rows in TimescaleDB.
+원인: watermark가 blob 루프 전체 완료 후 한 번만 업데이트되어, 루프 중간에
+예외가 발생하면 watermark가 실제 DB 상태보다 뒤처지는 문제 발생. 재시작 시
+이미 커밋된 blob이 다시 조회되어 TimescaleDB에 중복 행 삽입됨.
 
-Fix: call update_watermark() immediately after each successful insert_rows()
-so the watermark always reflects committed state. Crash exposure bounded to
-at most one batch_size of blobs instead of the entire date's worth.
+수정: insert_rows() 성공 직후 즉시 update_watermark()를 호출하도록 변경.
+watermark가 항상 커밋된 상태를 반영하며, 크래시 시 최대 batch_size 개의
+blob만 재처리되도록 노출 범위를 제한함.
 ```
 
 **Type-specific guidance:**
@@ -92,7 +93,7 @@ at most one batch_size of blobs instead of the entire date's worth.
 - [ ] Description is specific (not generic like "update code" or "fix bug")
 - [ ] Subject line is under 72 characters
 - [ ] ITSM number present → subject ends with `(#ITSM-{number})`; ITSM_NUMBER=none → no ITSM reference
-- [ ] Body is present for all types (explains motivation + impact)
+- [ ] Body is present for all types (explains motivation + impact) and is written in Korean
 
 ---
 

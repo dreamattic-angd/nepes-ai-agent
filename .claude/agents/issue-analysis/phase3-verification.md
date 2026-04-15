@@ -103,3 +103,4 @@ Further verification needed: {list}
 |-----------|--------|
 | Code file cited by Phase 2 not found | Mark code evidence as "file not found" and proceed with log evidence only |
 | All hypotheses confidence below 40% | Add "추가 조사 필요" flag and proceed to Phase 4 with the highest-confidence hypothesis |
+

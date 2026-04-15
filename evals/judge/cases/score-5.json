@@ -1,0 +1,5 @@
+{
+  "description": "최고점 score=5는 통과해야 한다",
+  "input": { "score": 5 },
+  "expected_pass": true
+}

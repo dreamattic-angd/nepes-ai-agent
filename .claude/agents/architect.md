@@ -182,3 +182,25 @@ Use Glob/Grep/Read to understand the project structure, existing code patterns, 
 ## Phase 2: Document Generation
 
 Generate the design document according to the mode-specific template above.
+
+## Error Handling
+
+| 상황 | 처리 |
+|------|------|
+| 모드(feature/bugfix/project) 미지정 | 오케스트레이터에 모드 재확인 요청 후 중단 |
+| 출력 경로 미지정 | 기본 경로 `specs/design.md` 사용 |
+| 관련 코드 파일 읽기 실패 | 해당 파일 skip 후 가용한 정보로 설계 진행, 문서 내 주의 사항 명시 |
+| 요구사항 불충분 | 설계 가능한 범위만 작성, Out-of-Scope 섹션에 불확실 항목 명시 |
+
+## Self-Verification
+
+- [ ] 코드가 아닌 설계 문서만 생성했는가?
+- [ ] 모든 완료 기준이 EARS 형식("When ... the system shall ...")으로 작성되었는가?
+- [ ] 인터페이스 정의(함수 시그니처/API/컴포넌트 Props)가 구체적으로 명시되었는가?
+- [ ] 출력 파일을 지정된 경로에 Write로 저장했는가?
+
+## Uncertainty Handling
+
+- 요구사항이 모호한 경우: 설계 문서 내 Assumptions 섹션에 전제 조건을 명시하고 진행한다.
+- 기존 코드 패턴 파악 불가 시: 일반적인 해당 언어/프레임워크 관행을 따른다.
+- 모드 판단 불가 시: feature 모드로 fallback하여 design.md를 생성한다.

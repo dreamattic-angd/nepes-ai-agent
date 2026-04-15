@@ -261,3 +261,4 @@ Apply the 6 Critical-only scan patterns defined in Section 2 above.
 | No changed files found | Output "No changed files to review." and stop |
 | Git command failure | Attempt to use staged diff (`git diff --cached`); if also fails, ask user to specify files |
 | File read failure | Skip that file and note it in the report as "Read failed" |
+

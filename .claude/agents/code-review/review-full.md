@@ -545,4 +545,11 @@ If issues are found, correct the relevant items and then output the final result
 
 ---
 
+## Uncertainty Handling
+
+- base-branch 판단 불가 시: develop → main 순으로 시도하고, 모두 실패 시 사용자에게 확인 요청한다.
+- Git 미사용 프로젝트 시: Section 2.2 방식(전체 소스 파일 리뷰)으로 fallback한다.
+- 변경 코드/기존 코드 경계 판단 불가 시: 보수적으로 변경 코드 범위를 넓게 잡아 verdict에 반영한다.
+- 병렬 sub-agent 3개 이상 실패 시: 메인 세션에서 순차 리뷰로 전환한다 (Section 3.5 Fallback Handling 참조).
+
 *These guidelines are a general-purpose review guide for maintaining code quality.*

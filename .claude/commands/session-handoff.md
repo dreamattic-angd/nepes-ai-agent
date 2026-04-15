@@ -23,6 +23,12 @@ Follow the steps in `~/.claude/skills/session-handoff/SKILL.md`:
 3. **Step 3**: Reset the context monitor state.
 4. **Step 4**: Notify the user using the **Manual trigger** format.
 
+## Output Format
+
+- `HANDOFF_{YYYYMMDD_HHmm}.md`: 타임스탬프가 포함된 핸드오프 문서
+- `HANDOFF.md`: 최신 핸드오프 문서 (항상 최신 버전으로 덮어씀)
+- 완료 알림: Manual trigger 형식으로 저장 경로 안내 출력
+
 ## Usage Examples
 
 ```

@@ -267,3 +267,10 @@ Findings: 🔴 {N} | 🟡 {N} | 🟢 {N} | 👍 {N}
   Install: https://cli.github.com/
   Authenticate: gh auth login
   ```
+
+## Uncertainty Handling
+
+- PR 번호 파싱 불가 시: 사용자에게 PR 번호 직접 입력 요청한다.
+- `gh` CLI 인증 실패 시: `gh auth login` 안내 후 중단한다.
+- 병렬 sub-agent 실패 시: 해당 관점을 메인 세션에서 순차 처리하고 리포트에 명시한다.
+- verdict 기준 모호 시(Critical/Warning 경계 불명확): 보수적으로 더 높은 severity 기준을 적용한다.

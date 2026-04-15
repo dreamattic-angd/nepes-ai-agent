@@ -153,3 +153,4 @@ requires_deep_analysis: false
 log_access_failed: true
 error_message: {FTP connection failed / Equipment not found / IP not registered / ...}
 ```
+

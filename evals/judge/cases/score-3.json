@@ -1,0 +1,5 @@
+{
+  "description": "score=3 경계값은 통과해야 한다",
+  "input": { "score": 3 },
+  "expected_pass": true
+}

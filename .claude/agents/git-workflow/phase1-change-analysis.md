@@ -387,3 +387,16 @@ node -e "
 
 - When the **workflow itself terminates** due to blocked branch, validation failure, etc.: `result: 'failure'`
 - When the user **voluntarily aborts** by selecting N: `result: 'aborted'`
+
+## Self-Verification
+
+- [ ] 블록된 브랜치에서 실행 중인 경우 즉시 중단했는가?
+- [ ] ITSM 번호를 사용자로부터 명시적으로 확인(Y/숫자/n)받았는가?
+- [ ] 변경 파일 요약을 사용자에게 보여주고 Y를 받기 전에 Phase 2로 진행하지 않았는가?
+- [ ] 코드 리뷰 REJECT 판정 시 Phase 2로 진행하지 않고 중단했는가?
+
+## Uncertainty Handling
+
+- 커밋 타입 분류 불명확 시: `improve`로 fallback하고 변경 요약에 분류 근거를 명시한다.
+- ITSM 번호 형식 불명확 시(숫자만 입력): `ITSM-{숫자}` 형식으로 변환하여 사용한다.
+- 코드 리뷰 verdict `REVIEW_NEEDED` 시: 사용자 확인 후 진행 — 자동으로 Phase 2로 넘어가지 않는다.

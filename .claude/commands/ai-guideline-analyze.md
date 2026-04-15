@@ -35,6 +35,12 @@ Report dir: specs/
 수정이 필요하면 새 세션에서: /ai-guideline-fix specs/analysis-index.md
 ```
 
+## Output Format
+
+- `specs/analysis-index.md`: 파일별 누락 항목 인덱스 (파일경로 | 유형 | 누락항목 | 등급)
+- `specs/analysis-summary.md`: 전체 분석 요약 (등급별 통계, 항목별 빈도)
+- `specs/analysis-full-report.md`: 파일별 상세 분석 결과
+
 ## Usage Examples
 
 ```

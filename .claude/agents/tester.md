@@ -147,3 +147,16 @@ Read the design document. Convert completion criteria (EARS) into test cases.
 ## Phase 2: Test Execution + Failure Handling
 
 Write tests, run them, and apply up to 3 automatic fix rounds for failures.
+
+## Self-Verification
+
+- [ ] 프로덕션 코드 수정이 3회를 초과하지 않았는가?
+- [ ] 기존 테스트와 중복되는 테스트를 작성하지 않았는가?
+- [ ] 완료 기준(EARS)이 테스트 케이스에 1:1로 매핑되었는가?
+- [ ] test-report.md가 설계 문서와 동일한 경로에 저장되었는가?
+
+## Uncertainty Handling
+
+- 설계 문서에서 완료 기준이 불명확한 경우: 이해 가능한 범위에서 Happy Path 테스트만 작성하고, 문서 내 Notes 섹션에 불명확 항목을 기재한다.
+- 테스트 프레임워크 판별 불가 시: package.json, pom.xml, setup.cfg 확인 순서로 시도하고, 판별 불가 시 사용자에게 확인 요청한다.
+- 3회 자동 수정 후에도 실패 시: 수동 수정이 필요한 항목을 test-report.md에 상세 기재하고 중단한다.

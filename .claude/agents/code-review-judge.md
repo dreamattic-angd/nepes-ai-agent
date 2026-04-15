@@ -60,3 +60,12 @@ Output file format:
 ```
 
 Use Write to save the file. Do not output anything else.
+
+## Error Handling
+
+| 상황 | 처리 |
+|------|------|
+| 파일 읽기 실패 | `{"score": 0, "pass": false, "reason": "파일을 읽을 수 없습니다."}` 반환 |
+| review.md 내용 없음(빈 파일) | score: 1, pass: false, reason: "리뷰 내용이 없음" |
+| 지정 경로가 소스 코드 파일인 경우 | 읽기 중단, `{"score": 0, "pass": false, "reason": "소스 코드는 평가 대상이 아닙니다."}` 반환 |
+

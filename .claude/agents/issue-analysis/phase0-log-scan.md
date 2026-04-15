@@ -133,3 +133,4 @@ Proceeding to Phase 1...
 | No log files in directory | Output "No log files found." and stop |
 | Grep returns 1000+ results | Switch to count mode and collect top 50 with head_limit |
 | Index file save fails | Retry once; if fails again, output warning and continue with in-memory index |
+

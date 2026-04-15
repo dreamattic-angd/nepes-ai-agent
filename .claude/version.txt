@@ -21,7 +21,7 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ---
 
-## 현재 버전: 2.8.1
+## 현재 버전: 2.9.1
 
 ## 에이전트 현황
 
@@ -72,6 +72,11 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 | language-router | ✅ 운영 | v2.8.0 | 변경 파일 언어 감지 후 적절한 code-reviewer로 라우팅 |
 | java-code-reviewer | ✅ 운영 | v2.8.0 | Java/Spring 특화 코드 리뷰 (@Transactional, JPA, Spring Bean 등) |
 | js-code-reviewer | ✅ 운영 | v2.8.0 | JavaScript/TypeScript 특화 코드 리뷰 (async/await, React hooks, any 타입 등) |
+| developer-frontend | ✅ 운영 | v2.9.0 | Next.js/React/TypeScript 구현 전용 서브에이전트 (Server/Client Component, CSS Modules, a11y) |
+| developer-backend-java | ✅ 운영 | v2.9.0 | Java/Spring Boot 구현 전용 서브에이전트 (레이어드 아키텍처, @Transactional, JPA) |
+| developer-backend-python | ✅ 운영 | v2.9.0 | Python/FastAPI 구현 전용 서브에이전트 (Pydantic, async, numpy/scipy threadpool) |
+| frontend-code-reviewer | ✅ 운영 | v2.9.0 | React/Next.js/a11y/UI/UX 특화 코드 리뷰 (4관점 + Frontend Platform 5번째 관점) |
+| python-code-reviewer | ✅ 운영 | v2.9.0 | Python/FastAPI/Pydantic/async 특화 코드 리뷰 (4관점 + Python Platform 5번째 관점) |
 | ai-guideline-orchestrator | ❌ 삭제 | v2.4.0~v2.4.8 | ai-guideline-v2 재설계로 대체 삭제 |
 | web-rmspage/git-workflow | ❌ 삭제 | v25.0 | v26.0에서 통합 워크플로우로 대체 |
 
@@ -85,6 +90,13 @@ MAJOR가 올라가면 MINOR, PATCH는 0으로 리셋한다.
 
 ## 변경 이력
 
+2.9.1 improve: git-workflow 미등록 프로젝트 기본 동작 개선 (#ITSM-4360)
+2.9.0 feat: 도메인별 전문화 agent 분리 추가 (#ITSM-4341)
+2.8.6 improve: fdc-git-workflow 커밋 body 한국어 작성으로 변경 (#ITSM-4295)
+2.8.5 improve: CLAUDE.md 불확실성 명시 지침 추가 (#ITSM-4227)
+2.8.4 improve: AI 지침 파일 품질 분석 및 불필요 섹션 선별 제거 (#ITSM-4225)
+2.8.3 improve: ai-guideline-analyzer 컨텍스트 압축 대응 체크포인트 구현 (#ITSM-4219)
+2.8.2 improve: ai-guideline-analyzer 대용량 파일 처리 개선 (#ITSM-4216)
 2.8.1 improve: git-workflow Draft PR 기능 제거 (#ITSM-4199)
 2.8.0 feat: code-review agent 언어별 라우팅 구조 추가 (#ITSM-4196)
 2.7.8 improve: 커밋 body 규칙 전 타입 적용 및 git workflow 트리거 조건 개선 (#ITSM-4124)

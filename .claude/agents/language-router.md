@@ -42,22 +42,29 @@ Exclude the following file types (non-reviewable):
 Count extensions among the remaining reviewable files:
 
 - **Java group**: `.java`
-- **JS group**: `.js`, `.ts`, `.vue`, `.tsx`, `.jsx`
+- **Python group**: `.py`
+- **Frontend group**: `.tsx`, `.jsx`, `.vue`
+- **JS group**: `.ts`, `.js` (general JS/TS — frontend utility or Node.js)
 - **Other**: all other reviewable files
 
 ### Step 4: Apply Routing Rules
 
-Calculate percentages over `total_reviewable` (= java_files + js_files + other_files).
+Calculate percentages over `total_reviewable` (= java_files + python_files + frontend_files + js_files + other_files).
 
 Apply the following rules in order:
 1. If `total_reviewable == 0` → `route_to: code-reviewer`
-2. If `java_pct >= 50%` → `route_to: java-code-reviewer`
-3. If `js_pct >= 50%` → `route_to: js-code-reviewer`
-4. If `java_pct > 0` AND `js_pct > 0` AND neither reaches 50% → `route_to: both`
-5. Otherwise → `route_to: code-reviewer`
+2. If `python_pct >= 50%` → `route_to: python-code-reviewer`
+3. If `java_pct >= 50%` → `route_to: java-code-reviewer`
+4. If `frontend_pct >= 50%` → `route_to: frontend-code-reviewer`
+5. If `frontend_pct > 0` AND `(frontend_pct + js_pct) >= 50%` → `route_to: frontend-code-reviewer`
+6. If `js_pct >= 50%` → `route_to: js-code-reviewer`
+7. If multiple language groups > 0 and none reaches 50% → `route_to: multiple` (list all applicable reviewers)
+8. Otherwise → `route_to: code-reviewer`
 
 Where:
+- `python_pct = python_files / total_reviewable * 100`
 - `java_pct = java_files / total_reviewable * 100`
+- `frontend_pct = frontend_files / total_reviewable * 100`
 - `js_pct = js_files / total_reviewable * 100`
 
 ## Output Contract
@@ -66,18 +73,23 @@ Output the following block exactly. Do not add any other text before or after it
 
 ```
 [LANGUAGE_DETECTION]
-primary_language: java | javascript | mixed | unknown
+primary_language: java | python | frontend | javascript | mixed | unknown
 java_files: N
+python_files: N
+frontend_files: N
 js_files: N
 other_files: N
 total_reviewable: N
-route_to: java-code-reviewer | js-code-reviewer | code-reviewer | both
+route_to: java-code-reviewer | python-code-reviewer | frontend-code-reviewer | js-code-reviewer | code-reviewer | multiple
+reviewers: [list only when route_to is "multiple", e.g. frontend-code-reviewer, python-code-reviewer]
 ```
 
 **`primary_language` mapping:**
 - `route_to: java-code-reviewer` → `primary_language: java`
+- `route_to: python-code-reviewer` → `primary_language: python`
+- `route_to: frontend-code-reviewer` → `primary_language: frontend`
 - `route_to: js-code-reviewer` → `primary_language: javascript`
-- `route_to: both` → `primary_language: mixed`
+- `route_to: multiple` → `primary_language: mixed`
 - `route_to: code-reviewer` (no dominant language or no files) → `primary_language: unknown`
 
 ## Error Handling

@@ -1,0 +1,6 @@
+{
+  "code-review-judge":     { "pass_threshold": 3 },
+  "pr-review-judge":       { "pass_threshold": 3 },
+  "architect-judge":       { "pass_threshold": 3 },
+  "issue-analysis-judge":  { "pass_threshold": 3 }
+}

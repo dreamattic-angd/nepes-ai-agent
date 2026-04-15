@@ -61,3 +61,4 @@ Environment: {environment info}
 |-----------|--------|
 | Insufficient information | Ask user for missing items (max 5 questions, explain why each is needed) |
 | Issue type cannot be determined | Default to RUNTIME; note ambiguity in the triage result |
+

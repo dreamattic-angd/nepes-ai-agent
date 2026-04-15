@@ -47,8 +47,28 @@ Read both files and migrate according to the conversion rules.
 
 Process directly with MCP tools without loading additional files.
 
+## Execution Phases
+
+### Phase 0: 요청 유형 판별
+
+사용자 메시지 및 사용 MCP 도구를 분석하여 Task Branch(1/2/3)를 결정한다.
+
+### Phase 1: 참조 파일 로드
+
+Branch 1/2: design-guide.md (및 migration-guide.md) Read. Branch 3: 참조 파일 로드 없이 진행.
+
+### Phase 2: 작업 실행
+
+결정된 Branch에 따라 노트 작성/편집/마이그레이션/조회를 수행한다.
+
 ## Output Format
 
 - Note Write/Edit: 노트가 Obsidian vault에 design-guide.md 규칙에 따라 저장된다.
 - Migration: 변환된 노트가 Obsidian vault에 저장되며, 변환 요약이 출력된다.
 - Simple Query: MCP 도구 결과가 직접 출력된다.
+
+## Uncertainty Handling
+
+- 요청 유형 판별 불가 시: Branch 1(Note Write/Edit)로 fallback하여 design-guide.md를 로드하고 진행한다.
+- design-guide.md 읽기 실패 시: 사용자에게 파일 읽기 실패를 안내하고 기본 Markdown 형식으로 노트를 작성한다.
+- 마이그레이션 원본 형식 불명확 시: migration-guide.md에서 가장 유사한 규칙을 적용하고 변환 요약에 불확실 항목을 명시한다.

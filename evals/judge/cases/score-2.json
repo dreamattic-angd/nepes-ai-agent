@@ -1,0 +1,5 @@
+{
+  "description": "score=2는 어떤 judge도 통과하지 않아야 한다",
+  "input": { "score": 2 },
+  "expected_pass": false
+}

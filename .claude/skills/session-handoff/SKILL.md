@@ -78,6 +78,12 @@ Context is saturated/compacted. The following actions are recommended:
 2. Enter "Read HANDOFF.md and continue"
 ```
 
+## Uncertainty Handling
+
+- 트리거 유형 판별 불가 시: Manual Trigger 분기로 fallback하여 진행한다.
+- `references/template.md` 읽기 실패 시: 기본 형식(작업 요약/중단점/다음 단계)으로 핸드오프 문서를 작성한다.
+- 현재 작업 상태 추론 불가 시: 대화 히스토리에서 최근 파일 변경/명령 실행 기록을 기준으로 작성하고, 불확실한 항목에 `[possibly lost in compact]` 표시를 붙인다.
+
 ## Notes
 
 - HANDOFF*.md files are **temporary work files** (register `HANDOFF*.md` in `.gitignore`)
