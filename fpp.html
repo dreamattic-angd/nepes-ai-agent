@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FDC Portal — 포트폴리오</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script>Chart.defaults.animation = false;</script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <style>
+    :root {
+      --radius: 10px;
+      --transition: 0.2s ease;
+      font-size: 16px;
+    }
+    .theme-light {
+      --bg: #fafaf9;
+      --surface: #f1f0ee;
+      --surface-hover: #e8e6e3;
+      --border: rgba(0,0,0,0.1);
+      --text: #0f172a;
+      --text-secondary: #64748b;
+      --accent: #2563eb;
+      --accent-secondary: #7c3aed;
+      --positive: #16a34a;
+      --negative: #dc2626;
+      --warning: #d97706;
+      --hero-grad: linear-gradient(135deg, #dbeafe 0%, #ede9fe 60%, #fce7f3 100%);
+    }
+    .theme-dark {
+      --bg: #0a0a0a;
+      --surface: #161616;
+      --surface-hover: #1f1f1f;
+      --border: rgba(255,255,255,0.08);
+      --text: #ededed;
+      --text-secondary: #9ca3af;
+      --accent: #3b82f6;
+      --accent-secondary: #8b5cf6;
+      --positive: #22c55e;
+      --negative: #ef4444;
+      --warning: #f59e0b;
+      --hero-grad: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1a0a2e 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .skip-link {
+      position: absolute; top: -40px; left: 16px; z-index: 9999;
+      background: var(--accent); color: #fff; padding: 8px 16px;
+      border-radius: 4px; font-size: 0.875rem;
+    }
+    .skip-link:focus { top: 8px; }
+
+    /* ── MENU ── */
+    .viz-menu {
+      position: fixed; top: 16px; right: 16px; z-index: 9000;
+    }
+    .viz-menu-toggle {
+      width: 40px; height: 40px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer; color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .viz-menu-toggle:hover { background: var(--surface-hover); }
+    .viz-menu-dropdown {
+      display: none; position: absolute; top: 48px; right: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; min-width: 180px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .viz-menu-dropdown.open { display: block; }
+    .viz-menu-dropdown button {
+      width: 100%; padding: 10px 16px; background: none; border: none;
+      cursor: pointer; color: var(--text); font-size: 0.875rem;
+      display: flex; align-items: center; gap: 10px;
+      transition: background var(--transition); text-align: left;
+      font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    }
+    .viz-menu-dropdown button:hover { background: var(--surface-hover); }
+    .viz-menu-dropdown .divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+    /* ── CONTAINER ── */
+    .container {
+      max-width: 1100px; margin: 0 auto; padding: 0 32px;
+    }
+    @media (max-width: 768px) { .container { padding: 0 16px; } }
+
+    section { margin-bottom: 80px; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--hero-grad);
+      padding: 100px 0 80px;
+      margin-bottom: 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(59,130,246,0.12), transparent);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(59,130,246,0.15);
+      border: 1px solid rgba(59,130,246,0.3);
+      color: var(--accent);
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      color: var(--text); margin-bottom: 16px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    }
+    .hero-sub {
+      font-size: 1.15rem; color: var(--text-secondary);
+      max-width: 560px; margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+    .hero-stats {
+      display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat-value {
+      font-size: 2.5rem; font-weight: 800; color: var(--accent);
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.75rem; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    /* ── SECTION HEADERS ── */
+    .section-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 8px;
+    }
+    h2.section-title {
+      font-size: 2rem; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .section-desc {
+      font-size: 0.95rem; color: var(--text-secondary);
+      max-width: 560px; margin-bottom: 36px; line-height: 1.7;
+    }
+    h3 { font-size: 1.25rem; font-weight: 600; color: var(--text); }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+      transition: box-shadow var(--transition), border-color var(--transition);
+    }
+    .card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.15); border-color: var(--accent); }
+
+    /* ── GRIDS ── */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    /* ── TECH STACK ── */
+    .tech-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      color: var(--accent);
+      font-size: 0.8rem; font-weight: 500;
+      padding: 4px 12px; border-radius: 100px;
+      margin: 3px;
+    }
+    .tech-badge.green {
+      background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.25); color: var(--positive);
+    }
+    .tech-badge.purple {
+      background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.25); color: var(--accent-secondary);
+    }
+    .tech-badge.orange {
+      background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.25); color: var(--warning);
+    }
+
+    /* ── FEATURE CARDS ── */
+    .feature-card { position: relative; overflow: hidden; }
+    .feature-card .feat-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(59,130,246,0.12);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .feature-card .feat-icon svg { color: var(--accent); }
+    .feature-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; }
+    .feature-tag {
+      display: inline-block; font-size: 0.7rem; font-weight: 600;
+      padding: 2px 8px; border-radius: 4px; margin-top: 12px;
+      background: rgba(59,130,246,0.1); color: var(--accent);
+      border: 1px solid rgba(59,130,246,0.2);
+    }
+
+    /* ── ALGORITHM CARDS ── */
+    .algo-card { border-left: 3px solid var(--accent); }
+    .algo-card .algo-formula {
+      font-family: 'Inter', monospace;
+      font-size: 0.8rem; color: var(--accent);
+      background: rgba(59,130,246,0.06);
+      border-radius: 6px; padding: 10px 14px; margin-top: 12px;
+      white-space: pre; overflow-x: auto;
+    }
+
+    /* ── AI TOOL LIST ── */
+    .tool-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;
+    }
+    .tool-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 0.82rem; color: var(--text-secondary);
+      display: flex; align-items: center; gap: 8px;
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .tool-item:hover { border-color: var(--accent); color: var(--text); }
+    .tool-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+
+    /* ── ARCH DIAGRAM ── */
+    .arch-box {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px 18px; background: var(--surface);
+      font-size: 0.82rem; text-align: center;
+    }
+    .arch-box.primary {
+      border-color: var(--accent); background: rgba(59,130,246,0.08);
+      color: var(--accent); font-weight: 600;
+    }
+    .arch-box.green { border-color: var(--positive); background: rgba(34,197,94,0.07); }
+    .arch-box.purple { border-color: var(--accent-secondary); background: rgba(139,92,246,0.07); }
+    .arch-arrow {
+      text-align: center; color: var(--text-secondary);
+      font-size: 1.2rem; line-height: 1; padding: 4px 0;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 8px; top: 8px; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .tl-item { position: relative; padding-bottom: 28px; }
+    .tl-item::before {
+      content: ''; position: absolute; left: -24px; top: 6px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--bg);
+    }
+    .tl-date { font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-bottom: 3px; }
+    .tl-title { font-size: 0.9rem; color: var(--text); font-weight: 500; }
+    .tl-desc { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+
+    /* ── DB TABLE ── */
+    .db-table {
+      width: 100%; border-collapse: collapse; font-size: 0.83rem;
+    }
+    .db-table th {
+      text-align: left; padding: 10px 14px; font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-secondary); border-bottom: 1px solid var(--border);
+    }
+    .db-table td {
+      padding: 9px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text); vertical-align: top;
+    }
+    .db-table tr:last-child td { border-bottom: none; }
+    .db-table tr:hover td { background: var(--surface-hover); }
+    .db-type { color: var(--accent-secondary); font-size: 0.78rem; font-family: 'Inter', monospace; }
+
+    /* ── KPI CARDS ── */
+    .kpi-card { text-align: center; padding: 24px; }
+    .kpi-value {
+      font-size: 2.5rem; font-weight: 800;
+      color: var(--text); line-height: 1; margin-bottom: 6px;
+    }
+    .kpi-label { font-size: 0.8rem; color: var(--text-secondary); }
+
+    /* ── CHART CONTAINERS ── */
+    .chart-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px;
+    }
+    .chart-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .chart-container {
+      height: 300px; position: relative;
+    }
+
+    /* ── ENDPOINT TABLE ── */
+    .ep-table {
+      width: 100%; border-collapse: collapse; font-size: 0.83rem;
+    }
+    .ep-table th {
+      text-align: left; padding: 8px 14px; font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-secondary); border-bottom: 2px solid var(--border);
+    }
+    .ep-table td { padding: 8px 14px; border-bottom: 1px solid var(--border); }
+    .ep-table tr:hover td { background: var(--surface-hover); }
+    .method-get {
+      display: inline-block; background: rgba(34,197,94,0.15);
+      color: var(--positive); font-size: 0.7rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; min-width: 48px; text-align: center;
+    }
+    .ep-path { font-family: 'Inter', monospace; font-size: 0.8rem; color: var(--text-secondary); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    .animate { animation: fadeInUp 0.6s ease forwards; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+
+    [data-reveal] { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    [data-reveal].revealed { opacity: 1; transform: translateY(0); }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-bar label { font-size: 0.8rem; color: var(--text-secondary); }
+    .filter-chip {
+      padding: 6px 14px; border-radius: 100px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-secondary); font-size: 0.8rem; cursor: pointer;
+      transition: all var(--transition);
+    }
+    .filter-chip:hover, .filter-chip.active {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      .viz-menu { display: none; }
+      body { background: white; color: black; }
+      .hero { background: #f0f4ff; }
+    }
+
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 375px) {
+      body { overflow-x: hidden; }
+      .hero h1 { font-size: 2rem; }
+      .hero-stats { gap: 20px; }
+      .hero-stat-value { font-size: 2rem; }
+      .card { padding: 18px; }
+      .kpi-value { font-size: 2rem; }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0; text-align: center;
+      color: var(--text-secondary); font-size: 0.85rem;
+      margin-top: 60px;
+    }
+
+    /* ── TAG PILL ── */
+    .pill {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 100px; font-size: 0.72rem; font-weight: 600;
+    }
+    .pill-blue { background: rgba(59,130,246,0.12); color: var(--accent); }
+    .pill-green { background: rgba(34,197,94,0.12); color: var(--positive); }
+    .pill-purple { background: rgba(139,92,246,0.12); color: var(--accent-secondary); }
+    .pill-orange { background: rgba(245,158,11,0.12); color: var(--warning); }
+    .pill-red { background: rgba(239,68,68,0.12); color: var(--negative); }
+
+    /* ── TEST PYRAMID ── */
+    .pyramid-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 20px;
+    }
+    .pyramid-row {
+      border-radius: 6px; display: flex; align-items: center;
+      justify-content: center; gap: 12px; color: #fff; font-size: 0.82rem; font-weight: 600;
+      transition: opacity var(--transition);
+    }
+    .pyramid-row:hover { opacity: 0.85; }
+
+    /* ── SERVICE BADGES ── */
+    .service-row {
+      display: flex; align-items: center; gap: 12px; padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .service-row:last-child { border-bottom: none; }
+    .svc-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--positive); flex-shrink: 0;
+    }
+    .svc-name { font-size: 0.9rem; font-weight: 500; color: var(--text); min-width: 140px; }
+    .svc-desc { font-size: 0.82rem; color: var(--text-secondary); }
+    .svc-badge { margin-left: auto; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">본문으로 이동</a>
+
+  <!-- ── MENU ── -->
+  <nav class="viz-menu" aria-label="유틸리티 메뉴">
+    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴 열기" aria-expanded="false">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown" role="menu">
+      <button onclick="cycleTheme()" role="menuitem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        테마 전환
+      </button>
+      <div class="divider"></div>
+      <button onclick="downloadImage()" role="menuitem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG 저장
+      </button>
+      <button onclick="window.print()" role="menuitem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        인쇄 / PDF
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <header class="hero" role="banner">
+    <div class="container">
+      <div class="hero-badge animate">반도체 제조 인프라</div>
+      <h1 class="animate delay-1">FDC Portal</h1>
+      <p class="hero-sub animate delay-2">
+        반도체 장비의 실시간 고장 감지·분류(Fault Detection &amp; Classification) 내부 웹 플랫폼.<br>
+        SPC 알고리즘, AI 챗, ETL 파이프라인을 통합한 풀스택 시스템.
+      </p>
+      <div class="hero-stats animate delay-3">
+        <div class="hero-stat">
+          <div class="hero-stat-value" data-count="30">0</div>
+          <div class="hero-stat-label">API 엔드포인트</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" data-count="7">0</div>
+          <div class="hero-stat-label">포털 페이지</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" data-count="4">0</div>
+          <div class="hero-stat-label">SPC 알고리즘</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" data-count="14">0</div>
+          <div class="hero-stat-label">AI 분석 도구</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" data-count="169">0</div>
+          <div class="hero-stat-label">자동화 테스트</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ── TECH STACK ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">기술 스택</div>
+        <h2 class="section-title">Technology Stack</h2>
+        <p class="section-desc">프론트엔드부터 데이터 파이프라인까지 현대적인 기술 스택으로 구성된 풀스택 시스템.</p>
+
+        <!-- Filter -->
+        <div class="filter-bar">
+          <label>필터:</label>
+          <button class="filter-chip active" onclick="filterStack('all', this)">전체</button>
+          <button class="filter-chip" onclick="filterStack('frontend', this)">프론트엔드</button>
+          <button class="filter-chip" onclick="filterStack('backend', this)">백엔드</button>
+          <button class="filter-chip" onclick="filterStack('infra', this)">인프라 &amp; DB</button>
+          <button class="filter-chip" onclick="filterStack('ai', this)">AI</button>
+        </div>
+
+        <div class="grid-3" id="techGrid">
+          <div class="card" data-stack="frontend">
+            <div class="section-label" style="font-size:0.65rem; margin-bottom:14px;">프론트엔드</div>
+            <div>
+              <span class="tech-badge">Next.js 16</span>
+              <span class="tech-badge">React 19</span>
+              <span class="tech-badge">TypeScript 5</span>
+              <span class="tech-badge">CSS Modules</span>
+              <span class="tech-badge">App Router</span>
+              <span class="tech-badge">react-markdown</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:14px;">
+              Next.js App Router 기반 SSR/CSR 하이브리드. 디자인 토큰으로 다크/라이트 테마 관리. Strict Mode TypeScript.
+            </p>
+          </div>
+          <div class="card" data-stack="backend">
+            <div class="section-label" style="font-size:0.65rem; margin-bottom:14px;">백엔드</div>
+            <div>
+              <span class="tech-badge green">FastAPI</span>
+              <span class="tech-badge green">Python 3.11+</span>
+              <span class="tech-badge green">uv</span>
+              <span class="tech-badge green">psycopg2</span>
+              <span class="tech-badge green">Oracle Instant Client</span>
+              <span class="tech-badge green">numpy / scipy</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:14px;">
+              30+ REST 엔드포인트. ThreadedConnectionPool(2~40 conn). COPY 배치 삽입. SPC/PCA 알고리즘 순수 Python 구현.
+            </p>
+          </div>
+          <div class="card" data-stack="infra">
+            <div class="section-label" style="font-size:0.65rem; margin-bottom:14px;">인프라 &amp; 데이터베이스</div>
+            <div>
+              <span class="tech-badge orange">TimescaleDB</span>
+              <span class="tech-badge orange">PostgreSQL 17</span>
+              <span class="tech-badge orange">Oracle 19c</span>
+              <span class="tech-badge orange">systemd</span>
+              <span class="tech-badge orange">Docker</span>
+              <span class="tech-badge orange">Azure Entra ID</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:14px;">
+              TimescaleDB Hypertable (청크 1일 / 압축 3일 / 보존 90일). 연속 집계 뷰 (1분·15분 롤업). SSO 인증.
+            </p>
+          </div>
+          <div class="card" data-stack="ai">
+            <div class="section-label" style="font-size:0.65rem; margin-bottom:14px;">AI 통합</div>
+            <div>
+              <span class="tech-badge purple">Gemini 2.0 Flash</span>
+              <span class="tech-badge purple">Claude Sonnet 4.6</span>
+              <span class="tech-badge purple">@anthropic-ai/sdk</span>
+              <span class="tech-badge purple">@google/generative-ai</span>
+              <span class="tech-badge purple">SSE 스트리밍</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:14px;">
+              이중 AI 제공자 (Gemini/Claude). SSE 스트리밍, 14개 FDC 도구, 병렬 도구 실행. 30분 컨텍스트 캐싱.
+            </p>
+          </div>
+          <div class="card" data-stack="infra">
+            <div class="section-label" style="font-size:0.65rem; margin-bottom:14px;">테스트</div>
+            <div>
+              <span class="tech-badge orange">Playwright E2E</span>
+              <span class="tech-badge orange">Vitest</span>
+              <span class="tech-badge orange">pytest</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:14px;">
+              3계층 테스트 피라미드: Python (pytest) · 프론트엔드 단위 (Vitest 150개) · E2E (Playwright 19개). 총 169개 테스트.
+            </p>
+          </div>
+          <div class="card" data-stack="backend">
+            <div class="section-label" style="font-size:0.65rem; margin-bottom:14px;">ETL &amp; 분석</div>
+            <div>
+              <span class="tech-badge green">DBSCAN 클러스터링</span>
+              <span class="tech-badge green">PELT 변점 감지</span>
+              <span class="tech-badge green">PCA (T²/SPE)</span>
+              <span class="tech-badge green">EWMA / CUSUM</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:14px;">
+              Oracle BLOB(gzip+CP949) 파싱 → TimescaleDB COPY. 3종 베이스라인 시더. DBSCAN 30일 윈도우 클러스터링.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── KPI ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">시스템 규모</div>
+        <h2 class="section-title">Project Scale</h2>
+        <div class="grid-4">
+          <div class="card kpi-card">
+            <div class="kpi-value" data-count="5">0</div>
+            <div class="kpi-label">백그라운드 서비스</div>
+          </div>
+          <div class="card kpi-card">
+            <div class="kpi-value" data-count="22">0</div>
+            <div class="kpi-label">관리 스크립트</div>
+          </div>
+          <div class="card kpi-card">
+            <div class="kpi-value" data-count="90">0</div>
+            <div class="kpi-label">데이터 보존일</div>
+          </div>
+          <div class="card kpi-card">
+            <div class="kpi-value" data-count="3">0</div>
+            <div class="kpi-label">베이스라인 유형</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ARCHITECTURE ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">시스템 설계</div>
+        <h2 class="section-title">System Architecture</h2>
+        <p class="section-desc">브라우저부터 Oracle DB까지 이어지는 4계층 아키텍처. Next.js API Rewrite로 백엔드를 투명하게 프록시.</p>
+        <div class="grid-2">
+          <!-- Architecture Diagram -->
+          <div class="card">
+            <h3 style="margin-bottom:20px; font-size:1rem;">데이터 흐름도</h3>
+            <div class="arch-box primary">브라우저 — Next.js 프론트엔드 (:3000)</div>
+            <div class="arch-arrow">↕ /api/v1/* rewrite</div>
+            <div class="arch-box primary">FastAPI 백엔드 (:8100)<br><small style="font-weight:400; font-size:0.75rem;">30+ 엔드포인트 · 연결 풀 2~40 · CORS</small></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+              <div>
+                <div class="arch-arrow">↑ COPY 배치</div>
+                <div class="arch-box green">TimescaleDB<br><small>분석 저장소</small></div>
+                <div class="arch-arrow">↑ ETL</div>
+                <div class="arch-box green">Oracle NEPESDB1<br><small>EES 트레이스 BLOB</small></div>
+              </div>
+              <div>
+                <div class="arch-arrow" style="opacity:0;">↑</div>
+                <div class="arch-box purple">Oracle CCUBE<br><small>MES 로트 히스토리</small></div>
+                <div style="margin-top:10px;">
+                  <div class="arch-box" style="font-size:0.75rem; margin-bottom:8px;">
+                    🤖 Gemini 2.0 Flash
+                  </div>
+                  <div class="arch-box" style="font-size:0.75rem;">
+                    🤖 Claude Sonnet 4.6
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Background Services -->
+          <div class="card">
+            <h3 style="margin-bottom:20px; font-size:1rem;">백그라운드 서비스</h3>
+            <div class="service-row">
+              <div class="svc-dot"></div>
+              <div class="svc-name">fdc-extractor</div>
+              <div class="svc-desc">Oracle → TimescaleDB ETL</div>
+              <div class="svc-badge"><span class="pill pill-green">실시간</span></div>
+            </div>
+            <div class="service-row">
+              <div class="svc-dot"></div>
+              <div class="svc-name">fdc-api</div>
+              <div class="svc-desc">FastAPI 백엔드 :8100</div>
+              <div class="svc-badge"><span class="pill pill-blue">HTTP</span></div>
+            </div>
+            <div class="service-row">
+              <div class="svc-dot"></div>
+              <div class="svc-name">fdc-portal</div>
+              <div class="svc-desc">Next.js 프론트엔드 :3000</div>
+              <div class="svc-badge"><span class="pill pill-purple">SSR</span></div>
+            </div>
+            <div class="service-row">
+              <div class="svc-dot"></div>
+              <div class="svc-name">spc-runner</div>
+              <div class="svc-desc">SPC 배치 처리</div>
+              <div class="svc-badge"><span class="pill pill-orange">배치</span></div>
+            </div>
+            <div class="service-row">
+              <div class="svc-dot"></div>
+              <div class="svc-name">fdc-pca</div>
+              <div class="svc-desc">PCA 챔버 건강 분석</div>
+              <div class="svc-badge"><span class="pill pill-orange">배치</span></div>
+            </div>
+            <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
+              <div class="section-label" style="margin-bottom:10px; font-size:0.65rem;">크론 베이스라인 갱신</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <span class="pill pill-blue">매시 :15 스텝</span>
+                <span class="pill pill-blue">매시 :30 레시피</span>
+                <span class="pill pill-blue">매시 :45 클러스터</span>
+                <span class="pill pill-orange">07:00·15:00·23:00 OOC/OOS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FEATURES ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">핵심 기능</div>
+        <h2 class="section-title">Portal Pages</h2>
+        <p class="section-desc">7개 전용 페이지로 구성된 FDC 포털. 장비 모니터링부터 AI 챗까지 완전한 워크플로 제공.</p>
+        <div class="grid-3">
+          <div class="card feature-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </div>
+            <h3>Fleet Monitor</h3>
+            <p>모든 장비 카드 그리드. 상태 도트(RUN/IDLE/DOWN), OOC/OOS 배지, PCA 챔버 건강 배지. 30초 자동 새로고침.</p>
+            <span class="feature-tag">/fdc</span>
+          </div>
+          <div class="card feature-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <h3>Trace Viewer</h3>
+            <p>로트 여정 타임라인. SPC 차트 (EWMA·CUSUM·WECO·스펙). 베이스라인 시뮬레이션 드래그 인터페이스. PELT 변점 표시.</p>
+            <span class="feature-tag">/fdc/trace</span>
+          </div>
+          <div class="card feature-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><polyline points="7 16 12 11 17 6"/></svg>
+            </div>
+            <h3>History Explorer</h3>
+            <p>날짜 범위·로트·레시피 필터. SVID 트리 체크박스. 다중 SVID 캔버스 차트. PCA T²/SPE 이상 패널. CSV 내보내기.</p>
+            <span class="feature-tag">/fdc/history</span>
+          </div>
+          <div class="card feature-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <h3>Compare Tool</h3>
+            <p>크로스 장비 SVID 오버레이 비교. Health Scorecard API 연동. 다중 소스 데이터 정렬.</p>
+            <span class="feature-tag">/fdc/compare</span>
+          </div>
+          <div class="card feature-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <h3>Analytics</h3>
+            <p>CV 밴드 프레임워크 설명. Noise Floor·Stable·Dynamic·Multi-Modal·State Detection 5단계 분류 체계 문서.</p>
+            <span class="feature-tag">/fdc/analytics</span>
+          </div>
+          <div class="card feature-card">
+            <div class="feat-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <h3>AI Chat</h3>
+            <p>Gemini 2.0 Flash / Claude Sonnet 4.6 이중 제공자. 14개 FDC 도구. SSE 스트리밍. 장비·로트·SPC 컨텍스트 자동 주입.</p>
+            <span class="feature-tag">/fdc/chat</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SPC ENGINE ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">알고리즘</div>
+        <h2 class="section-title">SPC Engine</h2>
+        <p class="section-desc">4가지 통계적 공정 관리 알고리즘으로 드리프트, 급변, 패턴, 변점을 다각도로 감지.</p>
+        <div class="grid-2">
+          <div class="card algo-card">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+              <h3 style="font-size:1rem;">EWMA</h3>
+              <span class="pill pill-blue">점진적 드리프트</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">지수 가중 이동 평균. 소규모 공정 이탈을 조기 감지. λ로 민감도 조절.</p>
+            <div class="algo-formula">z_t = λ·x_t + (1-λ)·z_{t-1}
+UCL = μ + L·σ·√(λ/(2-λ))</div>
+          </div>
+          <div class="card algo-card" style="border-left-color:var(--positive);">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+              <h3 style="font-size:1rem;">CUSUM</h3>
+              <span class="pill pill-green">작은 이탈 누적</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">누적 합산. 작은 공정 이탈도 시간 누적으로 확실히 감지. k(슬랙), h(한계) 파라미터.</p>
+            <div class="algo-formula" style="color:var(--positive);">C⁺ = max(0, C⁺_{t-1} + (x_t-μ)/σ - k)
+알람: C⁺ > h 또는 C⁻ > h</div>
+          </div>
+          <div class="card algo-card" style="border-left-color:var(--accent-secondary);">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+              <h3 style="font-size:1rem;">WECO</h3>
+              <span class="pill pill-purple">패턴 감지</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">Western Electric 5가지 규칙. 단순 경계 초과 외 연속성·경향성 패턴을 포착.</p>
+            <div class="algo-formula" style="color:var(--accent-secondary);">R1: 3σ 초과  R2: 9연속 동방향
+R4: 2/3이 2σ 초과  R5: 4/5이 1σ 초과</div>
+          </div>
+          <div class="card algo-card" style="border-left-color:var(--warning);">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
+              <h3 style="font-size:1rem;">PELT</h3>
+              <span class="pill pill-orange">변점 감지</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">Pruned Exact Linear Time. 베이스라인 드리프트 자동 감지 후 재설정 트리거. DBSCAN 클러스터 가드.</p>
+            <div class="algo-formula" style="color:var(--warning);">변점 감지 → 베이스라인 무효화
+  → 클러스터 시더 재실행</div>
+          </div>
+        </div>
+
+        <!-- Baseline Strategy -->
+        <div style="margin-top:24px;">
+          <h3 style="font-size:1rem; margin-bottom:16px;">베이스라인 전략</h3>
+          <div class="grid-3">
+            <div class="card" style="padding:20px;">
+              <div style="font-size:0.75rem; color:var(--accent); font-weight:600; margin-bottom:8px;">레시피 베이스라인</div>
+              <p style="font-size:0.82rem; color:var(--text-secondary);">레시피별 30일 윈도우 평균/표준편차. 매시 :30 자동 갱신.</p>
+            </div>
+            <div class="card" style="padding:20px;">
+              <div style="font-size:0.75rem; color:var(--accent); font-weight:600; margin-bottom:8px;">스텝 베이스라인</div>
+              <p style="font-size:0.82rem; color:var(--text-secondary);">레시피+스텝 계층화. 공정 단계별 정밀 제어 한계. 매시 :15 갱신.</p>
+            </div>
+            <div class="card" style="padding:20px;">
+              <div style="font-size:0.75rem; color:var(--accent); font-weight:600; margin-bottom:8px;">클러스터 베이스라인</div>
+              <p style="font-size:0.82rem; color:var(--text-secondary);">DBSCAN 시간 클러스터링으로 동질 운전 구간 자동 식별. 매시 :45 갱신.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CHARTS ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">개발 현황</div>
+        <h2 class="section-title">Development Activity</h2>
+        <div class="grid-2">
+          <!-- Commit Category Chart -->
+          <div class="chart-wrap">
+            <div class="chart-title">커밋 유형 분포 (최근 30개)</div>
+            <div class="chart-container" role="img" aria-label="커밋 유형별 분포 도넛 차트">
+              <canvas id="commitChart"></canvas>
+            </div>
+          </div>
+          <!-- Feature Progress Chart -->
+          <div class="chart-wrap">
+            <div class="chart-title">UI/UX 태스크 진행률 (32개)</div>
+            <div class="chart-container" role="img" aria-label="UI/UX 태스크 진행률 바 차트">
+              <canvas id="taskChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── AI TOOLS ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">AI 통합</div>
+        <h2 class="section-title">AI Chat Integration</h2>
+        <p class="section-desc">4개 진입점과 14개 FDC 전용 도구를 갖춘 이중 AI 제공자 시스템. 장비·로트·SPC 컨텍스트를 자동으로 주입.</p>
+        <div class="grid-2" style="margin-bottom:24px;">
+          <div class="card">
+            <h3 style="font-size:1rem; margin-bottom:16px;">4개 챗 진입점</h3>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div style="display:flex; gap:12px; align-items:start;">
+                <span class="pill pill-blue" style="flex-shrink:0;">Fleet</span>
+                <span style="font-size:0.82rem; color:var(--text-secondary);">장비 카드 "AI" 버튼 → 해당 장비 상태 컨텍스트 자동 주입</span>
+              </div>
+              <div style="display:flex; gap:12px; align-items:start;">
+                <span class="pill pill-green" style="flex-shrink:0;">Trace</span>
+                <span style="font-size:0.82rem; color:var(--text-secondary);">"Investigate" 버튼 → 로트 + 선택된 SVID 컨텍스트</span>
+              </div>
+              <div style="display:flex; gap:12px; align-items:start;">
+                <span class="pill pill-purple" style="flex-shrink:0;">SPC</span>
+                <span style="font-size:0.82rem; color:var(--text-secondary);">"Ask AI" 버튼 → SPC 분석 결과 + 알람 상세 컨텍스트</span>
+              </div>
+              <div style="display:flex; gap:12px; align-items:start;">
+                <span class="pill pill-orange" style="flex-shrink:0;">FAB</span>
+                <span style="font-size:0.82rem; color:var(--text-secondary);">화면 우하단 플로팅 버튼 → 전역 챗 (컨텍스트 없음)</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:1rem; margin-bottom:16px;">기술 사양</h3>
+            <table class="db-table">
+              <tbody>
+                <tr><td style="color:var(--text-secondary); font-size:0.8rem;">기본 AI</td><td style="font-size:0.8rem;">Gemini 2.0 Flash</td></tr>
+                <tr><td style="color:var(--text-secondary); font-size:0.8rem;">대체 AI</td><td style="font-size:0.8rem;">Claude Sonnet 4.6</td></tr>
+                <tr><td style="color:var(--text-secondary); font-size:0.8rem;">스트리밍</td><td style="font-size:0.8rem;">SSE · 90초 타임아웃</td></tr>
+                <tr><td style="color:var(--text-secondary); font-size:0.8rem;">병렬 실행</td><td style="font-size:0.8rem;">여러 도구 동시 실행</td></tr>
+                <tr><td style="color:var(--text-secondary); font-size:0.8rem;">캐싱</td><td style="font-size:0.8rem;">컨텍스트 30분</td></tr>
+                <tr><td style="color:var(--text-secondary); font-size:0.8rem;">렌더링</td><td style="font-size:0.8rem;">react-markdown (표·코드·링크)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:1rem; margin-bottom:16px;">14개 FDC 분석 도구</h3>
+          <div class="tool-grid">
+            <div class="tool-item"><div class="tool-dot"></div>spc</div>
+            <div class="tool-item"><div class="tool-dot"></div>spc_baselines</div>
+            <div class="tool-item"><div class="tool-dot"></div>spc_summary</div>
+            <div class="tool-item"><div class="tool-dot"></div>equipment_status</div>
+            <div class="tool-item"><div class="tool-dot"></div>fleet_kpi</div>
+            <div class="tool-item"><div class="tool-dot"></div>spec_limits</div>
+            <div class="tool-item"><div class="tool-dot"></div>svid_registry</div>
+            <div class="tool-item"><div class="tool-dot"></div>baseline_info</div>
+            <div class="tool-item"><div class="tool-dot"></div>lot_history</div>
+            <div class="tool-item"><div class="tool-dot"></div>equipment_compare</div>
+            <div class="tool-item"><div class="tool-dot"></div>alarm_trends</div>
+            <div class="tool-item"><div class="tool-dot"></div>pca_summary</div>
+            <div class="tool-item"><div class="tool-dot"></div>case_study_search</div>
+            <div class="tool-item"><div class="tool-dot"></div>fdc_reference</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DATABASE ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">데이터 모델</div>
+        <h2 class="section-title">Database Schema</h2>
+        <p class="section-desc">TimescaleDB Hypertable 기반. 청크 파티셔닝·연속 집계·압축 정책으로 SATA 디스크 효율 최적화.</p>
+        <div class="grid-2">
+          <div class="card">
+            <h3 style="font-size:1rem; margin-bottom:16px;">핵심 테이블</h3>
+            <table class="db-table">
+              <thead>
+                <tr><th>테이블</th><th>유형</th><th>역할</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:'Inter',monospace; font-size:0.8rem;">svid_trace</td>
+                  <td><span class="db-type">Hypertable</span></td>
+                  <td style="font-size:0.8rem; color:var(--text-secondary);">원본 시계열 (청크 1일)</td>
+                </tr>
+                <tr>
+                  <td style="font-family:'Inter',monospace; font-size:0.8rem;">svid_1min</td>
+                  <td><span class="db-type">Cont. Agg</span></td>
+                  <td style="font-size:0.8rem; color:var(--text-secondary);">1분 롤업 avg/min/max/stddev</td>
+                </tr>
+                <tr>
+                  <td style="font-family:'Inter',monospace; font-size:0.8rem;">svid_15min</td>
+                  <td><span class="db-type">Cont. Agg</span></td>
+                  <td style="font-size:0.8rem; color:var(--text-secondary);">15분 롤업</td>
+                </tr>
+                <tr>
+                  <td style="font-family:'Inter',monospace; font-size:0.8rem;">svid_spc_results</td>
+                  <td><span class="db-type">Hypertable</span></td>
+                  <td style="font-size:0.8rem; color:var(--text-secondary);">SPC 알람 결과 (OOC/OOS)</td>
+                </tr>
+                <tr>
+                  <td style="font-family:'Inter',monospace; font-size:0.8rem;">svid_spc_baselines</td>
+                  <td><span class="db-type">Table</span></td>
+                  <td style="font-size:0.8rem; color:var(--text-secondary);">μ·σ 베이스라인</td>
+                </tr>
+                <tr>
+                  <td style="font-family:'Inter',monospace; font-size:0.8rem;">svid_registry</td>
+                  <td><span class="db-type">Table</span></td>
+                  <td style="font-size:0.8rem; color:var(--text-secondary);">SVID 메타·카테고리</td>
+                </tr>
+                <tr>
+                  <td style="font-family:'Inter',monospace; font-size:0.8rem;">equipment</td>
+                  <td><span class="db-type">Table</span></td>
+                  <td style="font-size:0.8rem; color:var(--text-secondary);">장비 상태·레시피</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3 style="font-size:1rem; margin-bottom:16px;">쿼리 해상도 전략</h3>
+            <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:16px;">시간 범위에 따라 자동으로 최적 테이블 선택. SATA 디스크 부하 방지.</p>
+            <table class="db-table">
+              <thead>
+                <tr><th>범위</th><th>소스</th><th>최대 윈도우</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-size:0.8rem;">≤ 1시간</td>
+                  <td style="font-size:0.8rem; color:var(--accent);">svid_trace (raw)</td>
+                  <td style="font-size:0.8rem;">7일</td>
+                </tr>
+                <tr>
+                  <td style="font-size:0.8rem;">≤ 24시간</td>
+                  <td style="font-size:0.8rem; color:var(--positive);">svid_1min</td>
+                  <td style="font-size:0.8rem;">7일</td>
+                </tr>
+                <tr>
+                  <td style="font-size:0.8rem;">&gt; 24시간</td>
+                  <td style="font-size:0.8rem; color:var(--warning);">svid_15min</td>
+                  <td style="font-size:0.8rem;">7일</td>
+                </tr>
+                <tr>
+                  <td style="font-size:0.8rem;">SPC</td>
+                  <td style="font-size:0.8rem; color:var(--accent);">spc_results</td>
+                  <td style="font-size:0.8rem;">168시간</td>
+                </tr>
+                <tr>
+                  <td style="font-size:0.8rem;">Fleet 알람</td>
+                  <td style="font-size:0.8rem; color:var(--accent);">spc_results</td>
+                  <td style="font-size:0.8rem;">168시간</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="margin-top:16px; padding:12px; background:rgba(59,130,246,0.06); border-radius:8px; border:1px solid rgba(59,130,246,0.15);">
+              <div style="font-size:0.75rem; color:var(--accent); font-weight:600; margin-bottom:6px;">OOS 단일 소스 원칙</div>
+              <p style="font-size:0.78rem; color:var(--text-secondary);">OOS 알람은 반드시 <code style="font-family:'Inter',monospace; color:var(--accent);">algorithm='spec'</code> 필터로만. EES 병합 금지.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TEST COVERAGE ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">품질 보증</div>
+        <h2 class="section-title">Test Coverage</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3 style="font-size:1rem; margin-bottom:20px;">3계층 테스트 피라미드</h3>
+            <div class="pyramid-wrap">
+              <div class="pyramid-row" style="width:55%; background:var(--accent); padding:16px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                E2E 19개 · Playwright
+              </div>
+              <div class="pyramid-row" style="width:75%; background:var(--accent-secondary); padding:16px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                단위 150개 · Vitest
+              </div>
+              <div class="pyramid-row" style="width:95%; background:var(--positive); padding:16px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Python pytest · 백엔드 로직
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:1rem; margin-bottom:16px;">커버리지 영역</h3>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:6px;">
+                  <span>E2E (Fleet·Trace·SPC·Resilience)</span>
+                  <span style="color:var(--accent);">19개</span>
+                </div>
+                <div style="background:var(--border); border-radius:4px; height:6px;">
+                  <div style="background:var(--accent); height:100%; border-radius:4px; width:45%;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:6px;">
+                  <span>Vitest (chart-utils·spc-tab·export)</span>
+                  <span style="color:var(--accent-secondary);">150개</span>
+                </div>
+                <div style="background:var(--border); border-radius:4px; height:6px;">
+                  <div style="background:var(--accent-secondary); height:100%; border-radius:4px; width:85%;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:6px;">
+                  <span>pytest (spc_baselines·seed)</span>
+                  <span style="color:var(--positive);">별도</span>
+                </div>
+                <div style="background:var(--border); border-radius:4px; height:6px;">
+                  <div style="background:var(--positive); height:100%; border-radius:4px; width:70%;"></div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
+              <div style="font-size:0.75rem; color:var(--text-secondary); line-height:1.6;">
+                코드 변경 후 테스트 규칙: Python 변경 → pytest / 프론트엔드 변경 → vitest+E2E / API 변경 → pytest+E2E
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RECENT COMMITS ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">개발 이력</div>
+        <h2 class="section-title">Recent Commits</h2>
+        <p class="section-desc">최근 커밋 히스토리. feat·fix·ui·docs·chore 유형으로 분류.</p>
+        <div class="card">
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-date">2026-04-16 · feat #ITSM-4364</div>
+              <div class="tl-title">localStorage 기본 장비 복원 + 0-SVID 비활성화 + 오프라인 색상 수정</div>
+              <div class="tl-desc">history 페이지 UX 개선 3종 묶음</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-04-16 · ui #ITSM-4363</div>
+              <div class="tl-title">미인증 상태에서 네비게이션 링크 숨김</div>
+              <div class="tl-desc">SSO 인증 흐름 UX 개선</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-04-16 · ui #ITSM-4362</div>
+              <div class="tl-title">로그인 버튼 한국어화 + 클릭 스피너</div>
+              <div class="tl-desc">"회사 계정으로 로그인" 텍스트 + disabled 피드백</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-04-15 · feat #ITSM-4358</div>
+              <div class="tl-title">로그인 에러 배너 (에러 코드별 한국어 메시지)</div>
+              <div class="tl-desc">OAuthSignin·OAuthCallback·AccessDenied 등 에러 처리</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-04-14 · feat</div>
+              <div class="tl-title">Pretendard 폰트 CDN dynamic-subset 적용 #ITSM-4344</div>
+              <div class="tl-desc">한국어 타이포그래피 최적화</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-04-12 · fix</div>
+              <div class="tl-title">SPC 차트 Y축 UOM 레이블 클립 밖으로 이동</div>
+              <div class="tl-desc">단위(°C·V·sccm) 표시 위치 수정</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-04-10 · feat</div>
+              <div class="tl-title">DBSCAN 룩백 윈도우 7d→30d 확장 + SPU-01F 상수 오버라이드</div>
+              <div class="tl-desc">클러스터 베이스라인 품질 개선 (-889 알람/24h)</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-date">2026-04-07 · feat</div>
+              <div class="tl-title">Azure Entra ID SSO 인증 활성화</div>
+              <div class="tl-desc">NextAuth.js v5 + nginx reverse proxy + fdc.nepes.co.kr</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── API ENDPOINTS ── -->
+    <section data-reveal>
+      <div class="container">
+        <div class="section-label">API 설계</div>
+        <h2 class="section-title">REST API Endpoints</h2>
+        <p class="section-desc">FastAPI 기반 30+ 엔드포인트. 장비·시계열·로트·SPC·PCA 5개 도메인.</p>
+        <div class="card">
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;" id="epFilter">
+            <button class="filter-chip active" onclick="filterEndpoints('all', this)">전체</button>
+            <button class="filter-chip" onclick="filterEndpoints('equip', this)">장비</button>
+            <button class="filter-chip" onclick="filterEndpoints('ts', this)">시계열</button>
+            <button class="filter-chip" onclick="filterEndpoints('lot', this)">로트</button>
+            <button class="filter-chip" onclick="filterEndpoints('spc', this)">SPC</button>
+            <button class="filter-chip" onclick="filterEndpoints('pca', this)">PCA</button>
+          </div>
+          <table class="ep-table">
+            <thead>
+              <tr><th>메서드</th><th>경로</th><th>설명</th></tr>
+            </thead>
+            <tbody id="epTableBody">
+              <tr data-ep="equip"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/equipment</td><td style="font-size:0.82rem; color:var(--text-secondary);">모든 장비 목록 + SVID 수</td></tr>
+              <tr data-ep="equip"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/equipment/{id}/svids</td><td style="font-size:0.82rem; color:var(--text-secondary);">SVID 레지스트리</td></tr>
+              <tr data-ep="equip"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/equipment/{id}/chambers</td><td style="font-size:0.82rem; color:var(--text-secondary);">챔버 정보</td></tr>
+              <tr data-ep="equip"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/svid-categories</td><td style="font-size:0.82rem; color:var(--text-secondary);">SVID 카테고리 할당</td></tr>
+              <tr data-ep="ts"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/query</td><td style="font-size:0.82rem; color:var(--text-secondary);">시계열 쿼리 (자동 해상도)</td></tr>
+              <tr data-ep="ts"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/compare</td><td style="font-size:0.82rem; color:var(--text-secondary);">크로스 장비 시계열 비교</td></tr>
+              <tr data-ep="lot"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/lots</td><td style="font-size:0.82rem; color:var(--text-secondary);">로트 목록 (시간 윈도우)</td></tr>
+              <tr data-ep="lot"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/lot-svids</td><td style="font-size:0.82rem; color:var(--text-secondary);">로트별 SVID</td></tr>
+              <tr data-ep="lot"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/lot-history</td><td style="font-size:0.82rem; color:var(--text-secondary);">동일 레시피 로트 히스토리</td></tr>
+              <tr data-ep="lot"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/trace</td><td style="font-size:0.82rem; color:var(--text-secondary);">로트 여정 (방문 장비)</td></tr>
+              <tr data-ep="spc"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/spc/{eqp_id}</td><td style="font-size:0.82rem; color:var(--text-secondary);">SPC 결과 (기본 24h, 최대 168h)</td></tr>
+              <tr data-ep="spc"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/spc/{eqp_id}/baselines</td><td style="font-size:0.82rem; color:var(--text-secondary);">SPC 베이스라인 조회</td></tr>
+              <tr data-ep="spc"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/spc/{eqp_id}/summary</td><td style="font-size:0.82rem; color:var(--text-secondary);">SPC 알람 요약</td></tr>
+              <tr data-ep="spc"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/spec-limits</td><td style="font-size:0.82rem; color:var(--text-secondary);">스펙 한계 조회</td></tr>
+              <tr data-ep="spc"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/fleet/alarm-summary</td><td style="font-size:0.82rem; color:var(--text-secondary);">플릿 알람 요약 (기본 8h)</td></tr>
+              <tr data-ep="pca"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/fleet/chamber-health</td><td style="font-size:0.82rem; color:var(--text-secondary);">전체 챔버 건강 상태</td></tr>
+              <tr data-ep="pca"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/equipment/{id}/chamber-health</td><td style="font-size:0.82rem; color:var(--text-secondary);">장비별 챔버 건강 (T²/SPE)</td></tr>
+              <tr data-ep="pca"><td><span class="method-get">GET</span></td><td class="ep-path">/api/v1/equipment/{id}/chamber-health/history</td><td style="font-size:0.82rem; color:var(--text-secondary);">챔버 건강 이력</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p style="margin-bottom:8px; font-weight:600; color:var(--text);">FDC Portal</p>
+      <p>반도체 제조 장비 고장 감지·분류 웹 플랫폼 · NEPES FA Part</p>
+      <p style="margin-top:8px; font-size:0.75rem;">Next.js · FastAPI · TimescaleDB · Python · Azure SSO</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ── THEME ── */
+    var themes = ['theme-dark', 'theme-light'];
+    var currentThemeIndex = 0;
+
+    function applyTheme(themeName) {
+      document.documentElement.className = themeName;
+      localStorage.setItem('viz-theme', themeName);
+      onThemeChange();
+    }
+
+    function cycleTheme() {
+      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+      applyTheme(themes[currentThemeIndex]);
+    }
+
+    (function initTheme() {
+      var saved = localStorage.getItem('viz-theme');
+      if (saved && themes.includes(saved)) {
+        currentThemeIndex = themes.indexOf(saved);
+        applyTheme(saved);
+      } else {
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        currentThemeIndex = prefersDark ? 0 : 1;
+        applyTheme(themes[currentThemeIndex]);
+      }
+    })();
+
+    /* ── MENU ── */
+    function toggleMenu() {
+      var dropdown = document.getElementById('vizMenuDropdown');
+      var btn = document.querySelector('.viz-menu-toggle');
+      var isOpen = dropdown.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    document.addEventListener('click', function(e) {
+      var dropdown = document.getElementById('vizMenuDropdown');
+      if (!e.target.closest('.viz-menu') && dropdown) {
+        dropdown.classList.remove('open');
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.getElementById('vizMenuDropdown').classList.remove('open');
+      }
+    });
+
+    /* ── DOWNLOAD ── */
+    function downloadImage() {
+      if (typeof htmlToImage === 'undefined') { alert('html-to-image 라이브러리 로드 중...'); return; }
+      htmlToImage.toPng(document.body)
+        .then(function(dataUrl) {
+          var a = document.createElement('a');
+          a.download = 'fdc-portal-portfolio.png';
+          a.href = dataUrl;
+          a.click();
+        })
+        .catch(function(err) { console.error('이미지 생성 실패:', err); });
+    }
+
+    /* ── SCROLL REVEAL ── */
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('[data-reveal]').forEach(function(el) {
+      revealObserver.observe(el);
+    });
+
+    /* ── COUNTER ANIMATION ── */
+    function animateCounters() {
+      document.querySelectorAll('[data-count]').forEach(function(el) {
+        var target = parseInt(el.getAttribute('data-count'), 10);
+        var start = 0;
+        var duration = 1200;
+        var startTime = null;
+        function step(ts) {
+          if (!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var ease = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(start + (target - start) * ease);
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = target;
+        }
+        requestAnimationFrame(step);
+      });
+    }
+
+    var counterTriggered = false;
+    var counterObserver = new IntersectionObserver(function(entries) {
+      if (!counterTriggered && entries[0].isIntersecting) {
+        counterTriggered = true;
+        animateCounters();
+        counterObserver.disconnect();
+      }
+    }, { threshold: 0.3 });
+    var firstCounter = document.querySelector('[data-count]');
+    if (firstCounter) counterObserver.observe(firstCounter);
+
+    /* ── STACK FILTER ── */
+    function filterStack(cat, btn) {
+      document.querySelectorAll('#techGrid [data-stack]').forEach(function(card) {
+        card.style.display = (cat === 'all' || card.getAttribute('data-stack') === cat) ? '' : 'none';
+      });
+      document.querySelectorAll('.filter-bar .filter-chip').forEach(function(c) { c.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    /* ── ENDPOINT FILTER ── */
+    function filterEndpoints(cat, btn) {
+      document.querySelectorAll('#epTableBody tr').forEach(function(row) {
+        row.style.display = (cat === 'all' || row.getAttribute('data-ep') === cat) ? '' : 'none';
+      });
+      document.querySelectorAll('#epFilter .filter-chip').forEach(function(c) { c.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    /* ── CHARTS ── */
+    var chartsBuilt = false;
+
+    function getChartColors() {
+      var s = getComputedStyle(document.documentElement);
+      return {
+        text: s.getPropertyValue('--text').trim(),
+        textSecondary: s.getPropertyValue('--text-secondary').trim(),
+        border: s.getPropertyValue('--border').trim(),
+        surface: s.getPropertyValue('--surface').trim(),
+        accent: s.getPropertyValue('--accent').trim(),
+        accent2: s.getPropertyValue('--accent-secondary').trim(),
+        positive: s.getPropertyValue('--positive').trim(),
+        warning: s.getPropertyValue('--warning').trim(),
+        negative: s.getPropertyValue('--negative').trim(),
+      };
+    }
+
+    function resetCanvas(id) {
+      var old = document.getElementById(id);
+      if (!old) return null;
+      var parent = old.parentNode;
+      var canvas = document.createElement('canvas');
+      canvas.id = id;
+      parent.replaceChild(canvas, old);
+      return canvas;
+    }
+
+    function buildCharts() {
+      if (typeof Chart === 'undefined') { console.error('Chart.js not loaded'); return; }
+      if (chartsBuilt) {
+        ChartManager.destroyAll();
+        chartsBuilt = false;
+      }
+
+      var c = getChartColors();
+      var isDark = document.documentElement.classList.contains('theme-dark');
+      var gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)';
+
+      /* Commit Chart */
+      ChartManager.safeInit('commitChart', {
+        type: 'doughnut',
+        data: {
+          labels: ['fix', 'feat', 'docs', 'ui', 'chore'],
+          datasets: [{
+            data: [14, 7, 4, 3, 2],
+            backgroundColor: [
+              c.negative + 'cc', c.positive + 'cc', c.textSecondary + '88',
+              c.accent + 'cc', c.warning + 'cc'
+            ],
+            borderWidth: 2,
+            borderColor: isDark ? '#161616' : '#f1f0ee'
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            tooltip: { enabled: true, padding: 10, cornerRadius: 8 },
+            legend: { position: 'right', labels: { color: c.text, font: { family: "'Noto Sans KR', Inter", size: 12 }, padding: 12 } }
+          },
+          layout: { padding: 10 }
+        }
+      });
+
+      /* Task Chart */
+      ChartManager.safeInit('taskChart', {
+        type: 'bar',
+        data: {
+          labels: ['Phase A\n(S·즉시)', 'Phase B\n(M·중간)', 'Phase C\n(L·대형)'],
+          datasets: [
+            {
+              label: '완료',
+              data: [5, 0, 0],
+              backgroundColor: c.positive + 'cc',
+              borderRadius: 6
+            },
+            {
+              label: '미완료',
+              data: [15, 9, 3],
+              backgroundColor: c.accent + '55',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            tooltip: { enabled: true, padding: 10, cornerRadius: 8 },
+            legend: { labels: { color: c.text, font: { family: "'Noto Sans KR', Inter", size: 12 } } }
+          },
+          scales: {
+            x: { stacked: true, ticks: { color: c.textSecondary, font: { size: 11 } }, grid: { display: false } },
+            y: { stacked: true, ticks: { color: c.textSecondary, stepSize: 5 }, grid: { color: gridColor }, max: 25 }
+          },
+          layout: { padding: 10 }
+        }
+      });
+
+      chartsBuilt = true;
+    }
+
+    function onThemeChange() {
+      chartsBuilt = false;
+      setTimeout(buildCharts, 80);
+    }
+
+    /* ChartManager */
+    var ChartManager = {
+      charts: new Map(),
+      safeInit: function(canvasId, config) {
+        if (typeof Chart === 'undefined') { console.error('Chart.js not loaded'); return null; }
+        try {
+          if (this.charts.has(canvasId)) {
+            this.charts.get(canvasId).destroy();
+            this.charts.delete(canvasId);
+          }
+          var ctx = resetCanvas(canvasId);
+          if (!ctx) { console.error('Canvas not found: ' + canvasId); return null; }
+          ctx.setAttribute('role', 'img');
+          if (!ctx.getAttribute('aria-label')) ctx.setAttribute('aria-label', 'Chart: ' + canvasId);
+          var chart = new Chart(ctx, config);
+          this.charts.set(canvasId, chart);
+          return chart;
+        } catch(err) {
+          console.error('Chart init failed for ' + canvasId + ':', err);
+          return null;
+        }
+      },
+      destroyAll: function() {
+        this.charts.forEach(function(chart) {
+          try { chart.destroy(); } catch(e) {}
+        });
+        this.charts.clear();
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      buildCharts();
+    });
+  </script>
+</body>
+</html>
